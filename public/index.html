@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АПГРЕЙД 2026 — Лагерь нового поколения · Иссык-Куль</title>
+<meta name="description" content="АПГРЕЙД 2026 — детский cinematic-лагерь на Иссык-Куле. 10 дней. 5 миссий. Игровая прокачка. 12–15 лет.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;800;900&family=Onest:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ============================================
+   HOME PAGE STYLES
+   ============================================ */
+
+/* ===== HERO ===== */
+.hero{
+  position:relative;min-height:100vh;
+  padding:140px 40px 60px;
+  display:flex;align-items:center;
+  overflow:hidden;isolation:isolate;
+}
+.hero-left{max-width:1100px}
+.hero-bg{
+  position:absolute;inset:0;z-index:-2;overflow:hidden;
+  background:#05060a;
+}
+.hero-bg video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center;
+  filter:saturate(.85) contrast(1.05);
+}
+.hero-bg::before{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:linear-gradient(180deg,rgba(5,6,10,.45) 0%,rgba(5,6,10,.55) 50%,#05060a 100%);
+}
+.hero-bg::after{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse 70% 60% at 30% 50%,transparent 0%,rgba(5,6,10,.35) 70%,rgba(5,6,10,.8) 100%);
+}
+.hero-particles{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.hero-particles .p{
+  position:absolute;width:2px;height:2px;border-radius:50%;background:var(--orange);
+  box-shadow:0 0 6px var(--orange-glow);
+  animation:floatUp linear infinite;opacity:0;
+}
+@keyframes floatUp{
+  0%{transform:translateY(20px);opacity:0}
+  10%{opacity:.8}
+  90%{opacity:.6}
+  100%{transform:translateY(-100vh);opacity:0}
+}
+.hero-scan{
+  position:absolute;left:0;right:0;height:140px;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,transparent 0%,rgba(255,106,31,.05) 50%,transparent 100%);
+  animation:scanSweep 7s linear infinite;
+}
+@keyframes scanSweep{from{top:-200px}to{top:100vh}}
+
+.hero-left{position:relative;z-index:2}
+.hero-pretitle{
+  display:flex;align-items:center;gap:14px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:32px;
+}
+.hero-pretitle .bar{flex:0 0 32px;height:1px;background:var(--orange)}
+.hero-pretitle .live{color:var(--orange);display:flex;align-items:center;gap:8px}
+.hero-pretitle .live::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px var(--orange-glow);animation:pulse 1.4s infinite}
+
+.hero-title{
+  font-family:'Unbounded',sans-serif;font-weight:900;
+  font-size:clamp(64px,12vw,196px);
+  line-height:.84;letter-spacing:-.045em;
+  text-transform:uppercase;margin-bottom:24px;
+}
+.hero-title .glitch{position:relative;display:inline-block;text-shadow:0 0 60px rgba(0,0,0,.5)}
+.hero-title .glitch::before,.hero-title .glitch::after{
+  content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;
+}
+.hero-title .glitch::before{color:var(--orange);mix-blend-mode:screen;animation:glitchA 5s infinite linear alternate}
+.hero-title .glitch::after{color:#7be5ff;mix-blend-mode:screen;animation:glitchB 6s infinite linear alternate}
+@keyframes glitchA{
+  0%,90%,100%{transform:translate(0,0);clip-path:inset(0 0 0 0)}
+  92%{transform:translate(-5px,2px);clip-path:inset(20% 0 60% 0)}
+  94%{transform:translate(3px,-1px);clip-path:inset(70% 0 10% 0)}
+  96%{transform:translate(-2px,1px);clip-path:inset(35% 0 45% 0)}
+}
+@keyframes glitchB{
+  0%,88%,100%{transform:translate(0,0);clip-path:inset(0 0 0 0)}
+  90%{transform:translate(4px,-2px);clip-path:inset(45% 0 30% 0)}
+  93%{transform:translate(-4px,1px);clip-path:inset(15% 0 75% 0)}
+  97%{transform:translate(2px,2px);clip-path:inset(60% 0 20% 0)}
+}
+
+.hero-tagline{
+  font-family:'Unbounded',sans-serif;font-weight:600;
+  font-size:clamp(18px,2vw,28px);
+  letter-spacing:.04em;line-height:1.2;text-transform:uppercase;
+  color:var(--ink-2);max-width:680px;margin-bottom:18px;
+}
+.hero-tagline em{color:var(--orange);font-style:normal}
+.hero-subtag{
+  font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-dim);
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:44px;
+}
+
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px}
+.hero-actions .btn-primary{font-size:14px;padding:20px 36px}
+.hero-meta{
+  display:flex;gap:48px;flex-wrap:wrap;
+  padding-top:32px;border-top:1px solid var(--line);
+}
+.hero-m{display:flex;flex-direction:column;gap:4px}
+.hero-m .v{font-family:'Unbounded',sans-serif;font-weight:800;font-size:28px;color:var(--ink);letter-spacing:-.02em;line-height:1}
+.hero-m .v em{color:var(--orange);font-style:normal}
+.hero-m .l{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:2px;text-transform:uppercase}
+
+/* FLOATING REGISTRATION PANEL */
+.access-panel{
+  position:relative;z-index:3;
+  background:rgba(10,12,20,.78);
+  backdrop-filter:blur(24px) saturate(140%);
+  border:1px solid var(--line-2);
+  border-radius:20px;
+  padding:32px;
+  box-shadow:0 30px 80px rgba(0,0,0,.4),0 0 0 1px rgba(255,106,31,.08);
+  position:relative;
+}
+.access-panel::before{
+  content:'';position:absolute;inset:0;border-radius:20px;pointer-events:none;
+  border-top:1px solid rgba(255,106,31,.4);
+}
+.access-panel .ap-corner{position:absolute;width:18px;height:18px;border:1px solid var(--orange)}
+.access-panel .ap-corner.tl{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.access-panel .ap-corner.br{bottom:-1px;right:-1px;border-left:none;border-top:none}
+
+.ap-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border-bottom:1px solid var(--line);padding-bottom:16px}
+.ap-id{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ap-id::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--orange);box-shadow:0 0 8px var(--orange-glow);animation:pulse 1.5s infinite}
+.ap-status{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-dim);letter-spacing:1.5px}
+
+.ap-title{
+  font-family:'Unbounded',sans-serif;font-weight:800;font-size:22px;
+  letter-spacing:-.01em;text-transform:uppercase;margin:18px 0 6px;
+}
+.ap-title em{color:var(--orange);font-style:normal}
+.ap-sub{font-size:13px;color:var(--ink-dim);line-height:1.6;margin-bottom:24px}
+
+.ap-form{display:grid;gap:12px}
+.ap-field{display:flex;flex-direction:column;position:relative}
+.ap-field label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.ap-field label::before{content:'> ';color:var(--orange)}
+.ap-field input,.ap-field select{
+  background:rgba(0,0,0,.4);
+  border:1px solid var(--line);border-radius:8px;
+  padding:13px 14px;font-size:14px;color:var(--ink);font-family:'Onest',sans-serif;
+  transition:all .2s;
+}
+.ap-field input:focus,.ap-field select:focus{outline:none;border-color:var(--orange);background:rgba(0,0,0,.55)}
+.ap-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ap-submit{
+  margin-top:8px;width:100%;
+  background:var(--orange);color:#000;
+  font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:18px;border:none;border-radius:10px;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  transition:all .25s;position:relative;overflow:hidden;
+}
+.ap-submit::after{content:'→';font-family:'JetBrains Mono',monospace;font-size:16px}
+.ap-submit:hover{background:#fff;transform:translateY(-2px);box-shadow:0 12px 32px var(--orange-glow)}
+.ap-note{
+  margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);
+  letter-spacing:1.5px;text-align:center;display:flex;justify-content:space-between;align-items:center;
+}
+.ap-note span{display:flex;align-items:center;gap:5px}
+.ap-note span::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--orange)}
+
+.ap-success{display:none;text-align:center;padding:20px 0}
+.ap-success.show{display:block}
+.ap-success-icon{
+  width:64px;height:64px;border:2px solid var(--orange);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
+  font-family:'JetBrains Mono',monospace;font-size:32px;color:var(--orange);
+  animation:checkPulse .8s ease;
+  box-shadow:0 0 30px var(--orange-glow);
+}
+@keyframes checkPulse{from{transform:scale(0.4);opacity:0}to{transform:scale(1);opacity:1}}
+.ap-success h4{font-family:'Unbounded',sans-serif;font-weight:800;font-size:20px;color:var(--orange);text-transform:uppercase;letter-spacing:-.01em;margin-bottom:8px}
+.ap-success p{font-size:13px;color:var(--ink-dim);line-height:1.6}
+
+/* ===== INTRO SPLIT ===== */
+.intro{
+  position:relative;padding:140px 40px;background:var(--bg);overflow:hidden;
+}
+.intro-grid{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:1.1fr 1fr;gap:80px;align-items:center;
+}
+.intro-text .lead{
+  font-family:'Unbounded',sans-serif;font-weight:800;
+  font-size:clamp(48px,7vw,112px);line-height:.9;letter-spacing:-.04em;
+  text-transform:uppercase;margin-bottom:32px;
+}
+.intro-text .lead em{color:var(--orange);font-style:normal;position:relative}
+.intro-text .lead .crossout{position:relative;display:inline-block}
+.intro-text .lead .crossout::after{
+  content:'';position:absolute;left:-4%;right:-4%;top:50%;height:8px;background:var(--orange);
+  transform:translateY(-50%) rotate(-8deg);
+}
+.intro-text p{font-size:17px;color:var(--ink-dim);line-height:1.7;max-width:560px;margin-bottom:20px}
+.intro-text p strong{color:var(--ink);font-weight:500}
+.intro-collage{
+  position:relative;height:600px;
+}
+.intro-collage img{
+  position:absolute;
+  border-radius:16px;
+  object-fit:cover;
+  border:1px solid var(--line-2);
+}
+.intro-collage .img-1{
+  top:0;left:0;width:62%;height:60%;
+  filter:saturate(.8) contrast(1.05);
+}
+.intro-collage .img-2{
+  bottom:0;right:0;width:55%;height:55%;
+  border:1px solid var(--orange);
+  box-shadow:0 30px 60px rgba(0,0,0,.4),0 0 0 1px rgba(255,106,31,.15);
+}
+.intro-collage::before{
+  content:'';position:absolute;top:50%;left:50%;width:80%;height:80%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(255,106,31,.15) 0%,transparent 60%);
+  z-index:-1;
+}
+.intro-collage .tag-float{
+  position:absolute;
+  top:50%;left:50%;transform:translate(-50%,-50%) rotate(-2deg);
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:80px;color:var(--orange);
+  letter-spacing:-.04em;line-height:1;
+  text-shadow:0 0 60px var(--orange-glow);
+  z-index:2;
+}
+
+/* ===== MISSIONS ===== */
+.missions{
+  position:relative;padding:140px 40px;
+  background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%);
+}
+.missions-head{
+  max-width:1320px;margin:0 auto 64px;
+  display:grid;grid-template-columns:1.2fr 1fr;gap:64px;align-items:end;
+}
+.missions-head p{font-size:17px;color:var(--ink-dim);line-height:1.65;max-width:520px}
+
+.missions-grid{
+  max-width:1320px;margin:0 auto;
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  grid-template-rows:auto auto;
+  grid-template-areas:
+    "m1 m2 m3"
+    "m1 m4 m5";
+  gap:14px;
+  min-height:760px;
+}
+.miss-card{
+  position:relative;
+  overflow:hidden;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:var(--bg-3);
+  cursor:pointer;
+  transition:all .3s;
+  isolation:isolate;
+}
+.miss-card:hover{border-color:var(--accent);transform:translateY(-4px)}
+.miss-card .miss-img{
+  position:absolute;inset:0;z-index:-2;
+  background-size:cover;background-position:center;
+  filter:saturate(.7) brightness(.55);
+  transition:transform .8s,filter .4s;
+}
+.miss-card:hover .miss-img{transform:scale(1.08);filter:saturate(1) brightness(.7)}
+.miss-card::before{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(5,6,10,.2) 0%,rgba(5,6,10,.5) 50%,rgba(5,6,10,.95) 100%);
+}
+.miss-card::after{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(255,255,255,.025) 3px,rgba(255,255,255,.025) 4px);
+  mix-blend-mode:overlay;
+}
+
+.miss-card .miss-head{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  padding:28px;
+}
+.miss-card .miss-num{
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:80px;line-height:.8;
+  color:var(--accent);letter-spacing:-.05em;
+  text-shadow:0 0 60px rgba(0,0,0,.6);
+}
+.miss-card.lg .miss-num{font-size:128px}
+.miss-card .miss-tag{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);
+  letter-spacing:2px;text-transform:uppercase;
+  padding:5px 10px;border:1px solid var(--accent);border-radius:20px;
+  background:rgba(0,0,0,.4);
+}
+
+.miss-card .miss-body{
+  position:absolute;left:28px;right:28px;bottom:28px;
+}
+.miss-card .miss-name{
+  font-family:'Unbounded',sans-serif;font-weight:800;font-size:34px;
+  letter-spacing:-.02em;text-transform:uppercase;line-height:1;
+  margin-bottom:8px;color:#fff;
+  text-shadow:0 4px 16px rgba(0,0,0,.5);
+}
+.miss-card.lg .miss-name{font-size:48px}
+.miss-card .miss-sub{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;
+}
+.miss-card .miss-desc{
+  font-size:13.5px;color:var(--ink-2);line-height:1.55;
+  max-width:380px;
+  opacity:.85;
+  max-height:0;overflow:hidden;
+  transition:max-height .4s cubic-bezier(.2,.7,.2,1),opacity .3s,margin-top .3s;
+  margin-top:0;
+}
+.miss-card:hover .miss-desc{max-height:160px;opacity:1;margin-top:0}
+.miss-card .miss-meta{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);
+  letter-spacing:1.5px;margin-top:14px;
+  display:flex;justify-content:space-between;
+  padding-top:14px;border-top:1px solid rgba(255,255,255,.1);
+}
+.miss-card .miss-meta strong{color:var(--accent);font-weight:500}
+
+/* Mission color themes */
+.miss-card.m1{--accent:var(--m-sport)}
+.miss-card.m1 .miss-img{background-image:url('img/camp-team.png')}
+.miss-card.m2{--accent:var(--m-science)}
+.miss-card.m2 .miss-img{background-image:url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1400&q=85')}
+.miss-card.m3{--accent:var(--m-it)}
+.miss-card.m3 .miss-img{background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&q=85')}
+.miss-card.m4{--accent:var(--m-creative)}
+.miss-card.m4 .miss-img{background-image:url('https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1400&q=85')}
+.miss-card.m5{--accent:var(--m-final)}
+.miss-card.m5 .miss-img{background-image:url('img/trophy.png')}
+
+.miss-card.m1{grid-area:m1}
+.miss-card.m2{grid-area:m2}
+.miss-card.m3{grid-area:m3}
+.miss-card.m4{grid-area:m4}
+.miss-card.m5{grid-area:m5}
+
+/* ===== LEADERBOARD ===== */
+.lboard{
+  position:relative;padding:140px 40px;background:var(--bg);
+  overflow:hidden;
+}
+.lboard::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 70% 50%,rgba(255,106,31,.06) 0%,transparent 60%);
+  pointer-events:none;
+}
+.lboard-head{
+  max-width:1320px;margin:0 auto 56px;
+  display:grid;grid-template-columns:1.2fr 1fr;gap:64px;align-items:end;
+}
+.lboard-head .stats{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  font-family:'JetBrains Mono',monospace;
+}
+.lboard-head .stats .s{padding:14px 18px;background:var(--panel);border:1px solid var(--line);border-radius:12px}
+.lboard-head .stats .s .v{font-family:'Unbounded',sans-serif;font-weight:800;font-size:28px;color:var(--orange);line-height:1;letter-spacing:-.02em}
+.lboard-head .stats .s .l{font-size:10px;color:var(--ink-dim);letter-spacing:2px;text-transform:uppercase;margin-top:6px}
+
+.lboard-wrap{
+  max-width:1320px;margin:0 auto;
+  background:var(--panel);
+  border:1px solid var(--line);border-radius:24px;
+  padding:8px;
+  overflow:hidden;
+}
+.lb-header{
+  display:grid;grid-template-columns:60px 1fr 100px 120px 100px 120px;gap:24px;
+  padding:18px 24px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:2px;text-transform:uppercase;
+  border-bottom:1px solid var(--line);
+}
+.lb-row{
+  display:grid;grid-template-columns:60px 1fr 100px 120px 100px 120px;gap:24px;align-items:center;
+  padding:18px 24px;
+  border-radius:16px;
+  transition:all .25s;
+  position:relative;
+  cursor:pointer;
+}
+.lb-row:hover{background:rgba(255,106,31,.04)}
+.lb-row+.lb-row{border-top:1px solid var(--line)}
+.lb-rank{font-family:'Unbounded',sans-serif;font-weight:800;font-size:28px;color:var(--ink-dim);letter-spacing:-.02em;line-height:1}
+.lb-row.r1 .lb-rank{color:var(--gold);text-shadow:0 0 16px rgba(255,170,0,.4)}
+.lb-row.r2 .lb-rank{color:var(--silver)}
+.lb-row.r3 .lb-rank{color:var(--bronze)}
+.lb-row.r1::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;background:var(--gold);border-radius:3px;box-shadow:0 0 12px rgba(255,170,0,.5)}
+.lb-row.r2::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;background:var(--silver);border-radius:3px}
+.lb-row.r3::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;background:var(--bronze);border-radius:3px}
+
+.lb-user{display:flex;align-items:center;gap:14px}
+.lb-avatar{
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,var(--orange) 0%,var(--m-final) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Unbounded',sans-serif;font-weight:800;color:#000;font-size:16px;letter-spacing:-.02em;
+  border:1px solid var(--line-2);
+}
+.lb-user .uname{font-family:'Unbounded',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;line-height:1.2}
+.lb-user .uloc{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:1.5px;margin-top:4px}
+
+.lb-stream{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);letter-spacing:1px}
+.lb-stream strong{color:var(--ink);display:block;font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;letter-spacing:0;margin-bottom:2px}
+
+.lb-xp{font-family:'Unbounded',sans-serif;font-weight:700;font-size:20px;color:var(--orange);letter-spacing:-.01em}
+.lb-xp em{font-style:normal;font-size:11px;color:var(--ink-dim);font-family:'JetBrains Mono',monospace;font-weight:400;margin-left:4px;letter-spacing:1px}
+
+.lb-badge{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:5px 10px;border-radius:20px;letter-spacing:1.5px;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.lb-badge.b-champ{background:rgba(255,170,0,.12);color:var(--gold);border:1px solid rgba(255,170,0,.3)}
+.lb-badge.b-talent{background:rgba(123,229,255,.12);color:var(--m-science);border:1px solid rgba(123,229,255,.3)}
+.lb-badge.b-leader{background:rgba(167,139,250,.12);color:var(--m-it);border:1px solid rgba(167,139,250,.3)}
+.lb-badge.b-soul{background:rgba(255,61,106,.12);color:var(--m-final);border:1px solid rgba(255,61,106,.3)}
+.lb-badge.b-fast{background:rgba(255,206,94,.12);color:var(--m-creative);border:1px solid rgba(255,206,94,.3)}
+
+.lb-action{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:1.5px;
+  text-align:right;
+}
+.lb-row:hover .lb-action{color:var(--orange)}
+
+.lb-footer{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 24px;border-top:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);letter-spacing:1.5px;
+}
+.lb-footer a{color:var(--orange);text-decoration:none;display:flex;align-items:center;gap:6px}
+.lb-footer a::after{content:'→'}
+
+/* ===== SPEAKERS CINEMATIC ===== */
+.speakers{
+  position:relative;padding:140px 40px;
+  background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%);
+  overflow:hidden;
+}
+.spk-head{max-width:1320px;margin:0 auto 64px}
+.spk-grid{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+}
+.spk-card{
+  position:relative;aspect-ratio:3/4;
+  border-radius:20px;overflow:hidden;
+  border:1px solid var(--line);
+  cursor:pointer;transition:transform .4s,border-color .25s;
+  isolation:isolate;
+}
+.spk-card:hover{transform:translateY(-6px);border-color:var(--orange)}
+.spk-card .spk-img{
+  position:absolute;inset:0;z-index:-2;
+  background-size:cover;background-position:center 20%;
+  filter:saturate(.8) brightness(.65);transition:all .6s;
+}
+.spk-card:hover .spk-img{filter:saturate(1) brightness(.85);transform:scale(1.05)}
+.spk-card::before{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.85) 100%);
+}
+.spk-card::after{
+  content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(255,255,255,.03) 3px,rgba(255,255,255,.03) 4px);
+  mix-blend-mode:overlay;
+}
+.spk-card .spk-corner{position:absolute;width:24px;height:24px;border:1px solid var(--orange);z-index:1;opacity:.7}
+.spk-card .spk-corner.tl{top:14px;left:14px;border-right:none;border-bottom:none}
+.spk-card .spk-corner.br{bottom:14px;right:14px;border-left:none;border-top:none}
+.spk-card .spk-cat{
+  position:absolute;top:18px;right:18px;z-index:1;
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--orange);
+  letter-spacing:2px;text-transform:uppercase;
+  padding:5px 10px;background:rgba(0,0,0,.5);border:1px solid rgba(255,106,31,.4);border-radius:20px;
+}
+.spk-card .spk-info{
+  position:absolute;left:20px;right:20px;bottom:20px;z-index:1;
+}
+.spk-card .spk-name{
+  font-family:'Unbounded',sans-serif;font-weight:800;font-size:18px;
+  letter-spacing:-.01em;text-transform:uppercase;line-height:1.05;
+  margin-bottom:6px;color:#fff;
+}
+.spk-card .spk-role{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--orange);
+  letter-spacing:1.5px;text-transform:uppercase;
+}
+.spk-card .spk-bio{
+  font-size:12px;color:var(--ink-2);line-height:1.5;
+  max-height:0;overflow:hidden;opacity:0;
+  transition:max-height .4s,opacity .3s;margin-top:0;
+}
+.spk-card:hover .spk-bio{max-height:90px;opacity:1;margin-top:10px}
+
+.spk-footer{
+  max-width:1320px;margin:32px auto 0;
+  padding:20px 28px;border:1px dashed var(--line-2);border-radius:18px;
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);letter-spacing:1.5px;flex-wrap:wrap;gap:12px;
+}
+.spk-footer strong{color:var(--orange);font-weight:500}
+
+/* ===== ATMOSPHERE GALLERY ===== */
+.atmos{
+  position:relative;padding:140px 0 80px;
+  background:var(--bg);
+}
+.atmos-head{max-width:1320px;margin:0 auto 64px;padding:0 40px}
+.atmos-scroll{
+  display:flex;gap:14px;
+  padding:0 40px 32px;
+  overflow-x:auto;scroll-behavior:smooth;
+  scrollbar-width:none;
+}
+.atmos-scroll::-webkit-scrollbar{display:none}
+.atmos-card{
+  flex:0 0 auto;
+  width:420px;aspect-ratio:3/4;
+  border-radius:20px;overflow:hidden;
+  border:1px solid var(--line);
+  position:relative;
+  transition:transform .3s;
+  cursor:pointer;
+}
+.atmos-card:hover{transform:translateY(-4px) scale(1.01)}
+.atmos-card .ac-img{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .6s}
+.atmos-card:hover .ac-img{transform:scale(1.08)}
+.atmos-card::before{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.85) 100%);
+}
+.atmos-card::after{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(255,255,255,.03) 3px,rgba(255,255,255,.03) 4px);
+  mix-blend-mode:overlay;
+}
+.atmos-card .ac-info{
+  position:absolute;left:24px;right:24px;bottom:24px;z-index:2;
+}
+.atmos-card .ac-tag{
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--orange);
+  letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;
+}
+.atmos-card .ac-title{
+  font-family:'Unbounded',sans-serif;font-weight:700;font-size:24px;
+  letter-spacing:-.02em;text-transform:uppercase;line-height:1.05;color:#fff;
+}
+.atmos-card .ac-num{
+  position:absolute;top:20px;right:20px;z-index:2;
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:48px;color:#fff;
+  line-height:.8;letter-spacing:-.05em;text-shadow:0 2px 12px rgba(0,0,0,.5);
+}
+
+.atmos-controls{
+  max-width:1320px;margin:24px auto 0;padding:0 40px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.atmos-arrows{display:flex;gap:8px}
+.atmos-arrow{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--panel-2);border:1px solid var(--line-2);
+  color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:16px;cursor:pointer;
+  transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.atmos-arrow:hover{background:var(--orange);color:#000;border-color:var(--orange)}
+.atmos-hint{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);letter-spacing:2px}
+.atmos-hint::before{content:'◀── ';color:var(--orange)}
+.atmos-hint::after{content:' ──▶';color:var(--orange)}
+
+/* ===== FINAL CTA ===== */
+.final-cta{
+  position:relative;min-height:90vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:120px 40px;text-align:center;
+  overflow:hidden;isolation:isolate;
+}
+.final-cta-bg{
+  position:absolute;inset:0;z-index:-2;
+  background:
+    linear-gradient(180deg,rgba(5,6,10,.7) 0%,rgba(5,6,10,.85) 100%),
+    url('https://images.unsplash.com/photo-1454942901704-3c44c11b2ad1?w=2400&q=85') center/cover;
+  filter:saturate(.6);
+}
+.final-cta-bg::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(255,106,31,.12) 0%,transparent 70%);
+}
+.final-cta-inner{position:relative;z-index:1;max-width:1100px}
+.final-cta .pre{
+  font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--orange);
+  letter-spacing:4px;text-transform:uppercase;margin-bottom:32px;
+  display:inline-flex;align-items:center;gap:14px;
+}
+.final-cta .pre::before,.final-cta .pre::after{content:'';width:60px;height:1px;background:var(--orange)}
+.final-cta h2{
+  font-family:'Unbounded',sans-serif;font-weight:900;
+  font-size:clamp(56px,9vw,156px);line-height:.88;letter-spacing:-.045em;
+  text-transform:uppercase;margin-bottom:32px;
+}
+.final-cta h2 em{color:var(--orange);font-style:normal;position:relative}
+.final-cta h2 em::after{
+  content:'';position:absolute;left:0;right:0;bottom:-8px;height:4px;background:var(--orange);
+  box-shadow:0 0 20px var(--orange-glow);
+}
+.final-cta p{font-size:18px;color:var(--ink-dim);line-height:1.7;max-width:600px;margin:0 auto 48px}
+.final-cta-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.final-cta-actions .btn-primary{font-size:15px;padding:22px 40px}
+.final-cta-meta{
+  margin-top:64px;
+  display:flex;gap:48px;justify-content:center;flex-wrap:wrap;
+  padding-top:48px;border-top:1px solid var(--line);
+}
+.final-cta-meta .m{display:flex;flex-direction:column;align-items:center;gap:6px}
+.final-cta-meta .m .v{font-family:'Unbounded',sans-serif;font-weight:800;font-size:32px;color:var(--orange);letter-spacing:-.02em;line-height:1}
+.final-cta-meta .m .l{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:2px;text-transform:uppercase}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1100px){
+  .intro-grid{grid-template-columns:1fr;gap:48px}
+  .intro-collage{height:480px}
+  .missions-grid{grid-template-columns:1fr 1fr;grid-template-areas:"m1 m1" "m2 m3" "m4 m5";min-height:auto}
+  .missions-head{grid-template-columns:1fr;gap:24px}
+  .spk-grid{grid-template-columns:repeat(2,1fr)}
+  .lb-header,.lb-row{grid-template-columns:48px 1.4fr 80px 100px;gap:14px}
+  .lb-header .h3,.lb-header .h5,.lb-row .lb-xp,.lb-row .lb-badge{display:none}
+  .lboard-head{grid-template-columns:1fr;gap:32px}
+  .atmos-card{width:320px}
+  .final-cta-meta{gap:24px}
+}
+@media(max-width:680px){
+  .hero{padding:120px 20px 40px}
+  .hero-meta{gap:18px}
+  .intro,.missions,.lboard,.speakers,.final-cta{padding-left:20px;padding-right:20px;padding-top:80px;padding-bottom:80px}
+  .atmos{padding-top:80px}
+  .atmos-head,.atmos-controls{padding:0 20px}
+  .atmos-scroll{padding:0 20px 32px}
+  .atmos-card{width:280px}
+  .missions-grid{grid-template-columns:1fr;grid-template-areas:"m1" "m2" "m3" "m4" "m5";min-height:auto}
+  .miss-card{aspect-ratio:5/4}
+  .spk-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .lb-header,.lb-row{grid-template-columns:32px 1fr 80px;gap:10px;padding:14px}
+  .lb-header .h4,.lb-row .lb-stream{display:none}
+  .ap-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topline"></div>
+<div class="progress" id="progress"></div>
+<div class="frame-corners"><i class="fc tl"></i><i class="fc tr"></i><i class="fc bl"></i><i class="fc br"></i></div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <span><span class="dot"></span>SYS.UPGRADE.26 · ОЧКИ В ИГРЕ</span>
+  <span>// LOC: ISSYK-KUL · 42.6°N 76.9°E</span>
+  <span>v.26.07 · SUMMER EDITION</span>
+</div>
+
+<!-- NAV -->
+<nav class="main-nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="dot"></span>АП<em>ГРЕЙД</em></a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Главная</a></li>
+      <li><a href="system.html">Система</a></li>
+      <li><a href="media.html">Медиа</a></li>
+    </ul>
+    <a href="system.html#register" class="nav-cta">Войти в систему</a>
+    <button class="mob-menu">MENU</button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <video autoplay muted loop playsinline preload="auto" poster="">
+      <source src="hero-bg.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-scan"></div>
+  <div class="hero-particles" id="particles"></div>
+
+  <div class="hero-left">
+    <div class="hero-pretitle">
+      <span class="bar"></span>
+      <span>// SYS.BOOT v2.6</span>
+      <span class="live">● РЕГИСТРАЦИЯ ОТКРЫТА</span>
+    </div>
+
+    <h1 class="hero-title"><span class="glitch" data-text="АПГРЕЙД">АПГРЕЙД</span></h1>
+
+    <p class="hero-tagline">Лагерь <em>нового поколения</em></p>
+    <div class="hero-subtag">// 10 ДНЕЙ, КОТОРЫЕ МЕНЯЮТ ТЕБЯ · ИССЫК-КУЛЬ · 2026</div>
+
+    <div class="hero-actions">
+      <a href="system.html#register" class="btn btn-primary">Войти в систему<span class="arr">→</span></a>
+      <a href="#about" class="btn btn-ghost">Узнать больше<span class="arr">↓</span></a>
+    </div>
+
+    <div class="hero-meta">
+      <div class="hero-m"><div class="v"><em>07</em></div><div class="l">Потоков</div></div>
+      <div class="hero-m"><div class="v">560</div><div class="l">Юнитов</div></div>
+      <div class="hero-m"><div class="v">10</div><div class="l">Дней</div></div>
+      <div class="hero-m"><div class="v">05</div><div class="l">Миссий</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span>NEXT LEVEL · 2026</span><span>СПОРТ</span><span>НАУКА</span><span>IT</span><span>ТВОРЧЕСТВО</span><span>ФИНАЛ</span><span>ИССЫК-КУЛЬ</span><span>ЛАГЕРЬ МАЯК</span><span>СДЕЛАНО В КЫРГЫЗСТАНЕ</span>
+    <span>NEXT LEVEL · 2026</span><span>СПОРТ</span><span>НАУКА</span><span>IT</span><span>ТВОРЧЕСТВО</span><span>ФИНАЛ</span><span>ИССЫК-КУЛЬ</span><span>ЛАГЕРЬ МАЯК</span><span>СДЕЛАНО В КЫРГЫЗСТАНЕ</span>
+  </div>
+</div>
+
+<!-- ===== INTRO (Что такое АПГРЕЙД) ===== -->
+<section class="intro" id="about">
+  <div class="intro-grid">
+    <div class="intro-text">
+      <div class="eyebrow reveal">// О ПРОЕКТЕ</div>
+      <h2 class="lead reveal">Это не <span class="crossout">просто</span><br>лагерь.</h2>
+      <p class="reveal"><strong>АПГРЕЙД — это центр перезагрузки.</strong> 10 дней. 5 миссий. Игровая прокачка реальных навыков. Подросток приезжает гостем — уезжает версией себя на следующем уровне.</p>
+      <p class="reveal">Олимпийские чемпионы, IT-предприниматели, учёные, актёры — вживую, в одном пространстве на берегу Иссык-Куля. Личная страховка на каждого юнита. Сделано в Кыргызстане.</p>
+      <div style="margin-top:32px" class="reveal">
+        <a href="system.html" class="btn btn-ghost">Узнать программу<span class="arr">→</span></a>
+      </div>
+    </div>
+    <div class="intro-collage reveal">
+      <img class="img-1" src="img/camp-team.png" alt="Команда АПГРЕЙД у озера">
+      <img class="img-2" src="img/medal.png" alt="Медаль АПГРЕЙД">
+    </div>
+  </div>
+</section>
+
+<!-- ===== MISSIONS ===== -->
+<section class="missions" id="missions">
+  <div class="missions-head">
+    <div>
+      <div class="eyebrow reveal">// ИГРОВАЯ МЕХАНИКА</div>
+      <h2 class="section-title reveal">5 миссий.<br><em>10 дней.</em></h2>
+    </div>
+    <p class="reveal">Каждая миссия — 2 дня. Уникальный mood и цвет. Сложность растёт. За испытания юниты получают очки. В финале — 3 чемпиона + 10 номинантов. Наведи курсор — раскроется.</p>
+  </div>
+
+  <div class="missions-grid reveal">
+    <div class="miss-card m1 lg">
+      <div class="miss-img"></div>
+      <div class="miss-head">
+        <div class="miss-num">01</div>
+        <div class="miss-tag">// SPORT</div>
+      </div>
+      <div class="miss-body">
+        <div class="miss-name">Спорт</div>
+        <div class="miss-sub">// СИЛА · ВЫНОСЛИВОСТЬ</div>
+        <p class="miss-desc">Командные испытания, эстафеты, мастер-классы от олимпийских чемпионов. Первая прокачка — посвящение в АПГРЕЙД.</p>
+        <div class="miss-meta"><span>ДНИ 1—2</span><span><strong>+500 XP</strong></span></div>
+      </div>
+    </div>
+
+    <div class="miss-card m2">
+      <div class="miss-img"></div>
+      <div class="miss-head">
+        <div class="miss-num">02</div>
+        <div class="miss-tag">// SCIENCE</div>
+      </div>
+      <div class="miss-body">
+        <div class="miss-name">Наука</div>
+        <div class="miss-sub">// УМ · ОТКРЫТИЯ</div>
+        <p class="miss-desc">Эксперименты, головоломки, лекции учёных. Знания на практике.</p>
+        <div class="miss-meta"><span>ДНИ 3—4</span><span><strong>+600 XP</strong></span></div>
+      </div>
+    </div>
+
+    <div class="miss-card m3">
+      <div class="miss-img"></div>
+      <div class="miss-head">
+        <div class="miss-num">03</div>
+        <div class="miss-tag">// IT</div>
+      </div>
+      <div class="miss-body">
+        <div class="miss-name">IT</div>
+        <div class="miss-sub">// КОД · ТЕХНОЛОГИИ</div>
+        <p class="miss-desc">AI, программирование, киберспорт. Встречи с IT-предпринимателями Кыргызстана.</p>
+        <div class="miss-meta"><span>ДНИ 5—6</span><span><strong>+700 XP</strong></span></div>
+      </div>
+    </div>
+
+    <div class="miss-card m4">
+      <div class="miss-img"></div>
+      <div class="miss-head">
+        <div class="miss-num">04</div>
+        <div class="miss-tag">// CREATIVE</div>
+      </div>
+      <div class="miss-body">
+        <div class="miss-name">Творчество</div>
+        <div class="miss-sub">// ИДЕЯ · ИСКУССТВО</div>
+        <p class="miss-desc">Видео, музыка, дизайн, актёрское. Создание собственного проекта.</p>
+        <div class="miss-meta"><span>ДНИ 7—8</span><span><strong>+800 XP</strong></span></div>
+      </div>
+    </div>
+
+    <div class="miss-card m5">
+      <div class="miss-img"></div>
+      <div class="miss-head">
+        <div class="miss-num">05</div>
+        <div class="miss-tag">// BOSS LEVEL</div>
+      </div>
+      <div class="miss-body">
+        <div class="miss-name">Финал</div>
+        <div class="miss-sub">// ИТОГ · ЦЕРЕМОНИЯ</div>
+        <p class="miss-desc">Финальные испытания, родительский день, церемония. 3 чемпиона + 10 номинантов.</p>
+        <div class="miss-meta"><span>ДНИ 9—10</span><span><strong>+1000 XP</strong></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LEADERBOARD ===== -->
+<section class="lboard" id="leaderboard">
+  <div class="lboard-head">
+    <div>
+      <div class="eyebrow reveal">// LIVE LEADERBOARD</div>
+      <h2 class="section-title reveal">Топ-юниты<br><em>сезона.</em></h2>
+      <p class="section-lede reveal" style="margin:0">Рейтинг обновляется в режиме реального времени. После каждого потока — 10 героев на стене славы. Это превью прошлогоднего сезона.</p>
+    </div>
+    <div class="stats reveal">
+      <div class="s"><div class="v">560</div><div class="l">Юнитов</div></div>
+      <div class="s"><div class="v">70</div><div class="l">Героев лета</div></div>
+      <div class="s"><div class="v">7</div><div class="l">Потоков</div></div>
+      <div class="s"><div class="v">∞</div><div class="l">Очков</div></div>
+    </div>
+  </div>
+
+  <div class="lboard-wrap reveal">
+    <div class="lb-header">
+      <span>RANK</span>
+      <span>UNIT</span>
+      <span class="h3">STREAM</span>
+      <span class="h4">XP TOTAL</span>
+      <span class="h5">BADGE</span>
+      <span></span>
+    </div>
+    <div class="lb-row r1">
+      <div class="lb-rank">01</div>
+      <div class="lb-user"><div class="lb-avatar">АС</div><div><div class="uname">Алия С.</div><div class="uloc">// БИШКЕК · 14 ЛЕТ</div></div></div>
+      <div class="lb-stream"><strong>Поток 03</strong>10–20 ИЮЛЯ</div>
+      <div class="lb-xp">12 480 <em>XP</em></div>
+      <div><span class="lb-badge b-champ">● CHAMPION</span></div>
+      <div class="lb-action">VIEW →</div>
+    </div>
+    <div class="lb-row r2">
+      <div class="lb-rank">02</div>
+      <div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#7be5ff,#0099cc)">ТК</div><div><div class="uname">Тимур К.</div><div class="uloc">// ОШ · 15 ЛЕТ</div></div></div>
+      <div class="lb-stream"><strong>Поток 03</strong>10–20 ИЮЛЯ</div>
+      <div class="lb-xp">11 920 <em>XP</em></div>
+      <div><span class="lb-badge b-leader">◆ ЛИДЕР</span></div>
+      <div class="lb-action">VIEW →</div>
+    </div>
+    <div class="lb-row r3">
+      <div class="lb-rank">03</div>
+      <div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#a78bfa,#5a3fb5)">ЭБ</div><div><div class="uname">Эльдияр Б.</div><div class="uloc">// КАРАКОЛ · 13 ЛЕТ</div></div></div>
+      <div class="lb-stream"><strong>Поток 02</strong>30.06–10.07</div>
+      <div class="lb-xp">11 540 <em>XP</em></div>
+      <div><span class="lb-badge b-talent">★ ТАЛАНТ</span></div>
+      <div class="lb-action">VIEW →</div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">04</div>
+      <div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#ffce5e,#d68b1a)">АЖ</div><div><div class="uname">Айгерим Ж.</div><div class="uloc">// БИШКЕК · 14 ЛЕТ</div></div></div>
+      <div class="lb-stream"><strong>Поток 04</strong>20–30 ИЮЛЯ</div>
+      <div class="lb-xp">11 210 <em>XP</em></div>
+      <div><span class="lb-badge b-fast">⚡ БЫСТРЫЙ</span></div>
+      <div class="lb-action">VIEW →</div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">05</div>
+      <div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#ff3d6a,#a01e3e)">НТ</div><div><div class="uname">Нурбол Т.</div><div class="uloc">// ДЖАЛАЛ-АБАД · 15 ЛЕТ</div></div></div>
+      <div class="lb-stream"><strong>Поток 05</strong>30.07–9.08</div>
+      <div class="lb-xp">10 870 <em>XP</em></div>
+      <div><span class="lb-badge b-soul">♥ ДУША</span></div>
+      <div class="lb-action">VIEW →</div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">06</div>
+      <div class="lb-user"><div class="lb-avatar">КМ</div><div><div class="uname">Камила М.</div><div class="uloc">// НАРЫН · 13 ЛЕТ</div></div></div>
+      <div class="lb-stream"><strong>Поток 01</strong>20–30 ИЮНЯ</div>
+      <div class="lb-xp">10 410 <em>XP</em></div>
+      <div><span class="lb-badge b-talent">★ ТАЛАНТ</span></div>
+      <div class="lb-action">VIEW →</div>
+    </div>
+    <div class="lb-row">
+      <div class="lb-rank">07</div>
+      <div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#7be5ff,#0099cc)">ДА</div><div><div class="uname">Данияр А.</div><div class="uloc">// ИССЫК-КУЛЬ · 14 ЛЕТ</div></div></div>
+      <div class="lb-stream"><strong>Поток 06</strong>9–19 АВГ.</div>
+      <div class="lb-xp">10 080 <em>XP</em></div>
+      <div><span class="lb-badge b-leader">◆ ЛИДЕР</span></div>
+      <div class="lb-action">VIEW →</div>
+    </div>
+
+    <div class="lb-footer">
+      <span>// СТАТУС: <strong style="color:var(--orange)">ОБНОВЛЯЕТСЯ КАЖДЫЙ ДЕНЬ ВО ВРЕМЯ ПОТОКОВ</strong></span>
+      <a href="media.html">Все юниты сезона</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SPEAKERS ===== -->
+<section class="speakers" id="speakers">
+  <div class="spk-head">
+    <div class="eyebrow reveal">// ЭКСПЕРТЫ</div>
+    <h2 class="section-title reveal">Топовые звёзды<br><em>Кыргызстана.</em></h2>
+    <p class="section-lede reveal">Олимпийские чемпионы, программисты Google/Amazon/Meta, учёные ведущих университетов, актёры кино, IT-предприниматели. Каждый поток — новый состав. Наведи курсор.</p>
+  </div>
+
+  <div class="spk-grid reveal">
+    <div class="spk-card">
+      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=85')"></div>
+      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
+      <span class="spk-cat">// SPORT</span>
+      <div class="spk-info">
+        <div class="spk-name">Олимпийский чемпион</div>
+        <div class="spk-role">// БОРЬБА · СБОРНАЯ КР</div>
+        <p class="spk-bio">Чемпион мира, тренер сборной. Проводит мастер-класс и личные сессии с юнитами.</p>
+      </div>
+    </div>
+    <div class="spk-card">
+      <div class="spk-img" style="background-image:url('img/azamat-zhanaliev.jpg')"></div>
+      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
+      <span class="spk-cat">// ART</span>
+      <div class="spk-info">
+        <div class="spk-name">Азамат Жаналиев</div>
+        <div class="spk-role">// ЛЕГЕНДАРНЫЙ ХУДОЖНИК</div>
+        <p class="spk-bio">Автор портретов для В. Путина, К. Роналду, Ч. Айтматова. Мастер-класс по живописи и творческому мышлению.</p>
+      </div>
+    </div>
+    <div class="spk-card">
+      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=900&q=85')"></div>
+      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
+      <span class="spk-cat">// CREATIVE</span>
+      <div class="spk-info">
+        <div class="spk-name">Актриса кино</div>
+        <div class="spk-role">// ФИЛЬМ-ЛАУРЕАТ</div>
+        <p class="spk-bio">Кыргызская актриса, лауреат фестивалей. Мастер-класс по актёрскому мастерству.</p>
+      </div>
+    </div>
+    <div class="spk-card">
+      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1560250097-0b93528c311a?w=900&q=85')"></div>
+      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
+      <span class="spk-cat">// BUSINESS</span>
+      <div class="spk-info">
+        <div class="spk-name">CEO · Tech Startup</div>
+        <div class="spk-role">// БИШКЕК → SF</div>
+        <p class="spk-bio">Основатель стартапа, привлёк $5M раунд. Лекция о предпринимательстве из Кыргызстана.</p>
+      </div>
+    </div>
+    <div class="spk-card">
+      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?w=900&q=85')"></div>
+      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
+      <span class="spk-cat">// SCIENCE</span>
+      <div class="spk-info">
+        <div class="spk-name">Биолог · Genetics</div>
+        <div class="spk-role">// MAX PLANCK</div>
+        <p class="spk-bio">Молодой исследователь генетики. Лаборатория-эксперимент в полевых условиях.</p>
+      </div>
+    </div>
+    <div class="spk-card">
+      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1573497019418-b400bb3ab074?w=900&q=85')"></div>
+      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
+      <span class="spk-cat">// IT</span>
+      <div class="spk-info">
+        <div class="spk-name">Eng @ Meta</div>
+        <div class="spk-role">// LONDON · REACT</div>
+        <p class="spk-bio">Инженер из Кыргызстана. Workshop по frontend, AI-инструментам и карьерной траектории.</p>
+      </div>
+    </div>
+    <div class="spk-card">
+      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=900&q=85')"></div>
+      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
+      <span class="spk-cat">// SPORT</span>
+      <div class="spk-info">
+        <div class="spk-name">Тренер · UFC</div>
+        <div class="spk-role">// MMA · ЧМ-БРОНЗА</div>
+        <p class="spk-bio">Боец MMA и тренер. Учит дисциплине, выносливости и работе в команде.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="spk-footer reveal">
+    <span>// ТОП-100 БАЗА · СОСТАВ ОБЪЯВЛЯЕТСЯ ПЕРЕД КАЖДЫМ ПОТОКОМ</span>
+    <strong>→ Подробнее на странице Система</strong>
+  </div>
+</section>
+
+<!-- ===== ATMOSPHERE ===== -->
+<section class="atmos" id="atmos">
+  <div class="atmos-head">
+    <div class="eyebrow reveal">// АТМОСФЕРА</div>
+    <h2 class="section-title reveal">10 дней,<br>которые <em>меняют.</em></h2>
+    <p class="section-lede reveal" style="margin-bottom:0">Прокрути горизонтально или используй стрелки. Это то, что ждёт юнитов: костры, спорт, лекции, соревнования, Иссык-Куль, команды, церемонии.</p>
+  </div>
+
+  <div class="atmos-scroll" id="atmosScroll">
+    <div class="atmos-card">
+      <div class="ac-img" style="background-image:url('img/camp-team.png')"></div>
+      <span class="ac-num">01</span>
+      <div class="ac-info"><div class="ac-tag">// EVENING_FIRE</div><div class="ac-title">Костры<br>и истории</div></div>
+    </div>
+    <div class="atmos-card">
+      <div class="ac-img" style="background-image:url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1000&q=85')"></div>
+      <span class="ac-num">02</span>
+      <div class="ac-info"><div class="ac-tag">// SPORT_DAY</div><div class="ac-title">Спорт<br>и команда</div></div>
+    </div>
+    <div class="atmos-card">
+      <div class="ac-img" style="background-image:url('https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?w=1000&q=85')"></div>
+      <span class="ac-num">03</span>
+      <div class="ac-info"><div class="ac-tag">// LAKE_OPS</div><div class="ac-title">Иссык-Куль<br>и вода</div></div>
+    </div>
+    <div class="atmos-card">
+      <div class="ac-img" style="background-image:url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1000&q=85')"></div>
+      <span class="ac-num">04</span>
+      <div class="ac-info"><div class="ac-tag">// IT_LAB</div><div class="ac-title">IT-лекции<br>и workshop</div></div>
+    </div>
+    <div class="atmos-card">
+      <div class="ac-img" style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1000&q=85')"></div>
+      <span class="ac-num">05</span>
+      <div class="ac-info"><div class="ac-tag">// TEAM_WORK</div><div class="ac-title">Команды<br>и квесты</div></div>
+    </div>
+    <div class="atmos-card">
+      <div class="ac-img" style="background-image:url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1000&q=85')"></div>
+      <span class="ac-num">06</span>
+      <div class="ac-info"><div class="ac-tag">// PARTY_NIGHT</div><div class="ac-title">Вечеринки<br>под звёздами</div></div>
+    </div>
+    <div class="atmos-card">
+      <div class="ac-img" style="background-image:url('https://images.unsplash.com/photo-1454942901704-3c44c11b2ad1?w=1000&q=85')"></div>
+      <span class="ac-num">07</span>
+      <div class="ac-info"><div class="ac-tag">// MOUNTAIN_TREK</div><div class="ac-title">Горы<br>и приключения</div></div>
+    </div>
+    <div class="atmos-card">
+      <div class="ac-img" style="background-image:url('https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=1000&q=85')"></div>
+      <span class="ac-num">08</span>
+      <div class="ac-info"><div class="ac-tag">// CEREMONY</div><div class="ac-title">Церемония<br>награждения</div></div>
+    </div>
+  </div>
+
+  <div class="atmos-controls">
+    <div class="atmos-hint">SCROLL · DRAG</div>
+    <div class="atmos-arrows">
+      <button class="atmos-arrow" onclick="atmosScroll(-1)">←</button>
+      <button class="atmos-arrow" onclick="atmosScroll(1)">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FINAL CTA ===== -->
+<section class="final-cta" id="cta">
+  <div class="final-cta-bg"></div>
+
+  <div class="final-cta-inner">
+    <div class="pre reveal">END.OF.PREVIEW · INIT.SYSTEM.26</div>
+    <h2 class="reveal">Готов стать<br>частью <em>системы?</em></h2>
+    <p class="reveal">10 дней. 5 миссий. Бесконечно много возможностей. Возраст 12–15 лет. Лето 2026 · Иссык-Куль · Лагерь «Маяк».</p>
+    <div class="final-cta-actions reveal">
+      <a href="system.html#register" class="btn btn-primary">Подать заявку<span class="arr">→</span></a>
+      <a href="system.html" class="btn btn-ghost">Программа<span class="arr">→</span></a>
+    </div>
+
+    <div class="final-cta-meta reveal">
+      <div class="m"><div class="v">19 998</div><div class="l">Сом · вся путёвка</div></div>
+      <div class="m"><div class="v">6</div><div class="l">Мес. рассрочка</div></div>
+      <div class="m"><div class="v">2H</div><div class="l">Ответ менеджера</div></div>
+      <div class="m"><div class="v">100%</div><div class="l">Личная страховка</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="foot">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo">АП<em>ГРЕЙД</em> 2026</div>
+        <p class="foot-desc">Детский cinematic-лагерь нового поколения. Иссык-Куль, лагерь «Маяк». Возраст 12–15 лет.</p>
+        <span class="foot-stamp">// CERT.OFFICIAL · SUMMER.2026</span>
+      </div>
+      <div class="foot-col">
+        <h5>Сайт</h5>
+        <a href="index.html">Главная</a>
+        <a href="system.html">Система</a>
+        <a href="media.html">Медиа</a>
+        <a href="system.html#register">Записаться</a>
+      </div>
+      <div class="foot-col">
+        <h5>Программа</h5>
+        <a href="system.html#streams">Потоки</a>
+        <a href="system.html#missions">5 миссий</a>
+        <a href="system.html#prizes">Награды</a>
+        <a href="system.html#faq">FAQ</a>
+      </div>
+      <div class="foot-col">
+        <h5>Контакты</h5>
+        <a href="tel:+996700000000">+996 700 000 000</a>
+        <a href="mailto:hello@upgrade.kg">hello@upgrade.kg</a>
+        <a href="#">WhatsApp</a>
+        <a href="#">Telegram</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 АПГРЕЙД · ВСЕ ПРАВА ЗАЩИЩЕНЫ</span>
+      <span>// ИССЫК-КУЛЬ · ЛАГЕРЬ МАЯК · КЫРГЫЗСТАН</span>
+      <span>SYSTEM v.26.07</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Particles
+(function(){
+  const c=document.getElementById('particles');
+  for(let i=0;i<24;i++){
+    const p=document.createElement('div');
+    p.className='p';
+    p.style.left=(Math.random()*100)+'%';
+    p.style.bottom=(-Math.random()*30)+'px';
+    p.style.animationDuration=(8+Math.random()*12)+'s';
+    p.style.animationDelay=(Math.random()*6)+'s';
+    c.appendChild(p);
+  }
+})();
+
+// Reveal on scroll
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }});
+},{threshold:.1, rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Progress bar + nav hide on scroll-down
+const progress=document.getElementById('progress');
+const nav=document.getElementById('mainNav');
+let lastScroll=0;
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  const max=h.scrollHeight-h.clientHeight;
+  const sc=h.scrollTop;
+  progress.style.width=(sc/max*100)+'%';
+  if(sc>lastScroll && sc>180){ nav.classList.add('hide'); } else { nav.classList.remove('hide'); }
+  lastScroll=sc;
+});
+
+// Atmos horizontal scroll
+function atmosScroll(dir){
+  const s=document.getElementById('atmosScroll');
+  s.scrollBy({left:dir*440, behavior:'smooth'});
+}
+
+
+</script>
+</body>
+</html>

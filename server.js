@@ -1,0 +1,32 @@
+require('dotenv').config();
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// API routes
+app.use('/api/streams', require('./routes/streams'));
+app.use('/api/bookings', require('./routes/bookings'));
+app.use('/api/admin', require('./routes/admin'));
+
+// Health check
+app.get('/api/ping', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
+
+// Fallback — serve index.html
+app.use((req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`АПГРЕЙД server running at http://localhost:${PORT}`);
+});

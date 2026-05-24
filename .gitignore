@@ -1,0 +1,11 @@
+node_modules/
+camp.db
+camp.db-shm
+camp.db-wal
+camp.db-journal
+.env
+uploads/
+.DS_Store
+.claude/
+_bmad/
+design-podcast/

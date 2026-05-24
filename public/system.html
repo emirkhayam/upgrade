@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АПГРЕЙД 2026 — Camp System / Программа</title>
+<meta name="description" content="Полная программа лагеря АПГРЕЙД 2026: 7 потоков, 10 дней, 5 миссий, проживание, безопасность, спикеры, награды, регистрация.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;800;900&family=Onest:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ============================================
+   SYSTEM PAGE STYLES
+   ============================================ */
+
+/* ===== HERO ===== */
+.sys-hero{
+  position:relative;padding:160px 40px 80px;
+  min-height:60vh;
+  display:flex;align-items:center;
+  overflow:hidden;isolation:isolate;
+}
+.sys-hero-bg{
+  position:absolute;inset:0;z-index:-2;
+  background:
+    linear-gradient(180deg,rgba(5,6,10,.6) 0%,rgba(5,6,10,.85) 100%),
+    url('img/system-hero.png') center/cover;
+  filter:saturate(.6) contrast(1.05);
+}
+.sys-hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 30% 50%,transparent 0%,rgba(5,6,10,.7) 80%);
+}
+.sys-hero-inner{max-width:1320px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.4fr 1fr;gap:64px;align-items:end}
+.sys-hero h1{
+  font-family:'Unbounded',sans-serif;font-weight:900;
+  font-size:clamp(56px,9vw,156px);line-height:.85;letter-spacing:-.045em;text-transform:uppercase;
+  margin-bottom:24px;
+}
+.sys-hero h1 em{color:var(--orange);font-style:normal}
+.sys-hero .pre{
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--orange);letter-spacing:3px;text-transform:uppercase;
+  margin-bottom:32px;display:inline-flex;align-items:center;gap:12px;
+  padding:8px 16px;background:var(--orange-soft);border:1px solid rgba(255,106,31,.25);border-radius:30px;
+}
+.sys-hero .pre::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--orange);box-shadow:0 0 8px var(--orange-glow);animation:pulse 1.5s infinite}
+.sys-hero p{font-size:18px;color:var(--ink-2);line-height:1.65;max-width:560px}
+
+.sys-toc{
+  display:flex;flex-direction:column;gap:6px;
+  padding:24px;background:rgba(10,12,20,.55);backdrop-filter:blur(20px);
+  border:1px solid var(--line-2);border-radius:18px;
+}
+.sys-toc h5{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--orange);letter-spacing:2px;margin-bottom:12px;text-transform:uppercase}
+.sys-toc a{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:'Onest',sans-serif;font-size:13px;color:var(--ink-dim);text-decoration:none;
+  padding:9px 12px;border-radius:8px;transition:all .2s;
+}
+.sys-toc a:hover{background:rgba(255,106,31,.08);color:var(--ink)}
+.sys-toc a .ix{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:1px}
+
+/* ===== DAY TIMELINE ===== */
+.days{padding:120px 40px;background:var(--bg)}
+.days-head{max-width:1320px;margin:0 auto 64px}
+.days-grid{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(10,1fr);gap:6px;
+  position:relative;
+}
+.day-col{
+  position:relative;
+  padding:24px 16px 24px;
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  min-height:340px;
+  display:flex;flex-direction:column;
+  transition:all .25s;cursor:pointer;
+}
+.day-col:hover{border-color:var(--accent);transform:translateY(-4px);background:var(--panel-2)}
+.day-col .d-mission{
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--accent);
+  letter-spacing:1.5px;margin-bottom:14px;text-transform:uppercase;
+}
+.day-col .d-num{
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:40px;color:var(--accent);
+  line-height:.9;letter-spacing:-.04em;margin-bottom:8px;
+}
+.day-col .d-label{
+  font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:-.01em;
+  line-height:1.1;margin-bottom:14px;
+}
+.day-col .d-list{font-size:11px;color:var(--ink-dim);line-height:1.55;display:flex;flex-direction:column;gap:6px;margin-top:auto}
+.day-col .d-list span{display:flex;gap:6px}
+.day-col .d-list span::before{content:'◢';color:var(--accent);font-size:7px;margin-top:5px;flex-shrink:0}
+
+.day-col.m1{--accent:var(--m-sport)}
+.day-col.m2{--accent:var(--m-science)}
+.day-col.m3{--accent:var(--m-it)}
+.day-col.m4{--accent:var(--m-creative)}
+.day-col.m5{--accent:var(--m-final)}
+
+.day-axis{
+  max-width:1320px;margin:24px auto 0;
+  display:grid;grid-template-columns:repeat(10,1fr);
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:1.5px;
+  padding-top:12px;border-top:1px dashed var(--line);text-align:center;
+}
+
+/* ===== STREAMS TIMELINE ===== */
+.streams{padding:120px 40px;background:var(--bg-2)}
+.streams-head{max-width:1320px;margin:0 auto 56px}
+.streams-track{
+  max-width:1320px;margin:0 auto;
+  position:relative;
+  padding:48px 32px;
+  background:var(--panel);border:1px solid var(--line);border-radius:24px;
+}
+.streams-line{
+  position:absolute;left:64px;right:64px;top:108px;height:2px;
+  background:linear-gradient(90deg,var(--orange) 0%,rgba(255,106,31,.2) 100%);
+}
+.streams-line::before{content:'';position:absolute;left:-6px;top:-5px;width:12px;height:12px;border-radius:50%;background:var(--orange);box-shadow:0 0 14px var(--orange-glow)}
+.streams-line::after{content:'';position:absolute;right:-6px;top:-5px;width:12px;height:12px;border-radius:50%;background:var(--ink-mute)}
+
+.streams-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:14px;position:relative;
+}
+.stream-it{
+  background:var(--bg-3);border:1px solid var(--line);border-radius:14px;
+  padding:24px 18px;transition:all .25s;cursor:pointer;
+  position:relative;display:flex;flex-direction:column;
+}
+.stream-it::before{
+  content:'';position:absolute;top:-44px;left:50%;transform:translateX(-50%);
+  width:1px;height:36px;background:linear-gradient(180deg,var(--orange) 0%,transparent 100%);
+}
+.stream-it:hover{border-color:var(--orange);transform:translateY(-4px)}
+.stream-it.first{border-color:rgba(255,106,31,.45);background:linear-gradient(180deg,rgba(255,106,31,.06) 0%,var(--bg-3) 60%)}
+.stream-it.first::after{
+  content:'СТАРТ';position:absolute;top:-10px;right:14px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:#000;
+  background:var(--orange);padding:3px 10px;border-radius:30px;letter-spacing:1.5px;
+}
+.stream-it .n{font-family:'Unbounded',sans-serif;font-weight:900;font-size:42px;color:var(--orange);line-height:.85;letter-spacing:-.04em;margin-bottom:14px}
+.stream-it .d{font-family:'Unbounded',sans-serif;font-weight:600;font-size:14px;line-height:1.2;margin-bottom:14px;text-transform:uppercase;letter-spacing:-.01em}
+.stream-it .meta{
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-dim);letter-spacing:1px;
+  padding-top:14px;border-top:1px dashed var(--line);
+  display:flex;justify-content:space-between;margin-top:auto;
+}
+.stream-it .meta strong{color:var(--orange);font-weight:500}
+.stream-it .avail{display:inline-flex;align-items:center;gap:5px}
+.stream-it .avail .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.stream-it .avail.open .dot{background:#00c864;box-shadow:0 0 6px rgba(0,200,100,.5)}
+.stream-it .avail.open{color:#00c864}
+.stream-it .avail.full .dot{background:#ff3d6a;box-shadow:0 0 6px rgba(255,61,106,.5)}
+.stream-it .avail.full{color:#ff3d6a}
+.stream-it.sold-out{opacity:.6}
+.stream-it.sold-out:hover{border-color:var(--line);transform:none}
+
+.streams-foot{
+  max-width:1320px;margin:24px auto 0;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  padding:18px 24px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);letter-spacing:1.5px;
+}
+.streams-foot strong{color:var(--orange);font-weight:500}
+
+/* ===== ACCOMMODATIONS ===== */
+.accom{padding:120px 40px;background:var(--bg)}
+.accom-head{max-width:1320px;margin:0 auto 64px}
+.accom-main{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:1.5fr 1fr;gap:24px;
+  margin-bottom:24px;
+}
+.accom-hero{
+  position:relative;aspect-ratio:16/10;
+  border-radius:24px;overflow:hidden;
+  border:1px solid var(--line);
+}
+.accom-hero .ah-img{
+  position:absolute;inset:0;
+  background:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1800&q=85') center/cover;
+  filter:saturate(.85);transition:transform .8s;
+}
+.accom-hero:hover .ah-img{transform:scale(1.05)}
+.accom-hero::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.85) 100%);
+}
+.accom-hero .corner{position:absolute;width:32px;height:32px;border:1px solid var(--orange);z-index:2}
+.accom-hero .corner.tl{top:20px;left:20px;border-right:none;border-bottom:none}
+.accom-hero .corner.br{bottom:20px;right:20px;border-left:none;border-top:none}
+.accom-hero .ah-info{
+  position:absolute;left:32px;right:32px;bottom:32px;z-index:1;
+  display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:20px;
+}
+.accom-hero .ah-name{
+  font-family:'Unbounded',sans-serif;font-weight:800;font-size:42px;
+  letter-spacing:-.025em;text-transform:uppercase;line-height:1;
+}
+.accom-hero .ah-name em{color:var(--orange);font-style:normal}
+.accom-hero .ah-coord{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--orange);letter-spacing:2px;margin-top:8px}
+.accom-hero .ah-pills{display:flex;gap:8px;flex-wrap:wrap}
+.accom-hero .ah-pills span{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;
+  padding:5px 10px;background:rgba(0,0,0,.5);border:1px solid var(--line-2);border-radius:30px;color:var(--ink);
+}
+
+.accom-side{display:flex;flex-direction:column;gap:24px}
+.accom-tile{
+  position:relative;flex:1;border-radius:18px;overflow:hidden;
+  border:1px solid var(--line);min-height:200px;
+  cursor:pointer;transition:all .3s;
+}
+.accom-tile:hover{border-color:var(--orange);transform:translateY(-2px)}
+.accom-tile .at-img{position:absolute;inset:0;background-size:cover;background-position:center;filter:saturate(.85) brightness(.7);transition:transform .6s}
+.accom-tile:hover .at-img{transform:scale(1.06)}
+.accom-tile::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,.85) 100%)}
+.accom-tile .at-info{position:absolute;left:20px;right:20px;bottom:18px;z-index:1}
+.accom-tile .at-tag{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--orange);letter-spacing:2px;margin-bottom:6px}
+.accom-tile .at-name{font-family:'Unbounded',sans-serif;font-weight:700;font-size:18px;letter-spacing:-.01em;text-transform:uppercase;line-height:1.1}
+.accom-tile .at-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:1px;margin-top:6px}
+
+.accom-grid{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+}
+.accom-spec{
+  padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:18px;
+  transition:all .25s;
+}
+.accom-spec:hover{border-color:var(--orange)}
+.accom-spec .ix{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:2px;margin-bottom:14px}
+.accom-spec h4{font-family:'Unbounded',sans-serif;font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:8px}
+.accom-spec p{font-size:13px;color:var(--ink-dim);line-height:1.6}
+.accom-spec ul{list-style:none;font-size:13px;color:var(--ink-dim);line-height:1.7}
+.accom-spec ul li{padding-left:14px;position:relative}
+.accom-spec ul li::before{content:'◢';color:var(--orange);font-size:8px;position:absolute;left:0;top:7px}
+
+/* ===== SAFETY ===== */
+.safety{padding:120px 40px;background:var(--bg-2)}
+.safety-head{max-width:1320px;margin:0 auto 64px}
+.safety-banner{
+  max-width:1320px;margin:0 auto 24px;
+  padding:40px 48px;border-radius:24px;
+  background:linear-gradient(135deg,rgba(255,106,31,.1) 0%,transparent 60%);
+  border:1px solid rgba(255,106,31,.3);
+  display:grid;grid-template-columns:auto 1fr auto;gap:48px;align-items:center;
+}
+.safety-banner .big{font-family:'Unbounded',sans-serif;font-weight:900;font-size:128px;color:var(--orange);line-height:.85;letter-spacing:-.05em;text-shadow:0 0 60px var(--orange-glow)}
+.safety-banner h3{font-family:'Unbounded',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.01em;text-transform:uppercase;margin-bottom:10px}
+.safety-banner h3 em{color:var(--orange);font-style:normal}
+.safety-banner p{font-size:14px;color:var(--ink-2);line-height:1.7;max-width:580px}
+.safety-banner .pill{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  padding:7px 14px;background:rgba(0,0,0,.4);border:1px solid var(--orange);color:var(--orange);
+  border-radius:30px;letter-spacing:2px;white-space:nowrap;
+}
+
+.safety-grid{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+}
+.safety-card{
+  padding:32px;border-radius:18px;background:var(--panel);border:1px solid var(--line);
+  transition:all .25s;position:relative;overflow:hidden;
+}
+.safety-card:hover{border-color:var(--orange)}
+.safety-card .sc-num{
+  font-family:'Unbounded',sans-serif;font-weight:900;font-size:80px;color:var(--orange);
+  line-height:.85;letter-spacing:-.05em;margin-bottom:18px;
+  opacity:.18;
+}
+.safety-card h4{font-family:'Unbounded',sans-serif;font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:10px}
+.safety-card p{font-size:13.5px;color:var(--ink-dim);line-height:1.65}
+.safety-card .sc-tag{
+  display:inline-block;margin-top:14px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:1.5px;
+  padding:4px 10px;background:var(--orange-soft);border:1px solid rgba(255,106,31,.3);border-radius:30px;
+}
+
+/* ===== MISSIONS SYSTEM ===== */
+.miss-sys{padding:120px 40px;background:var(--bg)}
+.miss-sys-head{max-width:1320px;margin:0 auto 64px}
+.miss-sys-main{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:start;margin-bottom:24px;
+}
+.points-card{
+  padding:36px;background:var(--panel);border:1px solid var(--line);border-radius:24px;
+}
+.points-card h3{font-family:'Unbounded',sans-serif;font-weight:700;font-size:22px;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:24px}
+.points-card h3 em{color:var(--orange);font-style:normal}
+
+.points-list{display:flex;flex-direction:column;gap:14px}
+.points-row{
+  display:grid;grid-template-columns:60px 1fr 100px;gap:18px;align-items:center;
+  padding:18px 20px;background:var(--bg-3);border:1px solid var(--line);border-radius:14px;
+  transition:all .25s;
+}
+.points-row:hover{border-color:var(--orange)}
+.points-row .pn{font-family:'Unbounded',sans-serif;font-weight:800;font-size:24px;color:var(--orange);letter-spacing:-.02em;line-height:1}
+.points-row .pt{font-family:'Unbounded',sans-serif;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:.5px}
+.points-row .pd{font-size:12px;color:var(--ink-dim);line-height:1.5;margin-top:4px}
+.points-row .pxp{
+  font-family:'Unbounded',sans-serif;font-weight:700;font-size:18px;color:var(--orange);
+  text-align:right;letter-spacing:-.01em;
+}
+.points-row .pxp em{font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--ink-dim);font-weight:400;display:block;letter-spacing:1px;margin-top:2px;font-style:normal}
+
+.rule-card{
+  padding:36px;border-radius:24px;
+  background:linear-gradient(135deg,rgba(255,106,31,.1) 0%,transparent 80%);
+  border:1px solid rgba(255,106,31,.3);
+  position:relative;overflow:hidden;
+}
+.rule-card .rc-ix{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--orange);letter-spacing:2px;margin-bottom:14px}
+.rule-card h3{font-family:'Unbounded',sans-serif;font-weight:800;font-size:36px;text-transform:uppercase;letter-spacing:-.025em;line-height:.95;margin-bottom:16px}
+.rule-card h3 em{color:var(--orange);font-style:normal}
+.rule-card p{font-size:14px;color:var(--ink-2);line-height:1.7;margin-bottom:18px}
+.rule-formula{
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  padding:24px;background:rgba(0,0,0,.45);border:1px dashed var(--line-2);border-radius:14px;
+  margin-bottom:18px;flex-wrap:wrap;
+}
+.rule-formula .f{font-family:'Unbounded',sans-serif;font-weight:800;font-size:24px;color:var(--ink);letter-spacing:-.02em}
+.rule-formula .op{font-family:'Unbounded',sans-serif;font-weight:900;font-size:28px;color:var(--orange);letter-spacing:-.02em}
+
+/* ===== PRIZES / HALL OF FAME ===== */
+.prizes{padding:120px 40px;background:var(--bg-2)}
+.prizes-head{max-width:1320px;margin:0 auto 64px}
+.podium{
+  max-width:1100px;margin:0 auto 24px;
+  display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:18px;align-items:end;
+}
+.pod{
+  background:var(--panel);border-radius:20px;border:1px solid var(--line);
+  padding:36px 28px 32px;position:relative;overflow:hidden;
+  transition:all .3s;
+}
+.pod::before{content:'';position:absolute;top:0;left:24px;right:24px;height:3px;border-radius:0 0 6px 6px}
+.pod.gold::before{background:linear-gradient(90deg,#ffd34a,#ff8a00,#ffd34a);box-shadow:0 0 22px rgba(255,170,0,.55)}
+.pod.silv::before{background:linear-gradient(90deg,#dfdfdf,#aaa,#dfdfdf)}
+.pod.bron::before{background:linear-gradient(90deg,#cd7f32,#a4541b,#cd7f32)}
+.pod.gold{transform:translateY(-32px);background:linear-gradient(180deg,rgba(255,170,0,.06) 0%,var(--panel) 100%)}
+.pod-r{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);letter-spacing:2px;margin-bottom:16px;text-transform:uppercase}
+.pod.gold .pod-r{color:#ffaa00}
+.pod-place{font-family:'Unbounded',sans-serif;font-weight:900;font-size:128px;line-height:.85;letter-spacing:-.05em;margin-bottom:8px}
+.pod.gold .pod-place{color:#ffaa00;text-shadow:0 0 40px rgba(255,170,0,.4)}
+.pod.silv .pod-place{color:#cfcfcf}
+.pod.bron .pod-place{color:#cd7f32}
+.pod-disc{font-family:'Unbounded',sans-serif;font-weight:800;font-size:36px;letter-spacing:-.02em;margin-bottom:8px}
+.pod-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px}
+.pod-d{font-size:13px;color:var(--ink-dim);line-height:1.6}
+.pod-d strong{color:var(--ink)}
+
+.noms-wrap{
+  max-width:1320px;margin:0 auto 24px;
+  padding:40px;background:var(--panel);border:1px solid var(--line);border-radius:24px;
+}
+.noms-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;flex-wrap:wrap;gap:14px}
+.noms-head h3{font-family:'Unbounded',sans-serif;font-weight:700;font-size:28px;text-transform:uppercase;letter-spacing:-.01em}
+.noms-head h3 em{color:var(--orange);font-style:normal}
+.noms-head .badge{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--orange);border:1px solid var(--orange);padding:7px 14px;border-radius:30px;letter-spacing:1.5px}
+.noms-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.nom{
+  padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--bg-3);
+  display:flex;flex-direction:column;gap:8px;transition:all .2s;
+}
+.nom:hover{border-color:var(--orange);background:#16181f}
+.nom-i{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:2px;font-weight:500}
+.nom-t{font-family:'Unbounded',sans-serif;font-weight:600;font-size:14px;letter-spacing:-.01em;line-height:1.2}
+
+.all-cert{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:center;
+  padding:32px 40px;border-radius:20px;
+  background:linear-gradient(90deg,rgba(255,106,31,.08) 0%,transparent 70%);
+  border:1px solid rgba(255,106,31,.25);
+  border-left:3px solid var(--orange);
+}
+.all-cert .ic{font-family:'Unbounded',sans-serif;font-weight:800;font-size:14px;color:var(--orange);letter-spacing:2px;text-transform:uppercase}
+.all-cert p{font-size:15px;color:var(--ink);line-height:1.7}
+.all-cert p strong{color:var(--orange);font-weight:600}
+.all-cert .arr{font-family:'JetBrains Mono',monospace;color:var(--orange);font-size:20px}
+
+/* ===== SPEAKERS DETAILED ===== */
+.speakers{padding:120px 40px;background:var(--bg)}
+.spk-head{max-width:1320px;margin:0 auto 64px}
+.spk-list{
+  max-width:1320px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:18px;
+}
+.spk-row{
+  display:grid;grid-template-columns:120px 1fr;gap:24px;
+  padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:18px;
+  transition:all .25s;
+}
+.spk-row:hover{border-color:var(--orange)}
+.spk-avatar{
+  width:120px;height:140px;border-radius:14px;
+  background-size:cover;background-position:center;
+  border:1px solid var(--line-2);
+  position:relative;overflow:hidden;
+}
+.spk-avatar::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.5) 100%)}
+.spk-info .cat{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:2px;margin-bottom:10px}
+.spk-info h4{font-family:'Unbounded',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.01em;text-transform:uppercase;margin-bottom:6px}
+.spk-info .role{font-size:13px;color:var(--ink);font-weight:500;margin-bottom:14px}
+.spk-info ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.spk-info ul li{font-size:12px;color:var(--ink-dim);padding-left:14px;position:relative;line-height:1.5}
+.spk-info ul li::before{content:'◢';color:var(--orange);font-size:8px;position:absolute;left:0;top:4px}
+
+/* ===== FAQ ===== */
+.faq{padding:120px 40px;background:var(--bg-2)}
+.faq-head{max-width:1320px;margin:0 auto 56px;text-align:center}
+.faq-list{max-width:900px;margin:0 auto}
+.faq-item{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;
+  overflow:hidden;transition:border-color .25s;
+}
+.faq-item.open{border-color:var(--orange)}
+.faq-q{
+  width:100%;padding:24px 28px;background:none;border:none;color:var(--ink);
+  font-family:'Unbounded',sans-serif;font-weight:600;font-size:15px;letter-spacing:-.01em;
+  text-align:left;cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;gap:24px;
+}
+.faq-q .qn{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--orange);margin-right:14px;letter-spacing:1px;font-weight:500}
+.faq-arr{
+  width:32px;height:32px;border-radius:50%;background:var(--orange-soft);border:1px solid var(--orange);
+  color:var(--orange);font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;
+  display:flex;align-items:center;justify-content:center;transition:transform .25s;flex-shrink:0;
+}
+.faq-item.open .faq-arr{transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;padding:0 28px;font-size:14px;color:var(--ink-dim);line-height:1.7}
+.faq-item.open .faq-a{max-height:600px;padding:0 28px 24px}
+
+/* ===== MULTISTEP FORM ===== */
+.regsec{padding:120px 40px;background:var(--bg)}
+.reg-head{max-width:900px;margin:0 auto 48px;text-align:center}
+.reg-wrap{
+  max-width:900px;margin:0 auto;
+  background:var(--panel);border:1px solid var(--line-2);border-radius:24px;padding:48px;
+  position:relative;overflow:hidden;
+}
+.reg-wrap::before{content:'';position:absolute;top:-1px;left:-1px;width:24px;height:24px;border-top:2px solid var(--orange);border-left:2px solid var(--orange)}
+.reg-wrap::after{content:'';position:absolute;bottom:-1px;right:-1px;width:24px;height:24px;border-bottom:2px solid var(--orange);border-right:2px solid var(--orange)}
+
+.steps{
+  display:flex;justify-content:space-between;margin-bottom:36px;
+  position:relative;
+}
+.steps::before{
+  content:'';position:absolute;left:24px;right:24px;top:18px;height:1px;background:var(--line);
+}
+.step{
+  position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;
+  background:var(--panel);padding:0 8px;
+}
+.step-n{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--bg-3);border:1px solid var(--line-2);color:var(--ink-dim);
+  font-family:'Unbounded',sans-serif;font-weight:700;font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .25s;
+}
+.step.active .step-n{background:var(--orange);color:#000;border-color:var(--orange);box-shadow:0 0 16px var(--orange-glow)}
+.step.done .step-n{background:var(--orange-soft);color:var(--orange);border-color:var(--orange)}
+.step-l{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:1.5px;text-transform:uppercase}
+.step.active .step-l{color:var(--orange)}
+
+.step-pane{display:none}
+.step-pane.active{display:block}
+.step-pane h3{font-family:'Unbounded',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.01em;text-transform:uppercase;margin-bottom:6px}
+.step-pane h3 em{color:var(--orange);font-style:normal}
+.step-pane .sub{font-size:13px;color:var(--ink-dim);margin-bottom:24px;line-height:1.5}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column}
+.field.full{grid-column:span 2}
+.field label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.field label::before{content:'> ';color:var(--orange)}
+.field input,.field select,.field textarea{
+  background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:10px;
+  padding:14px 16px;font-size:14px;color:var(--ink);font-family:'Onest',sans-serif;
+  transition:all .2s;
+}
+.field textarea{min-height:96px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--orange);background:rgba(0,0,0,.5)}
+
+.step-nav{display:flex;justify-content:space-between;margin-top:28px;gap:14px}
+.step-btn{
+  padding:14px 28px;border-radius:30px;border:none;cursor:pointer;
+  font-family:'Unbounded',sans-serif;font-weight:600;font-size:13px;letter-spacing:1px;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:10px;transition:all .25s;
+}
+.step-btn.next{background:var(--orange);color:#000}
+.step-btn.next::after{content:'→';font-family:'JetBrains Mono',monospace}
+.step-btn.next:hover{background:#fff;transform:translateY(-1px)}
+.step-btn.prev{background:transparent;color:var(--ink);border:1px solid var(--line-2)}
+.step-btn.prev::before{content:'←';font-family:'JetBrains Mono',monospace}
+.step-btn.prev:hover{border-color:var(--orange);color:var(--orange)}
+
+.reg-payment{display:none;padding:48px 0}
+.reg-payment.show{display:block}
+.reg-success{display:none;text-align:center;padding:48px 0}
+.reg-success.show{display:block}
+.reg-success-icon{width:80px;height:80px;border:2px solid var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:40px;color:var(--orange);box-shadow:0 0 36px var(--orange-glow)}
+.reg-success h3{font-family:'Unbounded',sans-serif;font-weight:800;font-size:32px;color:var(--orange);text-transform:uppercase;letter-spacing:-.02em;margin-bottom:14px}
+.reg-success p{font-size:15px;color:var(--ink-2);line-height:1.7}
+
+/* MOBILE */
+@media(max-width:1100px){
+  .sys-hero-inner{grid-template-columns:1fr;gap:48px}
+  .days-grid{grid-template-columns:repeat(5,1fr);grid-template-rows:auto auto}
+  .day-axis{display:none}
+  .streams-grid{grid-template-columns:repeat(3,1fr)}
+  .streams-line{display:none}
+  .stream-it::before{display:none}
+  .accom-main{grid-template-columns:1fr;gap:14px}
+  .accom-side{flex-direction:row}
+  .accom-grid{grid-template-columns:repeat(2,1fr)}
+  .safety-banner{grid-template-columns:1fr;text-align:left;gap:18px}
+  .safety-banner .big{font-size:80px}
+  .safety-grid{grid-template-columns:1fr}
+  .miss-sys-main{grid-template-columns:1fr}
+  .podium{grid-template-columns:1fr;gap:14px}
+  .pod.gold{transform:none}
+  .noms-grid{grid-template-columns:repeat(2,1fr)}
+  .spk-list{grid-template-columns:1fr}
+  .all-cert{grid-template-columns:1fr;gap:16px}
+}
+@media(max-width:680px){
+  .sys-hero{padding:120px 20px 60px}
+  .days,.streams,.accom,.safety,.miss-sys,.prizes,.speakers,.faq,.regsec{padding-left:20px;padding-right:20px;padding-top:72px;padding-bottom:72px}
+  .days-grid{grid-template-columns:repeat(2,1fr)}
+  .streams-grid{grid-template-columns:1fr}
+  .accom-side{flex-direction:column}
+  .accom-grid{grid-template-columns:1fr}
+  .noms-grid{grid-template-columns:1fr}
+  .spk-row{grid-template-columns:80px 1fr;gap:14px;padding:18px}
+  .spk-avatar{width:80px;height:100px}
+  .form-grid{grid-template-columns:1fr}
+  .field.full{grid-column:span 1}
+  .step-l{display:none}
+  .reg-wrap{padding:32px 24px}
+  .points-row{grid-template-columns:40px 1fr 80px;gap:10px}
+  .rule-formula{gap:10px}
+  .rule-formula .f,.rule-formula .op{font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="topline"></div>
+<div class="progress" id="progress"></div>
+<div class="frame-corners"><i class="fc tl"></i><i class="fc tr"></i><i class="fc bl"></i><i class="fc br"></i></div>
+
+<!-- STATUS BAR -->
+<div class="statusbar">
+  <span><span class="dot"></span>SYS.UPGRADE.26 // CAMP SYSTEM</span>
+  <span>// PAGE: PROGRAM / ACADEMY HANDBOOK</span>
+  <span>v.26.07 · SUMMER EDITION</span>
+</div>
+
+<!-- NAV -->
+<nav class="main-nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo"><span class="dot"></span>АП<em>ГРЕЙД</em></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="system.html" class="active">Система</a></li>
+      <li><a href="media.html">Медиа</a></li>
+    </ul>
+    <a href="#register" class="nav-cta">Войти в систему</a>
+    <button class="mob-menu">MENU</button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="sys-hero">
+  <div class="sys-hero-bg"></div>
+  <div class="sys-hero-inner">
+    <div>
+      <div class="pre">// CAMP SYSTEM · ACADEMY HANDBOOK</div>
+      <h1>Программа<br><em>2026</em></h1>
+      <p>Полная программа лагеря: 7 потоков, 10 дней, 5 миссий. Проживание, безопасность, спикеры, награды. Всё, что нужно знать родителю и юниту.</p>
+    </div>
+    <div class="sys-toc">
+      <h5>// БЫСТРАЯ НАВИГАЦИЯ</h5>
+      <a href="#days"><span>День за днём</span><span class="ix">01</span></a>
+      <a href="#streams"><span>7 потоков</span><span class="ix">02</span></a>
+      <a href="#accom"><span>Корпуса · Лагерь</span><span class="ix">03</span></a>
+      <a href="#safety"><span>Безопасность</span><span class="ix">04</span></a>
+      <a href="#missions"><span>Система миссий</span><span class="ix">05</span></a>
+      <a href="#prizes"><span>Награды</span><span class="ix">06</span></a>
+      <a href="#speakers"><span>Спикеры</span><span class="ix">07</span></a>
+      <a href="#faq"><span>FAQ</span><span class="ix">08</span></a>
+      <a href="#register"><span>Регистрация</span><span class="ix">09</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== DAY TIMELINE ===== -->
+<section class="days" id="days">
+  <div class="days-head">
+    <div class="eyebrow reveal">[01] / DAILY TIMELINE</div>
+    <h2 class="section-title reveal">Как всё <em>устроено.</em></h2>
+    <p class="section-lede reveal">10 дней · 5 миссий по 2 дня · 1 финал. Каждый день — новые активности, прокачка навыка, командная работа, очки в общий рейтинг.</p>
+  </div>
+
+  <div class="days-grid reveal">
+    <div class="day-col m1">
+      <div class="d-mission">// M.01 · SPORT</div>
+      <div class="d-num">01</div>
+      <div class="d-label">Заезд · Открытие</div>
+      <div class="d-list">
+        <span>Заселение</span>
+        <span>Выдача формы</span>
+        <span>Знакомство</span>
+        <span>Вечер у костра</span>
+      </div>
+    </div>
+    <div class="day-col m1">
+      <div class="d-mission">// M.01 · SPORT</div>
+      <div class="d-num">02</div>
+      <div class="d-label">Спорт · Команды</div>
+      <div class="d-list">
+        <span>Эстафеты</span>
+        <span>Мастер-класс</span>
+        <span>Олимпийский чемпион</span>
+        <span>Турнир</span>
+      </div>
+    </div>
+    <div class="day-col m2">
+      <div class="d-mission">// M.02 · SCIENCE</div>
+      <div class="d-num">03</div>
+      <div class="d-label">Наука · Опыты</div>
+      <div class="d-list">
+        <span>Лекция учёного</span>
+        <span>Лаборатория</span>
+        <span>Эксперименты</span>
+        <span>Квест</span>
+      </div>
+    </div>
+    <div class="day-col m2">
+      <div class="d-mission">// M.02 · SCIENCE</div>
+      <div class="d-num">04</div>
+      <div class="d-label">Головоломки</div>
+      <div class="d-list">
+        <span>Дебаты</span>
+        <span>Стратегии</span>
+        <span>Игра-симулятор</span>
+        <span>Озеро · отдых</span>
+      </div>
+    </div>
+    <div class="day-col m3">
+      <div class="d-mission">// M.03 · IT</div>
+      <div class="d-num">05</div>
+      <div class="d-label">IT · Старт</div>
+      <div class="d-list">
+        <span>Лекция: Google/Meta</span>
+        <span>AI workshop</span>
+        <span>Киберспорт</span>
+        <span>Networking</span>
+      </div>
+    </div>
+    <div class="day-col m3">
+      <div class="d-mission">// M.03 · IT</div>
+      <div class="d-num">06</div>
+      <div class="d-label">Хакатон</div>
+      <div class="d-list">
+        <span>Команды по 5</span>
+        <span>12 часов</span>
+        <span>Питч проектов</span>
+        <span>Жюри</span>
+      </div>
+    </div>
+    <div class="day-col m4">
+      <div class="d-mission">// M.04 · CREATIVE</div>
+      <div class="d-num">07</div>
+      <div class="d-label">Творчество</div>
+      <div class="d-list">
+        <span>Видео-блогинг</span>
+        <span>Музыка</span>
+        <span>Дизайн</span>
+        <span>Актёрское</span>
+      </div>
+    </div>
+    <div class="day-col m4">
+      <div class="d-mission">// M.04 · CREATIVE</div>
+      <div class="d-num">08</div>
+      <div class="d-label">Свой проект</div>
+      <div class="d-list">
+        <span>Команды</span>
+        <span>Производство</span>
+        <span>Показ</span>
+        <span>Голосование</span>
+      </div>
+    </div>
+    <div class="day-col m5">
+      <div class="d-mission">// M.05 · FINAL</div>
+      <div class="d-num">09</div>
+      <div class="d-label">Финал · Битва</div>
+      <div class="d-list">
+        <span>Финальные испытания</span>
+        <span>Все 4 миссии</span>
+        <span>Подсчёт очков</span>
+        <span>Прогон</span>
+      </div>
+    </div>
+    <div class="day-col m5">
+      <div class="d-mission">// M.05 · FINAL</div>
+      <div class="d-num">10</div>
+      <div class="d-label">Церемония</div>
+      <div class="d-list">
+        <span>Родительский день</span>
+        <span>Награждение</span>
+        <span>3 чемпиона</span>
+        <span>10 номинантов</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="day-axis">
+    <span>СПОРТ</span><span>СПОРТ</span>
+    <span>НАУКА</span><span>НАУКА</span>
+    <span>IT</span><span>IT</span>
+    <span>ТВОР.</span><span>ТВОР.</span>
+    <span>ФИНАЛ</span><span>ФИНАЛ</span>
+  </div>
+</section>
+
+<!-- ===== STREAMS ===== -->
+<section class="streams" id="streams">
+  <div class="streams-head">
+    <div class="eyebrow reveal">[02] / 7 ПОТОКОВ</div>
+    <h2 class="section-title reveal">Лето <em>2026.</em><br>Выбери дату.</h2>
+    <p class="section-lede reveal">Каждый поток — 10 дней по 80 юнитов. За лето 560 участников. Даты не пересекаются.</p>
+  </div>
+
+  <div class="streams-track reveal">
+    <div class="streams-line"></div>
+    <div class="streams-grid" id="streamsGrid"></div>
+  </div>
+
+  <div class="streams-foot reveal">
+    <span>// СЕЗОН: <strong>20.06 — 29.08.2026</strong></span>
+    <span>// 7 ПОТОКОВ × 80 ЮНИТОВ = <strong>560 МЕСТ</strong></span>
+    <span>// ВОЗРАСТ: <strong>12 — 15 ЛЕТ</strong></span>
+  </div>
+</section>
+
+<!-- ===== ACCOMMODATIONS ===== -->
+<section class="accom" id="accom">
+  <div class="accom-head">
+    <div class="eyebrow reveal">[03] / КОРПУСА · ИНФРАСТРУКТУРА</div>
+    <h2 class="section-title reveal">Лагерь <em>«Маяк».</em></h2>
+    <p class="section-lede reveal">Побережье Иссык-Куля. Полная инфраструктура: проживание, питание, охрана, медпункт, спорт-площадки, пляж. Всё на одной территории.</p>
+  </div>
+
+  <div class="accom-main">
+    <div class="accom-hero reveal">
+      <div class="ah-img"></div>
+      <i class="corner tl"></i><i class="corner br"></i>
+      <div class="ah-info">
+        <div>
+          <div class="ah-name">Лагерь <em>«Маяк»</em></div>
+          <div class="ah-coord">// 42.6°N 76.9°E · ИССЫК-КУЛЬ</div>
+        </div>
+        <div class="ah-pills">
+          <span>2 КОРПУСА</span><span>8 КОМНАТ</span><span>80 ЮНИТОВ</span><span>ПЛЯЖ</span>
+        </div>
+      </div>
+    </div>
+    <div class="accom-side">
+      <div class="accom-tile reveal">
+        <div class="at-img" style="background-image:url('https://images.unsplash.com/photo-1540541338287-41700207dee6?w=900&q=85')"></div>
+        <div class="at-info">
+          <div class="at-tag">// CORPUS.01</div>
+          <div class="at-name">Корпус мальчиков</div>
+          <div class="at-meta">40 ЮНИТОВ · 4 КОМНАТЫ</div>
+        </div>
+      </div>
+      <div class="accom-tile reveal">
+        <div class="at-img" style="background-image:url('https://images.unsplash.com/photo-1551776235-dde6d482980b?w=900&q=85')"></div>
+        <div class="at-info">
+          <div class="at-tag">// CORPUS.02</div>
+          <div class="at-name">Корпус девочек</div>
+          <div class="at-meta">40 ЮНИТОВ · 4 КОМНАТЫ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accom-grid">
+    <div class="accom-spec reveal">
+      <div class="ix">// ROOM.SPEC</div>
+      <h4>Комнаты</h4>
+      <ul>
+        <li>10 юнитов в комнате</li>
+        <li>Личная койка + шкаф</li>
+        <li>Свежее бельё</li>
+        <li>Кондиционер</li>
+        <li>Душевые на этаже</li>
+      </ul>
+    </div>
+    <div class="accom-spec reveal">
+      <div class="ix">// FOOD.PROGRAM</div>
+      <h4>Питание</h4>
+      <ul>
+        <li>5-разовое</li>
+        <li>Повар-диетолог</li>
+        <li>Свежие продукты</li>
+        <li>Учёт аллергий</li>
+        <li>Обеденный зал</li>
+      </ul>
+    </div>
+    <div class="accom-spec reveal">
+      <div class="ix">// SPORT.AREA</div>
+      <h4>Спорт-зоны</h4>
+      <ul>
+        <li>Футбольное поле</li>
+        <li>Волейбольная площадка</li>
+        <li>Баскетбол · стрит</li>
+        <li>Зал · силовые</li>
+        <li>Зона для йоги</li>
+      </ul>
+    </div>
+    <div class="accom-spec reveal">
+      <div class="ix">// BEACH.LAKE</div>
+      <h4>Пляж</h4>
+      <ul>
+        <li>Личный пляж</li>
+        <li>Лежаки · зонтики</li>
+        <li>Спасатели на воде</li>
+        <li>Водные виды</li>
+        <li>Каяки</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SAFETY ===== -->
+<section class="safety" id="safety">
+  <div class="safety-head">
+    <div class="eyebrow reveal">[04] / БЕЗОПАСНОСТЬ</div>
+    <h2 class="section-title reveal">Защита — <em>максимальная.</em></h2>
+    <p class="section-lede reveal">Главное для родителя — спокойствие. Многоуровневая безопасность: страховка на каждого, охрана 24/7, медпункт, спасатели, сопровождение в дороге.</p>
+  </div>
+
+  <div class="safety-banner reveal">
+    <div class="big">100%</div>
+    <div>
+      <h3>Личная <em>страховка</em> на каждого юнита</h3>
+      <p>Этого нет ни у одного другого детского лагеря в Кыргызстане. На каждого ребёнка оформляется индивидуальная медицинская страховка на весь период потока. Полная защита от непредвиденных ситуаций.</p>
+    </div>
+    <div class="pill">// EXCLUSIVE</div>
+  </div>
+
+  <div class="safety-grid">
+    <div class="safety-card reveal">
+      <div class="sc-num">01</div>
+      <h4>Охрана 24/7</h4>
+      <p>Профессиональная охранная служба на территории круглосуточно. Контроль входа-выхода, видеонаблюдение, патрулирование.</p>
+      <span class="sc-tag">CCTV · ПЕРИМЕТР · 24H</span>
+    </div>
+    <div class="safety-card reveal">
+      <div class="sc-num">02</div>
+      <h4>Медпункт</h4>
+      <p>Полностью оснащённый медицинский пункт на территории. Квалифицированный врач и медсестра круглосуточно. Все необходимые препараты.</p>
+      <span class="sc-tag">ВРАЧ · 24H · ПЕРВАЯ ПОМОЩЬ</span>
+    </div>
+    <div class="safety-card reveal">
+      <div class="sc-num">03</div>
+      <h4>Спасатели на воде</h4>
+      <p>Профессиональные спасатели всё время купания. Контроль зоны пляжа. Юниты учатся правилам безопасности на воде.</p>
+      <span class="sc-tag">LIFEGUARDS · ВСЕГДА</span>
+    </div>
+    <div class="safety-card reveal">
+      <div class="sc-num">04</div>
+      <h4>Вожатые 1:10</h4>
+      <p>На каждые 10 юнитов — один вожатый. 8 вожатых на поток. Постоянный надзор, поддержка, эмоциональный контакт.</p>
+      <span class="sc-tag">RATIO · 1 NA 10</span>
+    </div>
+    <div class="safety-card reveal">
+      <div class="sc-num">05</div>
+      <h4>Сопровождение</h4>
+      <p>Транспорт от Бишкека и обратно. Опытные сопровождающие в пути. Безопасная логистика: автобус → поезд → лагерь.</p>
+      <span class="sc-tag">BISHKEK ⇄ MAYAK</span>
+    </div>
+    <div class="safety-card reveal">
+      <div class="sc-num">06</div>
+      <h4>Контроль родителей</h4>
+      <p>Чат для родителей с обновлениями. Видео и фото каждый день. Возможность связи с ребёнком в установленные часы.</p>
+      <span class="sc-tag">DAILY UPDATES · WHATSAPP</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MISSION SYSTEM ===== -->
+<section class="miss-sys" id="missions">
+  <div class="miss-sys-head">
+    <div class="eyebrow reveal">[05] / СИСТЕМА МИССИЙ</div>
+    <h2 class="section-title reveal">Как стать <em>чемпионом.</em></h2>
+    <p class="section-lede reveal">Очки начисляются за каждое испытание, активность и достижение. По итогу 10 дней — лидеры рейтинга становятся чемпионами потока.</p>
+  </div>
+
+  <div class="miss-sys-main">
+    <div class="points-card reveal">
+      <h3>Как начисляются <em>очки</em></h3>
+      <div class="points-list">
+        <div class="points-row">
+          <div class="pn">01</div>
+          <div><div class="pt">Победа в испытании</div><div class="pd">Командные и индивидуальные соревнования</div></div>
+          <div class="pxp">+500<em>XP</em></div>
+        </div>
+        <div class="points-row">
+          <div class="pn">02</div>
+          <div><div class="pt">Активное участие</div><div class="pd">Вклад в мастер-классы, лекции, проекты</div></div>
+          <div class="pxp">+200<em>XP</em></div>
+        </div>
+        <div class="points-row">
+          <div class="pn">03</div>
+          <div><div class="pt">Помощь команде</div><div class="pd">Поддержка вожатых и других юнитов</div></div>
+          <div class="pxp">+150<em>XP</em></div>
+        </div>
+        <div class="points-row">
+          <div class="pn">04</div>
+          <div><div class="pt">Лидерство</div><div class="pd">Капитан команды, выбран вожатым</div></div>
+          <div class="pxp">+300<em>XP</em></div>
+        </div>
+        <div class="points-row">
+          <div class="pn">05</div>
+          <div><div class="pt">Личный рекорд</div><div class="pd">Преодоление страха, новый результат</div></div>
+          <div class="pxp">+400<em>XP</em></div>
+        </div>
+        <div class="points-row">
+          <div class="pn">06</div>
+          <div><div class="pt">Boss-level (финал)</div><div class="pd">Победа в финальных испытаниях дня 9–10</div></div>
+          <div class="pxp">+1000<em>XP</em></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rule-card reveal">
+      <div class="rc-ix">// MAIN.FORMULA</div>
+      <h3>Формула <em>чемпиона</em></h3>
+      <p>Чтобы попасть в топ-3 нужно показать результат во всех 5 миссиях. Не достаточно быть лучшим только в спорте или IT. <strong style="color:var(--orange)">Чемпион — это универсал.</strong></p>
+      <div class="rule-formula">
+        <span class="f">Σ XP</span>
+        <span class="op">=</span>
+        <span class="f">M1</span>
+        <span class="op">+</span>
+        <span class="f">M2</span>
+        <span class="op">+</span>
+        <span class="f">M3</span>
+        <span class="op">+</span>
+        <span class="f">M4</span>
+        <span class="op">+</span>
+        <span class="f" style="color:var(--orange)">M5×2</span>
+      </div>
+      <p style="font-size:13px;color:var(--ink-dim)">Финал даёт двойные очки. Это шанс взять рейтинг даже если ты не лидировал в начале.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRIZES ===== -->
+<section class="prizes" id="prizes">
+  <div class="prizes-head" style="text-align:center">
+    <div class="eyebrow reveal" style="margin-left:50%;transform:translateX(-50%)">[06] / HALL OF FAME</div>
+    <h2 class="section-title reveal" style="text-align:center">Награды<br>и <em>номинации.</em></h2>
+    <p class="section-lede reveal" style="margin:0 auto 0;text-align:center">3 чемпиона по очкам + 10 номинантов по достижениям. Все участники получают сертификаты.</p>
+  </div>
+
+  <div class="podium reveal" style="margin-top:48px">
+    <div class="pod silv">
+      <div class="pod-r">// RANK.02</div>
+      <div class="pod-place">2</div>
+      <div class="pod-disc">75%</div>
+      <div class="pod-lbl">Скидка</div>
+      <div class="pod-d">Сертификат на 75% скидку на любой будущий поток. Можно передать.</div>
+    </div>
+    <div class="pod gold">
+      <div class="pod-r">// RANK.01 · ЧЕМПИОН</div>
+      <div class="pod-place">1</div>
+      <div class="pod-disc">100%</div>
+      <div class="pod-lbl">Полная скидка</div>
+      <div class="pod-d"><strong>Чемпион потока.</strong> Сертификат на 100% скидку на любой сезон. Можно передать.</div>
+    </div>
+    <div class="pod bron">
+      <div class="pod-r">// RANK.03</div>
+      <div class="pod-place">3</div>
+      <div class="pod-disc">50%</div>
+      <div class="pod-lbl">Скидка</div>
+      <div class="pod-d">Сертификат на 50% скидку на любой будущий поток. Можно передать.</div>
+    </div>
+  </div>
+
+  <div class="noms-wrap reveal">
+    <div class="noms-head">
+      <h3>10 <em>номинаций</em></h3>
+      <div class="badge">КАЖДАЯ — 10% СКИДКА</div>
+    </div>
+    <div class="noms-grid">
+      <div class="nom"><span class="nom-i">01</span><span class="nom-t">Талант сезона</span></div>
+      <div class="nom"><span class="nom-i">02</span><span class="nom-t">Самый сильный</span></div>
+      <div class="nom"><span class="nom-i">03</span><span class="nom-t">Самый умный</span></div>
+      <div class="nom"><span class="nom-i">04</span><span class="nom-t">Самый быстрый</span></div>
+      <div class="nom"><span class="nom-i">05</span><span class="nom-t">Креативный</span></div>
+      <div class="nom"><span class="nom-i">06</span><span class="nom-t">Лидер потока</span></div>
+      <div class="nom"><span class="nom-i">07</span><span class="nom-t">Душа команды</span></div>
+      <div class="nom"><span class="nom-i">08</span><span class="nom-t">Прорыв сезона</span></div>
+      <div class="nom"><span class="nom-i">09</span><span class="nom-t">Голос сезона</span></div>
+      <div class="nom"><span class="nom-i">10</span><span class="nom-t">Стратег</span></div>
+    </div>
+  </div>
+
+  <div class="all-cert reveal">
+    <div class="ic">// ВСЕМ</div>
+    <p>Каждый юнит получает <strong>именной сертификат «Прошёл АПГРЕЙД»</strong> + <strong>5% скидку</strong> на любой будущий поток. Все скидки можно передать.</p>
+    <span class="arr">→</span>
+  </div>
+</section>
+
+<!-- ===== SPEAKERS ===== -->
+<section class="speakers" id="speakers">
+  <div class="spk-head">
+    <div class="eyebrow reveal">[07] / EXPERTS</div>
+    <h2 class="section-title reveal">База спикеров<br><em>top-100.</em></h2>
+    <p class="section-lede reveal">Каждый поток — новый состав гостей. Список объявляется перед стартом сезона. Это категории и направления, из которых формируются составы.</p>
+  </div>
+
+  <div class="spk-list">
+    <div class="spk-row reveal">
+      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=85')"></div>
+      <div class="spk-info">
+        <div class="cat">// SPORT · ОЛИМПИЙЦЫ</div>
+        <h4>Олимпийские чемпионы</h4>
+        <div class="role">Чемпионы мира · Тренеры сборной Кыргызстана</div>
+        <ul>
+          <li>Борьба, дзюдо, спортивная гимнастика</li>
+          <li>Личные сессии с юнитами</li>
+          <li>Лекции о пути к олимпийскому золоту</li>
+          <li>Мастер-классы по дисциплине и режиму</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spk-row reveal">
+      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=85')"></div>
+      <div class="spk-info">
+        <div class="cat">// SCIENCE · УЧЁНЫЕ</div>
+        <h4>Учёные мирового уровня</h4>
+        <div class="role">Физики · Биологи · Исследователи MIT, ETH, Max Planck</div>
+        <ul>
+          <li>Эксперименты вживую</li>
+          <li>Лекции о современной физике, генетике, ИИ</li>
+          <li>Кыргызские учёные с мировым именем</li>
+          <li>Лабораторные сессии</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spk-row reveal">
+      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1556157382-97eda2d62296?w=600&q=85')"></div>
+      <div class="spk-info">
+        <div class="cat">// IT · BIG TECH</div>
+        <h4>Программисты Google · Meta · Amazon</h4>
+        <div class="role">Senior Engineers · ML / AI · React / Cloud</div>
+        <ul>
+          <li>Кыргызстанцы, работающие в Big Tech</li>
+          <li>Лекции о пути из Бишкека в Кремниевую Долину</li>
+          <li>AI и ML workshops</li>
+          <li>Карьерные траектории и менторство</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spk-row reveal">
+      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=600&q=85')"></div>
+      <div class="spk-info">
+        <div class="cat">// CREATIVE · АРТИСТЫ</div>
+        <h4>Актёры · Музыканты · Дизайнеры</h4>
+        <div class="role">Лауреаты фестивалей · Авторы знаковых проектов</div>
+        <ul>
+          <li>Актёры кино и театра Кыргызстана</li>
+          <li>Лауреаты-архитекторы</li>
+          <li>Видеомейкеры и музыканты</li>
+          <li>Мастер-классы по самовыражению</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spk-row reveal">
+      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=85')"></div>
+      <div class="spk-info">
+        <div class="cat">// BUSINESS · ОСНОВАТЕЛИ</div>
+        <h4>IT-предприниматели</h4>
+        <div class="role">Основатели стартапов · Лидеры индустрии</div>
+        <ul>
+          <li>Кыргызские IT-стартапы с международной траекторией</li>
+          <li>Лекции о привлечении инвестиций</li>
+          <li>Networking-сессии</li>
+          <li>Менторство по идеям юнитов</li>
+        </ul>
+      </div>
+    </div>
+    <div class="spk-row reveal">
+      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=600&q=85')"></div>
+      <div class="spk-info">
+        <div class="cat">// SPECIAL · UNIQUE</div>
+        <h4>Специальные гости</h4>
+        <div class="role">Меняются каждый поток</div>
+        <ul>
+          <li>Космонавты, путешественники, авантюристы</li>
+          <li>Социальные предприниматели</li>
+          <li>Звёзды соцсетей и блогеры</li>
+          <li>Будут анонсы перед каждым стартом</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ ===== -->
+<section class="faq" id="faq">
+  <div class="faq-head">
+    <div class="eyebrow reveal" style="margin-left:50%;transform:translateX(-50%)">[08] / FAQ</div>
+    <h2 class="section-title reveal">Часто <em>спрашивают.</em></h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[01]</span>Какой возраст принимаете?</span><span class="faq-arr">+</span></button><div class="faq-a">Принимаем детей от 12 до 15 лет включительно. В одном потоке смешанные возрасты, но разделение по корпусам — мальчики и девочки отдельно. Возраст определяется на момент старта потока.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[02]</span>Где находится лагерь?</span><span class="faq-arr">+</span></button><div class="faq-a">Лагерь «Маяк» на побережье Иссык-Куля (42.6°N, 76.9°E). Полная инфраструктура на территории: проживание, питание, охрана, медпункт 24/7, спасатели. Транспорт от Бишкека до лагеря включён в стоимость.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[03]</span>Это безопасно?</span><span class="faq-arr">+</span></button><div class="faq-a">Многоуровневая безопасность: охрана 24/7, медпункт с врачом и медсестрой круглосуточно, спасатели на воде во время купания. На каждые 10 юнитов — 1 вожатый. Сопровождение в пути от Бишкека до лагеря и обратно. Личная страховка на каждого юнита.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[04]</span>Что входит в стоимость 19 998 сом?</span><span class="faq-arr">+</span></button><div class="faq-a">10 дней в лагере «Маяк», проживание в комнате на 10 юнитов, 5-разовое питание, все 5 миссий и встречи со спикерами, фирменная футболка АПГРЕЙД 2026, медаль и именной сертификат, личная страховка, транспорт Бишкек ⇄ Маяк, охрана и медпункт 24/7. Никаких доплат.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[05]</span>Есть ли страховка?</span><span class="faq-arr">+</span></button><div class="faq-a">Да. На каждого юнита оформляется индивидуальная медицинская страховка на весь период потока. Этого нет ни у одного другого детского лагеря в Кыргызстане. Это уникальное преимущество и гарантия для родителей.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[06]</span>Как работает рассрочка?</span><span class="faq-arr">+</span></button><div class="faq-a">Оплата только через MBank: 3 333 сом × 6 месяцев = 19 998 сом. Без процентов. Регистрация сейчас — лагерь летом 2026. Удобно для родителей: не нужно платить всю сумму сразу.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[07]</span>Как определяются 3 чемпиона?</span><span class="faq-arr">+</span></button><div class="faq-a">Каждое испытание и миссия дают очки (XP). По итогу 10 дней — лидеры рейтинга становятся чемпионами. 1 место — 100% скидка, 2 — 75%, 3 — 50%. Финал даёт двойные очки. Сертификаты можно передать другому участнику.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[08]</span>Что такое 10 номинаций?</span><span class="faq-arr">+</span></button><div class="faq-a">Помимо 3 чемпионов по очкам — 10 номинантов по особым достижениям: Талант сезона, Самый сильный, Самый умный, Самый быстрый, Креативный, Лидер потока, Душа команды, Прорыв сезона, Голос сезона, Стратег. Каждая номинация — сертификат на 10% скидку.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[09]</span>Как родители получают новости?</span><span class="faq-arr">+</span></button><div class="faq-a">Создаём отдельный WhatsApp-чат для родителей каждого потока. Ежедневно публикуем фото и видео из лагеря. Возможность связаться с ребёнком в установленные часы. Подробные отчёты от вожатых.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[10]</span>Можно ли приехать одному поток?</span><span class="faq-arr">+</span></button><div class="faq-a">Да, конечно. Многие дети приезжают одни и быстро находят команду. Программа специально построена так, чтобы юниты познакомились в первые часы. Но если хочется приехать с другом — вы можете подать заявку парой и мы постараемся учесть.</div></div>
+  </div>
+</section>
+
+<!-- ===== REGISTRATION (MULTISTEP) ===== -->
+<section class="regsec" id="register">
+  <div class="reg-head">
+    <div class="eyebrow reveal" style="margin-left:50%;transform:translateX(-50%)">[09] / ПОЛНАЯ РЕГИСТРАЦИЯ</div>
+    <h2 class="section-title reveal">Войди<br>в <em>систему.</em></h2>
+    <p class="section-lede reveal" style="margin:0 auto 0;text-align:center">3 шага. Мы свяжемся в WhatsApp в течение 2 часов после отправки.</p>
+  </div>
+
+  <div class="reg-wrap reveal" id="regWrap">
+    <div class="steps">
+      <div class="step active" data-step="1"><div class="step-n">1</div><div class="step-l">Юнит</div></div>
+      <div class="step" data-step="2"><div class="step-n">2</div><div class="step-l">Родители</div></div>
+      <div class="step" data-step="3"><div class="step-n">3</div><div class="step-l">Поток · мед.</div></div>
+    </div>
+
+    <form id="regForm" onsubmit="submitReg(event)">
+      <!-- STEP 1 -->
+      <div class="step-pane active" data-step="1">
+        <h3>О <em>юните</em></h3>
+        <p class="sub">Базовая информация о ребёнке.</p>
+        <div class="form-grid">
+          <div class="field"><label>Имя ребёнка</label><input id="childFirst" type="text" placeholder="Алия" required></div>
+          <div class="field"><label>Фамилия</label><input id="childLast" type="text" placeholder="Сейтова" required></div>
+          <div class="field"><label>Возраст (12–15)</label><input id="childAge" type="number" min="12" max="15" placeholder="13" required></div>
+          <div class="field"><label>Пол · корпус</label>
+            <select required><option value="">Выберите</option><option>Мальчик · Корпус 01</option><option>Девочка · Корпус 02</option></select>
+          </div>
+          <div class="field"><label>Город / Регион</label>
+            <select required>
+              <option value="">Выберите</option>
+              <option>Бишкек</option><option>Ош</option><option>Джалал-Абад</option>
+              <option>Нарын</option><option>Талас</option><option>Баткен</option>
+              <option>Чуй (кроме Бишкека)</option><option>Иссык-Куль</option>
+            </select>
+          </div>
+          <div class="field"><label>Размер футболки</label>
+            <select required><option value="">XS / S / M / L / XL</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option></select>
+          </div>
+        </div>
+        <div class="step-nav">
+          <span></span>
+          <button type="button" class="step-btn next" onclick="nextStep(2)">Дальше</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-pane" data-step="2">
+        <h3>Контакты <em>родителя</em></h3>
+        <p class="sub">Связь только с родителем-доверителем.</p>
+        <div class="form-grid">
+          <div class="field"><label>Имя родителя</label><input id="parentFirst" type="text" placeholder="Айгуль" required></div>
+          <div class="field"><label>Фамилия родителя</label><input id="parentLast" type="text" placeholder="Сейтова"></div>
+          <div class="field full"><label>Телефон (WhatsApp)</label><input id="parentPhone" type="tel" placeholder="+996 700 000 000" required></div>
+          <div class="field full"><label>Email (для договора)</label><input type="email" placeholder="parent@mail.kg" required></div>
+          <div class="field full"><label>Альтернативный контакт</label><input type="tel" placeholder="+996 555 000 000"></div>
+        </div>
+        <div class="step-nav">
+          <button type="button" class="step-btn prev" onclick="prevStep(1)">Назад</button>
+          <button type="button" class="step-btn next" onclick="nextStep(3)">Дальше</button>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-pane" data-step="3">
+        <h3>Поток и <em>медицина</em></h3>
+        <p class="sub">Финальные детали — поток и медицинская информация (важно для страховки).</p>
+        <div class="form-grid">
+          <div class="field full"><label>Выбранный поток</label>
+            <select id="streamSelect" required>
+              <option value="">Загрузка потоков...</option>
+            </select>
+          </div>
+          <div class="field full"><label>Хронические заболевания</label><input type="text" placeholder="Нет / опишите"></div>
+          <div class="field full"><label>Аллергии · диета</label><input type="text" placeholder="Нет / опишите"></div>
+          <div class="field full"><label>Кратко о ребёнке (необязательно)</label><textarea placeholder="Что любит, какие интересы, особенности характера. Помогает вожатым подобрать команду."></textarea></div>
+          <div class="field full"><label>Пожелания по потоку</label><input type="text" placeholder="Например: хочу с другом из 7А"></div>
+        </div>
+        <div class="step-nav">
+          <button type="button" class="step-btn prev" onclick="prevStep(2)">Назад</button>
+          <button type="submit" class="step-btn next">Отправить заявку</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- STEP: QR PAYMENT -->
+    <div class="reg-payment" id="regPayment">
+      <div style="text-align:center">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--orange);letter-spacing:3px;text-transform:uppercase;margin-bottom:8px">// ШАГ ОПЛАТЫ</p>
+        <h3 style="font-family:'Unbounded',sans-serif;font-weight:800;font-size:24px;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:8px">Оплатите <em style="color:var(--orange);font-style:normal">бронирование</em></h3>
+        <p style="font-size:14px;color:var(--ink-dim);line-height:1.6;margin-bottom:28px">Отсканируйте QR-код ниже через приложение банка и оплатите. После оплаты нажмите кнопку подтверждения.</p>
+        <div id="qrBlock">
+          <img id="qrImage" src="" alt="QR для оплаты" style="max-width:260px;border-radius:16px;border:2px solid rgba(255,106,31,.3);box-shadow:0 0 40px rgba(255,106,31,.1)">
+        </div>
+        <div id="qrNoImage" style="display:none;padding:32px;background:rgba(255,106,31,.05);border:1px dashed rgba(255,106,31,.3);border-radius:16px;margin:0 auto;max-width:320px">
+          <p style="font-size:14px;color:var(--ink-dim)">QR-код оплаты будет предоставлен менеджером при связи с вами.</p>
+        </div>
+        <p style="margin-top:20px;font-size:13px;color:var(--ink-dim)">Заявка: <strong id="bookingId" style="color:var(--orange)"></strong></p>
+        <button onclick="confirmPayment()" style="margin-top:28px;padding:18px 40px;background:var(--orange);color:#000;border:none;border-radius:30px;font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:10px;transition:all .25s">Я оплатил · Подтвердить бронь<span style="font-family:'JetBrains Mono',monospace">→</span></button>
+      </div>
+    </div>
+
+    <!-- STEP: SUCCESS -->
+    <div class="reg-success" id="regSuccess">
+      <div class="reg-success-icon">✓</div>
+      <h3>Заявка в обработке</h3>
+      <p>С вами в скором времени свяжется менеджер.<br>Добро пожаловать в АПГРЕЙД 2026.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot">
+    <div class="foot-top">
+      <div>
+        <div class="foot-logo">АП<em>ГРЕЙД</em> 2026</div>
+        <p class="foot-desc">Детский cinematic-лагерь нового поколения. Иссык-Куль, лагерь «Маяк». Возраст 12–15 лет.</p>
+        <span class="foot-stamp">// CERT.OFFICIAL · SUMMER.2026</span>
+      </div>
+      <div class="foot-col">
+        <h5>Сайт</h5>
+        <a href="index.html">Главная</a>
+        <a href="system.html">Система</a>
+        <a href="media.html">Медиа</a>
+        <a href="#register">Записаться</a>
+      </div>
+      <div class="foot-col">
+        <h5>Программа</h5>
+        <a href="#streams">Потоки</a>
+        <a href="#missions">5 миссий</a>
+        <a href="#prizes">Награды</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="foot-col">
+        <h5>Контакты</h5>
+        <a href="tel:+996700000000">+996 700 000 000</a>
+        <a href="mailto:hello@upgrade.kg">hello@upgrade.kg</a>
+        <a href="#">WhatsApp</a>
+        <a href="#">Telegram</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 АПГРЕЙД · ВСЕ ПРАВА ЗАЩИЩЕНЫ</span>
+      <span>// ИССЫК-КУЛЬ · ЛАГЕРЬ МАЯК · КЫРГЫЗСТАН</span>
+      <span>SYSTEM v.26.07</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Reveal
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }});
+},{threshold:.1, rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Progress bar + nav hide
+const progress=document.getElementById('progress');
+const nav=document.getElementById('mainNav');
+let lastScroll=0;
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement;
+  const max=h.scrollHeight-h.clientHeight;
+  const sc=h.scrollTop;
+  progress.style.width=(sc/max*100)+'%';
+  if(sc>lastScroll && sc>180){ nav.classList.add('hide'); } else { nav.classList.remove('hide'); }
+  lastScroll=sc;
+});
+
+// FAQ
+function toggleFaq(btn){ btn.parentElement.classList.toggle('open'); }
+
+// ==================== LOAD STREAMS ====================
+async function loadStreams() {
+  const sel = document.getElementById('streamSelect');
+  try {
+    const r = await fetch('/api/streams');
+    const streams = await r.json();
+    if (streams.length === 0) {
+      sel.innerHTML = '<option value="">Все потоки заполнены</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="">Выберите поток</option>' +
+      streams.map(s => {
+        const start = formatDate(s.date_start);
+        const end = formatDate(s.date_end);
+        return `<option value="${s.id}">${s.name} · ${start} — ${end} · ${s.spots_left} мест · ${s.price.toLocaleString()} сом</option>`;
+      }).join('');
+  } catch {
+    sel.innerHTML = '<option value="">Ошибка загрузки</option>';
+  }
+}
+
+function formatDate(d) {
+  const months = ['янв','фев','мар','апр','мая','июня','июля','авг','сен','окт','ноя','дек'];
+  const [y, m, day] = d.split('-');
+  return parseInt(day) + ' ' + months[parseInt(m) - 1];
+}
+
+loadStreams();
+
+// ==================== MULTISTEP ====================
+function nextStep(n){
+  const cur=document.querySelector('.step-pane.active');
+  const inputs=cur.querySelectorAll('input[required],select[required]');
+  for(const i of inputs){ if(!i.checkValidity()){ i.reportValidity(); return; }}
+  document.querySelectorAll('.step-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.step').forEach((s,idx)=>{
+    s.classList.remove('active');
+    if(idx<n-1) s.classList.add('done'); else s.classList.remove('done');
+  });
+  document.querySelector(`.step-pane[data-step="${n}"]`).classList.add('active');
+  document.querySelector(`.step[data-step="${n}"]`).classList.add('active');
+  window.scrollTo({top:document.getElementById('register').offsetTop-80,behavior:'smooth'});
+}
+function prevStep(n){
+  document.querySelectorAll('.step-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.step').forEach((s,idx)=>{
+    s.classList.remove('active');
+    if(idx<n-1) s.classList.add('done'); else s.classList.remove('done');
+  });
+  document.querySelector(`.step-pane[data-step="${n}"]`).classList.add('active');
+  document.querySelector(`.step[data-step="${n}"]`).classList.add('active');
+}
+
+// ==================== SUBMIT BOOKING ====================
+async function submitReg(e){
+  e.preventDefault();
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Отправка...';
+
+  const data = {
+    stream_id: parseInt(document.getElementById('streamSelect').value),
+    child_name: document.getElementById('childFirst').value + ' ' + document.getElementById('childLast').value,
+    child_age: parseInt(document.getElementById('childAge').value),
+    parent_phone: document.getElementById('parentPhone').value,
+    parent_name: document.getElementById('parentFirst').value + ' ' + (document.getElementById('parentLast').value || '')
+  };
+
+  try {
+    const r = await fetch('/api/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await r.json();
+
+    if (!r.ok) {
+      alert(result.error || 'Ошибка при отправке заявки');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Отправить заявку';
+      return;
+    }
+
+    // Hide form, show QR payment step
+    document.getElementById('regForm').style.display = 'none';
+    document.querySelector('.steps').style.display = 'none';
+    document.getElementById('bookingId').textContent = '#' + result.booking_id;
+
+    if (result.qr_image_url) {
+      document.getElementById('qrImage').src = result.qr_image_url;
+      document.getElementById('qrBlock').style.display = 'block';
+      document.getElementById('qrNoImage').style.display = 'none';
+    } else {
+      document.getElementById('qrBlock').style.display = 'none';
+      document.getElementById('qrNoImage').style.display = 'block';
+    }
+
+    document.getElementById('regPayment').classList.add('show');
+    window.scrollTo({top:document.getElementById('register').offsetTop-80,behavior:'smooth'});
+  } catch {
+    alert('Ошибка сети. Попробуйте ещё раз.');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Отправить заявку';
+  }
+}
+
+// ==================== CONFIRM PAYMENT ====================
+function confirmPayment() {
+  document.getElementById('regPayment').classList.remove('show');
+  document.getElementById('regPayment').style.display = 'none';
+  document.getElementById('regSuccess').classList.add('show');
+  window.scrollTo({top:document.getElementById('register').offsetTop-80,behavior:'smooth'});
+}
+
+// ==================== STREAMS GRID ====================
+const MONTHS = ['','ЯНВАРЯ','ФЕВРАЛЯ','МАРТА','АПРЕЛЯ','МАЯ','ИЮНЯ','ИЮЛЯ','АВГУСТА','СЕНТЯБРЯ','ОКТЯБРЯ','НОЯБРЯ','ДЕКАБРЯ'];
+function fmtStreamDate(start, end) {
+  const [,sm,sd] = start.split('-').map(Number);
+  const [,em,ed] = end.split('-').map(Number);
+  if (sm === em) return `${sd}—${ed}<br>${MONTHS[sm]}`;
+  return `${sd} ${MONTHS[sm]} —<br>${ed} ${MONTHS[em]}`;
+}
+function daysBetween(a,b) {
+  return Math.round((new Date(b) - new Date(a)) / 86400000);
+}
+(async function loadStreamsGrid(){
+  try {
+    const r = await fetch('/api/streams');
+    const streams = await r.json();
+    const grid = document.getElementById('streamsGrid');
+    grid.innerHTML = streams.map((s, i) => {
+      const hasSpots = s.spots_left > 0;
+      const days = daysBetween(s.date_start, s.date_end);
+      return `
+        <div class="stream-it${i===0?' first':''}${!hasSpots?' sold-out':''}">
+          <div class="n">${String(i+1).padStart(2,'0')}</div>
+          <div class="d">${fmtStreamDate(s.date_start, s.date_end)}</div>
+          <div class="meta">
+            <span class="avail ${hasSpots?'open':'full'}"><span class="dot"></span>${hasSpots?'ЕСТЬ МЕСТА':'МЕСТ НЕТ'}</span>
+            <strong>${days} ДНЕЙ</strong>
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e) { console.error(e); }
+})();
+</script>
+</body>
+</html>

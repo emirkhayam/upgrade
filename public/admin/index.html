@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>АПГРЕЙД — Админ-панель</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0a0c14;color:#e8ecf2;min-height:100vh}
+a{color:#ff6a1f;text-decoration:none}
+
+/* Login */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-box{background:#10131c;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:40px;width:360px}
+.login-box h1{font-size:24px;margin-bottom:8px}
+.login-box p{font-size:13px;color:#7d8694;margin-bottom:24px}
+.login-box input{width:100%;padding:12px;background:#05060a;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8ecf2;font-size:14px;margin-bottom:12px}
+.login-box input:focus{outline:none;border-color:#ff6a1f}
+.login-box button{width:100%;padding:14px;background:#ff6a1f;color:#000;border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer}
+.login-box button:hover{background:#fff}
+.login-error{color:#ff3d6a;font-size:13px;margin-top:8px;display:none}
+
+/* Dashboard */
+.dashboard{display:none}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:16px 32px;background:#10131c;border-bottom:1px solid rgba(255,255,255,.07)}
+.topbar h2{font-size:18px;font-weight:700}
+.topbar h2 span{color:#ff6a1f}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.topbar-right button{padding:8px 16px;background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:8px;color:#7d8694;font-size:12px;cursor:pointer}
+.topbar-right button:hover{border-color:#ff6a1f;color:#ff6a1f}
+
+.tabs{display:flex;gap:4px;padding:16px 32px 0;background:#0a0c14}
+.tab{padding:10px 20px;background:transparent;border:none;color:#7d8694;font-size:13px;font-weight:600;cursor:pointer;border-radius:8px 8px 0 0;transition:.2s}
+.tab:hover{color:#e8ecf2}
+.tab.active{background:#10131c;color:#ff6a1f}
+
+.panel{padding:24px 32px;display:none}
+.panel.active{display:block}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat{background:#10131c;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px}
+.stat .v{font-size:32px;font-weight:800;color:#ff6a1f;line-height:1}
+.stat .l{font-size:11px;color:#7d8694;margin-top:6px;text-transform:uppercase;letter-spacing:1px}
+
+/* Table */
+table{width:100%;border-collapse:collapse;background:#10131c;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.07)}
+th{text-align:left;padding:14px 16px;font-size:11px;color:#7d8694;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,.07)}
+td{padding:14px 16px;font-size:14px;border-bottom:1px solid rgba(255,255,255,.04)}
+tr:hover{background:rgba(255,106,31,.03)}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-pending{background:rgba(255,170,0,.12);color:#ffaa00;border:1px solid rgba(255,170,0,.3)}
+.badge-confirmed{background:rgba(0,200,100,.12);color:#00c864;border:1px solid rgba(0,200,100,.3)}
+.badge-cancelled{background:rgba(255,61,106,.12);color:#ff3d6a;border:1px solid rgba(255,61,106,.3)}
+
+.btn-sm{padding:6px 12px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-confirm{background:rgba(0,200,100,.15);color:#00c864;border:1px solid rgba(0,200,100,.3)}
+.btn-confirm:hover{background:rgba(0,200,100,.3)}
+.btn-cancel{background:rgba(255,61,106,.1);color:#ff3d6a;border:1px solid rgba(255,61,106,.3)}
+.btn-cancel:hover{background:rgba(255,61,106,.25)}
+
+/* Filters */
+.filters{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.filters select{padding:8px 12px;background:#05060a;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8ecf2;font-size:13px}
+.filters select:focus{outline:none;border-color:#ff6a1f}
+
+/* Forms */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:600px}
+.form-grid label{font-size:11px;color:#7d8694;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block}
+.form-grid input,.form-grid select{width:100%;padding:10px;background:#05060a;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8ecf2;font-size:14px}
+.form-grid input:focus{outline:none;border-color:#ff6a1f}
+.form-full{grid-column:1/-1}
+.form-grid button{grid-column:1/-1;padding:14px;background:#ff6a1f;color:#000;border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;margin-top:8px}
+
+/* QR upload */
+.qr-section{max-width:400px}
+.qr-preview{width:200px;height:200px;background:#10131c;border:1px dashed rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;overflow:hidden}
+.qr-preview img{max-width:100%;max-height:100%;object-fit:contain}
+.qr-preview .placeholder{color:#494f5b;font-size:13px}
+
+/* Search & Export bar */
+.toolbar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.toolbar input[type="text"]{padding:8px 12px;background:#05060a;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8ecf2;font-size:13px;width:240px}
+.toolbar input[type="text"]:focus{outline:none;border-color:#ff6a1f}
+.btn-export{padding:8px 16px;background:rgba(255,106,31,.12);color:#ff6a1f;border:1px solid rgba(255,106,31,.3);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-export:hover{background:rgba(255,106,31,.25)}
+
+/* Overview cards */
+.overview-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px}
+.ov-card{background:#10131c;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px;text-align:center}
+.ov-card .ov-v{font-size:36px;font-weight:800;color:#ff6a1f;line-height:1}
+.ov-card .ov-l{font-size:11px;color:#7d8694;margin-top:8px;text-transform:uppercase;letter-spacing:1px}
+.stream-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.sc{background:#10131c;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:20px;transition:.2s}
+.sc:hover{border-color:rgba(255,106,31,.3)}
+.sc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sc-name{font-size:15px;font-weight:700}
+.sc-dates{font-size:11px;color:#7d8694}
+.sc-bar-wrap{background:#05060a;border-radius:6px;height:10px;overflow:hidden;margin-bottom:8px}
+.sc-bar{height:100%;border-radius:6px;transition:width .4s ease}
+.sc-nums{display:flex;justify-content:space-between;font-size:12px;color:#7d8694}
+.sc-nums strong{color:#e8ecf2}
+.sc-bottom{display:flex;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05);font-size:12px;color:#7d8694}
+.sc-bottom span strong{color:#ffaa00}
+
+/* Responsive */
+@media(max-width:768px){
+  .stats{grid-template-columns:1fr 1fr}
+  .overview-stats{grid-template-columns:1fr 1fr}
+  .tabs{overflow-x:auto}
+  .panel{padding:16px}
+  .topbar{padding:12px 16px}
+  .form-grid{grid-template-columns:1fr}
+  table{font-size:12px}
+  th,td{padding:10px 8px}
+  .toolbar input[type="text"]{width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <h1>АПГРЕЙД <span style="color:#ff6a1f">ADMIN</span></h1>
+    <p>Панель управления лагерем</p>
+    <input type="text" id="loginUser" placeholder="Логин" value="admin">
+    <input type="password" id="loginPass" placeholder="Пароль">
+    <button onclick="doLogin()">Войти</button>
+    <button onclick="devLogin()" style="width:100%;padding:10px;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,.15);color:#7d8694;border-radius:8px;font-size:12px;cursor:pointer">⚡ DEV вход</button>
+    <div class="login-error" id="loginErr">Неверный логин или пароль</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="topbar">
+    <h2>АПГРЕЙД <span>ADMIN</span></h2>
+    <div class="topbar-right">
+      <span id="adminTime" style="font-size:12px;color:#7d8694"></span>
+      <button onclick="logout()">Выйти</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('overview')">Обзор</button>
+    <button class="tab" onclick="switchTab('bookings')">Заявки</button>
+    <button class="tab" onclick="switchTab('streams')">Потоки</button>
+    <button class="tab" onclick="switchTab('qr')">QR оплаты</button>
+    <button class="tab" onclick="switchTab('champion')">Чемпион</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="panel active" id="panel-overview">
+    <div class="overview-stats" id="ovStats"></div>
+    <h3 style="margin-bottom:16px">Заполнение потоков</h3>
+    <div class="stream-cards" id="streamCards"></div>
+  </div>
+
+  <!-- BOOKINGS -->
+  <div class="panel" id="panel-bookings">
+    <div class="stats" id="statsRow"></div>
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Поиск по имени или телефону..." oninput="debounceSearch()">
+      <button class="btn-export" onclick="exportCSV()">⬇ Экспорт CSV</button>
+    </div>
+    <div class="filters">
+      <select id="filterStream" onchange="loadBookings()">
+        <option value="">Все потоки</option>
+      </select>
+      <select id="filterStatus" onchange="loadBookings()">
+        <option value="">Все статусы</option>
+        <option value="pending">Ожидает</option>
+        <option value="confirmed">Подтверждено</option>
+        <option value="cancelled">Отменено</option>
+      </select>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>Ребёнок</th><th>Возраст</th><th>Телефон</th><th>Родитель</th><th>Поток</th><th>Статус</th><th>Дата</th><th>Действия</th></tr></thead>
+      <tbody id="bookingsBody"></tbody>
+    </table>
+  </div>
+
+  <!-- STREAMS -->
+  <div class="panel" id="panel-streams">
+    <h3 style="margin-bottom:16px">Управление потоками</h3>
+    <table style="margin-bottom:24px">
+      <thead><tr><th>Название</th><th>Начало</th><th>Конец</th><th>Мест</th><th>Занято</th><th>Цена</th><th>Статус</th><th>Действия</th></tr></thead>
+      <tbody id="streamsBody"></tbody>
+    </table>
+
+    <h3 style="margin-bottom:16px">Добавить поток</h3>
+    <div class="form-grid">
+      <div><label>Название</label><input id="sName" placeholder="Поток 8"></div>
+      <div><label>Цена (сом)</label><input id="sPrice" type="number" value="19998"></div>
+      <div><label>Начало</label><input id="sStart" type="date"></div>
+      <div><label>Конец</label><input id="sEnd" type="date"></div>
+      <div><label>Мест</label><input id="sCap" type="number" value="80"></div>
+      <div></div>
+      <button onclick="addStream()">Добавить поток</button>
+    </div>
+  </div>
+
+  <!-- QR -->
+  <div class="panel" id="panel-qr">
+    <h3 style="margin-bottom:16px">QR-код для оплаты</h3>
+    <p style="font-size:13px;color:#7d8694;margin-bottom:16px">Загрузите QR-код вашего платёжного счёта. Он будет показываться родителям после подачи заявки.</p>
+    <div class="qr-section">
+      <div class="qr-preview" id="qrPreview">
+        <span class="placeholder">QR не загружен</span>
+      </div>
+      <input type="file" id="qrFile" accept="image/*" style="margin-bottom:12px">
+      <button class="btn-sm btn-confirm" style="padding:10px 20px;font-size:13px" onclick="uploadQR()">Загрузить QR</button>
+    </div>
+  </div>
+
+  <!-- CHAMPION -->
+  <div class="panel" id="panel-champion">
+    <h3 style="margin-bottom:8px">Чемпион потока</h3>
+    <p style="font-size:13px;color:#7d8694;margin-bottom:20px">Управление блоком «Топ-юнит недели» на странице Медиа. Загрузите фото и заполните данные.</p>
+    <div style="display:flex;gap:32px;flex-wrap:wrap">
+      <div>
+        <div class="qr-preview" id="champPreview" style="width:220px;height:240px;border-radius:14px">
+          <span class="placeholder">Фото не загружено</span>
+        </div>
+        <input type="file" id="champFile" accept="image/*" style="margin-top:12px;margin-bottom:12px">
+      </div>
+      <div class="form-grid" style="max-width:400px;align-content:start">
+        <div class="form-full"><label>Имя</label><input id="champName" placeholder="Руслан"></div>
+        <div class="form-full"><label>XP и титул</label><input id="champXP" placeholder="12 480 XP · ЧЕМПИОН ПОТОКА"></div>
+        <div class="form-full"><label>Город · возраст · поток</label><input id="champRole" placeholder="// БИШКЕК · 14 ЛЕТ · ПОТОК 03"></div>
+        <div class="form-full"><label>Описание</label><input id="champDesc" placeholder="Лидер по очкам в трёх миссиях..."></div>
+        <button onclick="saveChampion()">Сохранить чемпиона</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let token = localStorage.getItem('admin_token');
+
+// ==================== AUTH ====================
+function devLogin() {
+  document.getElementById('loginUser').value = 'admin';
+  document.getElementById('loginPass').value = 'upgrade2026';
+  doLogin();
+}
+
+async function doLogin() {
+  const user = document.getElementById('loginUser').value;
+  const pass = document.getElementById('loginPass').value;
+  try {
+    const r = await fetch(API + '/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: user, password: pass })
+    });
+    const d = await r.json();
+    if (d.token) {
+      token = d.token;
+      localStorage.setItem('admin_token', token);
+      showDashboard();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  } catch { document.getElementById('loginErr').style.display = 'block'; }
+}
+
+function logout() {
+  token = null;
+  localStorage.removeItem('admin_token');
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginWrap').style.display = 'flex';
+}
+
+function headers() {
+  return { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+}
+
+async function showDashboard() {
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  updateTime();
+  setInterval(updateTime, 60000);
+  await loadStreamsFilter();
+  await loadOverview();
+  await loadQR();
+}
+
+function updateTime() {
+  document.getElementById('adminTime').textContent = new Date().toLocaleString('ru-RU');
+}
+
+// ==================== TABS ====================
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab[onclick*="'${name}'"]`).classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'overview') loadOverview();
+  if (name === 'streams') loadStreams();
+  if (name === 'bookings') loadBookings();
+  if (name === 'champion') loadChampion();
+}
+
+// ==================== OVERVIEW ====================
+async function loadOverview() {
+  try {
+    const r = await fetch(API + '/api/admin/stats', { headers: headers() });
+    if (r.status === 401) return logout();
+    const { streams, totals, revenue } = await r.json();
+
+    document.getElementById('ovStats').innerHTML = `
+      <div class="ov-card"><div class="ov-v">${totals.total || 0}</div><div class="ov-l">Всего заявок</div></div>
+      <div class="ov-card"><div class="ov-v" style="color:#ffaa00">${totals.pending || 0}</div><div class="ov-l">Ожидает</div></div>
+      <div class="ov-card"><div class="ov-v" style="color:#00c864">${totals.confirmed || 0}</div><div class="ov-l">Подтверждено</div></div>
+      <div class="ov-card"><div class="ov-v" style="color:#ff3d6a">${totals.cancelled || 0}</div><div class="ov-l">Отменено</div></div>
+      <div class="ov-card"><div class="ov-v" style="color:#00c864">${(revenue || 0).toLocaleString()}</div><div class="ov-l">Выручка (сом)</div></div>
+    `;
+
+    document.getElementById('streamCards').innerHTML = streams.map(s => {
+      const pct = s.capacity > 0 ? Math.round((s.booked / s.capacity) * 100) : 0;
+      const color = pct >= 90 ? '#ff3d6a' : pct >= 60 ? '#ffaa00' : '#00c864';
+      return `
+        <div class="sc">
+          <div class="sc-head">
+            <span class="sc-name">${s.name}</span>
+            <span class="badge ${s.is_active ? 'badge-confirmed' : 'badge-cancelled'}" style="font-size:10px">${s.is_active ? 'Активен' : 'Скрыт'}</span>
+          </div>
+          <div class="sc-dates">${formatDate(s.date_start)} — ${formatDate(s.date_end)}</div>
+          <div class="sc-bar-wrap" style="margin-top:12px">
+            <div class="sc-bar" style="width:${pct}%;background:${color}"></div>
+          </div>
+          <div class="sc-nums">
+            <span><strong>${s.booked}</strong> / ${s.capacity} мест</span>
+            <span style="color:${color};font-weight:700">${pct}%</span>
+          </div>
+          <div class="sc-bottom">
+            <span>Ожидает: <strong>${s.pending}</strong></span>
+            <span>Подтв.: <strong style="color:#00c864">${s.confirmed}</strong></span>
+            <span>${s.price.toLocaleString()} сом</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch(e) { console.error(e); }
+}
+
+// ==================== SEARCH & EXPORT ====================
+let searchTimer;
+function debounceSearch() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(loadBookings, 300);
+}
+
+let lastBookings = [];
+
+function exportCSV() {
+  if (!lastBookings.length) return alert('Нет данных для экспорта');
+  const header = 'ID,Ребёнок,Возраст,Телефон,Родитель,Поток,Начало,Конец,Статус,Дата заявки';
+  const rows = lastBookings.map(b =>
+    [b.id, b.child_name, b.child_age, b.parent_phone, b.parent_name || '', b.stream_name,
+     b.date_start, b.date_end, statusText(b.status), b.created_at]
+    .map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')
+  );
+  const csv = '\uFEFF' + header + '\n' + rows.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'bookings_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+// ==================== BOOKINGS ====================
+async function loadBookings() {
+  const stream = document.getElementById('filterStream').value;
+  const status = document.getElementById('filterStatus').value;
+  const search = document.getElementById('searchInput').value.trim();
+  let url = API + '/api/admin/bookings?';
+  if (stream) url += 'stream_id=' + stream + '&';
+  if (status) url += 'status=' + status + '&';
+  if (search) url += 'search=' + encodeURIComponent(search);
+
+  try {
+    const r = await fetch(url, { headers: headers() });
+    if (r.status === 401) return logout();
+    const bookings = await r.json();
+    lastBookings = bookings;
+
+    // Stats
+    const all = bookings.length;
+    const pending = bookings.filter(b => b.status === 'pending').length;
+    const confirmed = bookings.filter(b => b.status === 'confirmed').length;
+    const cancelled = bookings.filter(b => b.status === 'cancelled').length;
+    document.getElementById('statsRow').innerHTML = `
+      <div class="stat"><div class="v">${all}</div><div class="l">Всего заявок</div></div>
+      <div class="stat"><div class="v" style="color:#ffaa00">${pending}</div><div class="l">Ожидает</div></div>
+      <div class="stat"><div class="v" style="color:#00c864">${confirmed}</div><div class="l">Подтверждено</div></div>
+      <div class="stat"><div class="v" style="color:#ff3d6a">${cancelled}</div><div class="l">Отменено</div></div>
+    `;
+
+    document.getElementById('bookingsBody').innerHTML = bookings.map(b => `
+      <tr>
+        <td>${b.id}</td>
+        <td><strong>${b.child_name}</strong></td>
+        <td>${b.child_age}</td>
+        <td>${b.parent_phone}</td>
+        <td>${b.parent_name || '—'}</td>
+        <td>${b.stream_name}<br><small style="color:#7d8694">${formatDate(b.date_start)} — ${formatDate(b.date_end)}</small></td>
+        <td><span class="badge badge-${b.status}">${statusText(b.status)}</span></td>
+        <td><small style="color:#7d8694">${formatDateTime(b.created_at)}</small></td>
+        <td>
+          ${b.status === 'pending' ? `
+            <button class="btn-sm btn-confirm" onclick="updateBooking(${b.id},'confirmed')">Принять</button>
+            <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled')" style="margin-left:4px">Отклонить</button>
+          ` : b.status === 'confirmed' ? `
+            <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled')">Отменить</button>
+          ` : '—'}
+        </td>
+      </tr>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function updateBooking(id, status) {
+  const action = status === 'confirmed' ? 'подтвердить' : 'отклонить';
+  if (!confirm(`Вы уверены что хотите ${action} заявку #${id}?`)) return;
+  await fetch(API + '/api/admin/bookings/' + id, {
+    method: 'PATCH', headers: headers(),
+    body: JSON.stringify({ status })
+  });
+  loadBookings();
+}
+
+// ==================== STREAMS ====================
+async function loadStreamsFilter() {
+  const r = await fetch(API + '/api/admin/streams', { headers: headers() });
+  if (r.status === 401) return logout();
+  const streams = await r.json();
+  const sel = document.getElementById('filterStream');
+  sel.innerHTML = '<option value="">Все потоки</option>' +
+    streams.map(s => `<option value="${s.id}">${s.name} (${formatDate(s.date_start)})</option>`).join('');
+}
+
+async function loadStreams() {
+  const r = await fetch(API + '/api/admin/streams', { headers: headers() });
+  const streams = await r.json();
+  document.getElementById('streamsBody').innerHTML = streams.map(s => `
+    <tr>
+      <td><strong>${s.name}</strong></td>
+      <td>${formatDate(s.date_start)}</td>
+      <td>${formatDate(s.date_end)}</td>
+      <td>${s.capacity}</td>
+      <td>${s.booked || 0}</td>
+      <td>${s.price.toLocaleString()} сом</td>
+      <td><span class="badge ${s.is_active ? 'badge-confirmed' : 'badge-cancelled'}">${s.is_active ? 'Активен' : 'Скрыт'}</span></td>
+      <td>
+        <button class="btn-sm ${s.is_active ? 'btn-cancel' : 'btn-confirm'}"
+          onclick="toggleStream(${s.id}, ${s.is_active ? 0 : 1})">${s.is_active ? 'Скрыть' : 'Включить'}</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+async function addStream() {
+  const data = {
+    name: document.getElementById('sName').value,
+    date_start: document.getElementById('sStart').value,
+    date_end: document.getElementById('sEnd').value,
+    capacity: parseInt(document.getElementById('sCap').value),
+    price: parseInt(document.getElementById('sPrice').value)
+  };
+  if (!data.name || !data.date_start || !data.date_end) return alert('Заполните все поля');
+  await fetch(API + '/api/admin/streams', {
+    method: 'POST', headers: headers(),
+    body: JSON.stringify(data)
+  });
+  document.getElementById('sName').value = '';
+  loadStreams();
+  loadStreamsFilter();
+}
+
+async function toggleStream(id, active) {
+  await fetch(API + '/api/admin/streams/' + id, {
+    method: 'PATCH', headers: headers(),
+    body: JSON.stringify({ is_active: active })
+  });
+  loadStreams();
+}
+
+// ==================== QR ====================
+async function loadQR() {
+  const r = await fetch(API + '/api/admin/settings/qr');
+  const d = await r.json();
+  const preview = document.getElementById('qrPreview');
+  if (d.url) {
+    preview.innerHTML = `<img src="${d.url}" alt="QR">`;
+  }
+}
+
+async function uploadQR() {
+  const file = document.getElementById('qrFile').files[0];
+  if (!file) return alert('Выберите файл');
+  const fd = new FormData();
+  fd.append('qr', file);
+  const r = await fetch(API + '/api/admin/settings/qr', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token },
+    body: fd
+  });
+  const d = await r.json();
+  if (d.url) {
+    document.getElementById('qrPreview').innerHTML = `<img src="${d.url}" alt="QR">`;
+    alert('QR-код загружен!');
+  }
+}
+
+// ==================== CHAMPION ====================
+async function loadChampion() {
+  try {
+    const r = await fetch(API + '/api/admin/champion');
+    const data = await r.json();
+    if (!data) return;
+    document.getElementById('champName').value = data.name || '';
+    document.getElementById('champXP').value = data.xp || '';
+    document.getElementById('champRole').value = data.role || '';
+    document.getElementById('champDesc').value = data.description || '';
+    if (data.photo) {
+      document.getElementById('champPreview').innerHTML = `<img src="${data.photo}" alt="Champion" style="width:100%;height:100%;object-fit:cover">`;
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function saveChampion() {
+  const fd = new FormData();
+  fd.append('name', document.getElementById('champName').value);
+  fd.append('xp', document.getElementById('champXP').value);
+  fd.append('role', document.getElementById('champRole').value);
+  fd.append('description', document.getElementById('champDesc').value);
+  const file = document.getElementById('champFile').files[0];
+  if (file) fd.append('photo', file);
+  const r = await fetch(API + '/api/admin/champion', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token },
+    body: fd
+  });
+  const data = await r.json();
+  if (data.photo) {
+    document.getElementById('champPreview').innerHTML = `<img src="${data.photo}" alt="Champion" style="width:100%;height:100%;object-fit:cover">`;
+  }
+  alert('Чемпион сохранён!');
+}
+
+// ==================== HELPERS ====================
+function statusText(s) {
+  return { pending: 'Ожидает', confirmed: 'Подтверждено', cancelled: 'Отменено' }[s] || s;
+}
+function formatDate(d) {
+  if (!d) return '';
+  const [y, m, day] = d.split('-');
+  return `${day}.${m}.${y}`;
+}
+function formatDateTime(d) {
+  if (!d) return '';
+  return new Date(d + 'Z').toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+
+// ==================== INIT ====================
+if (token) {
+  fetch(API + '/api/admin/bookings', { headers: headers() })
+    .then(r => { if (r.ok) showDashboard(); else logout(); })
+    .catch(() => logout());
+}
+</script>
+</body>
+</html>
