@@ -103,18 +103,130 @@ tr:hover{background:rgba(255,106,31,.03)}
 .sc-bottom{display:flex;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05);font-size:12px;color:#7d8694}
 .sc-bottom span strong{color:#ffaa00}
 
+/* Booking modal */
+.b-modal-bg{
+  position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;padding:16px;
+}
+.b-modal-bg.open{display:flex}
+.b-modal{
+  background:#10131c;border:1px solid rgba(255,255,255,.1);border-radius:16px;
+  padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;
+  position:relative;
+}
+.b-modal-close{
+  position:absolute;top:14px;right:14px;background:none;border:1px solid rgba(255,255,255,.15);
+  color:#7d8694;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.b-modal-close:hover{border-color:#ff6a1f;color:#ff6a1f}
+.b-modal h3{font-size:20px;font-weight:700;margin-bottom:4px}
+.b-modal .b-m-id{font-size:11px;color:#7d8694;letter-spacing:1px;margin-bottom:20px}
+.b-m-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.b-m-field{display:flex;flex-direction:column;gap:4px}
+.b-m-field .label{font-size:10px;color:#7d8694;text-transform:uppercase;letter-spacing:1px}
+.b-m-field .val{font-size:14px;color:#e8ecf2}
+.b-m-full{grid-column:1/-1}
+.b-m-actions{display:flex;gap:10px;padding-top:18px;border-top:1px solid rgba(255,255,255,.07)}
+.b-m-actions button{flex:1;padding:14px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}
+
+/* Booking cards (mobile) */
+.booking-cards{display:none}
+.b-card{
+  background:#10131c;border:1px solid rgba(255,255,255,.07);border-radius:14px;
+  padding:18px;margin-bottom:10px;transition:.2s;
+}
+.b-card:hover{border-color:rgba(255,106,31,.3)}
+.b-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.b-card-name{font-size:16px;font-weight:700}
+.b-card-id{font-size:10px;color:#7d8694;letter-spacing:1px}
+.b-card-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;color:#c5cad4}
+.b-card-row .label{color:#7d8694;font-size:11px}
+.b-card-phone{display:flex;align-items:center;gap:8px}
+.b-card-actions{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05)}
+.b-card-actions button{flex:1;padding:12px;border-radius:10px;font-size:12px;font-weight:700}
+
 /* Responsive */
 @media(max-width:768px){
-  .stats{grid-template-columns:1fr 1fr}
-  .overview-stats{grid-template-columns:1fr 1fr}
-  .tabs{overflow-x:auto}
+  .stats{grid-template-columns:1fr 1fr;gap:10px}
+  .overview-stats{grid-template-columns:1fr 1fr;gap:10px}
+  .tabs{overflow-x:auto;padding:12px 16px 0;gap:2px}
+  .tab{padding:8px 14px;font-size:12px}
   .panel{padding:16px}
   .topbar{padding:12px 16px}
+  .topbar h2{font-size:16px}
   .form-grid{grid-template-columns:1fr}
   table{font-size:12px}
   th,td{padding:10px 8px}
   .toolbar input[type="text"]{width:100%}
+  .stream-cards{grid-template-columns:1fr}
+  .sc{padding:16px;border-radius:12px}
+  .sc-name{font-size:14px}
+  .stat{padding:16px;border-radius:10px}
+  .ov-card{padding:16px;border-radius:10px}
+  .qr-section{max-width:100%}
 }
+@media(max-width:480px){
+  .login-box{width:calc(100% - 32px);max-width:340px;padding:28px 20px;border-radius:14px}
+  .login-box h1{font-size:20px}
+  .login-box p{font-size:12px}
+  .login-box input{padding:14px 12px;font-size:15px;border-radius:10px}
+  .login-box button{padding:16px;font-size:15px;border-radius:10px}
+  .stats{grid-template-columns:1fr;gap:8px}
+  .overview-stats{grid-template-columns:1fr;gap:8px}
+  .stat{padding:14px;border-radius:10px}
+  .stat .v{font-size:26px}
+  .stat .l{font-size:10px}
+  .ov-card{padding:14px;border-radius:10px}
+  .ov-card .ov-v{font-size:28px}
+  .ov-card .ov-l{font-size:10px}
+  .tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:8px 12px 0}
+  .tab{padding:10px 8px;font-size:11px;text-align:center;border-radius:8px}
+  .tab.active{border-radius:8px}
+  .panel{padding:12px 10px}
+  .topbar{flex-direction:column;gap:8px;align-items:flex-start;padding:12px}
+  .topbar h2{font-size:15px}
+  .topbar-right{width:100%;justify-content:space-between}
+  .topbar-right button{padding:10px 16px;font-size:11px}
+  .bookings-table{display:none}
+  .booking-cards{display:block}
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px}
+  thead{font-size:10px}
+  th,td{padding:8px 6px;font-size:11px;white-space:nowrap}
+  .btn-sm{padding:8px 12px;font-size:10px}
+  .toolbar{flex-direction:column;gap:8px}
+  .toolbar input[type="text"]{width:100%;padding:12px;font-size:14px;border-radius:10px}
+  .btn-export{width:100%;text-align:center;padding:12px;border-radius:10px}
+  .filters{flex-direction:column;gap:8px}
+  .filters select{width:100%;padding:12px;font-size:14px;border-radius:10px}
+  .form-grid input,.form-grid select{padding:12px;font-size:14px;border-radius:10px}
+  .form-grid button{padding:16px;font-size:14px;border-radius:10px}
+  .form-grid label{font-size:10px}
+  .sc{padding:14px;border-radius:10px}
+  .sc-name{font-size:13px}
+  .sc-dates{font-size:10px}
+  .sc-nums{font-size:11px}
+  .sc-bottom{font-size:11px;flex-wrap:wrap;gap:8px}
+  .qr-section{max-width:100%}
+  .qr-preview{width:100%;height:200px;border-radius:10px}
+  #qrFile{font-size:13px}
+  h3{font-size:16px!important}
+  #panel-champion>div[style]{flex-direction:column!important;gap:16px!important}
+  #champPreview{width:100%!important;height:200px!important;border-radius:12px!important}
+  #champFile{font-size:13px}
+}
+
+/* Entity cards (speakers, stars, media) */
+.entity-card{background:#10131c;border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px;display:flex;gap:14px;align-items:center;transition:.2s}
+.entity-card:hover{border-color:rgba(255,106,31,.3)}
+.entity-card img{width:64px;height:64px;border-radius:10px;object-fit:cover;flex-shrink:0}
+.entity-card .ec-placeholder{width:64px;height:64px;border-radius:10px;background:#05060a;display:flex;align-items:center;justify-content:center;color:#494f5b;font-size:20px;flex-shrink:0}
+.entity-card .ec-info{flex:1;min-width:0}
+.entity-card .ec-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.entity-card .ec-meta{font-size:11px;color:#7d8694}
+.entity-card .ec-actions{display:flex;gap:6px;flex-shrink:0}
+.media-thumb{width:80px;height:60px;border-radius:8px;object-fit:cover;flex-shrink:0}
+.media-placeholder{width:80px;height:60px;border-radius:8px;background:#05060a;display:flex;align-items:center;justify-content:center;color:#494f5b;font-size:10px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -148,6 +260,9 @@ tr:hover{background:rgba(255,106,31,.03)}
     <button class="tab" onclick="switchTab('streams')">Потоки</button>
     <button class="tab" onclick="switchTab('qr')">QR оплаты</button>
     <button class="tab" onclick="switchTab('champion')">Чемпион</button>
+    <button class="tab" onclick="switchTab('speakers')">Спикеры</button>
+    <button class="tab" onclick="switchTab('stars')">Звёзды</button>
+    <button class="tab" onclick="switchTab('media')">Медиа</button>
   </div>
 
   <!-- OVERVIEW -->
@@ -175,10 +290,11 @@ tr:hover{background:rgba(255,106,31,.03)}
         <option value="cancelled">Отменено</option>
       </select>
     </div>
-    <table>
+    <table class="bookings-table">
       <thead><tr><th>#</th><th>Ребёнок</th><th>Возраст</th><th>Телефон</th><th>Родитель</th><th>Поток</th><th>Статус</th><th>Дата</th><th>Действия</th></tr></thead>
       <tbody id="bookingsBody"></tbody>
     </table>
+    <div class="booking-cards" id="bookingCards"></div>
   </div>
 
   <!-- STREAMS -->
@@ -231,6 +347,90 @@ tr:hover{background:rgba(255,106,31,.03)}
         <div class="form-full"><label>Город · возраст · поток</label><input id="champRole" placeholder="// БИШКЕК · 14 ЛЕТ · ПОТОК 03"></div>
         <div class="form-full"><label>Описание</label><input id="champDesc" placeholder="Лидер по очкам в трёх миссиях..."></div>
         <button onclick="saveChampion()">Сохранить чемпиона</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPEAKERS -->
+  <div class="panel" id="panel-speakers">
+    <h3 style="margin-bottom:16px">База спикеров</h3>
+    <div class="stream-cards" id="speakersList"></div>
+
+    <h3 style="margin:24px 0 16px">Добавить / редактировать спикера</h3>
+    <input type="hidden" id="spkEditId" value="">
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <div>
+        <div class="qr-preview" id="spkPreview" style="width:180px;height:200px;border-radius:14px">
+          <span class="placeholder">Фото</span>
+        </div>
+        <input type="file" id="spkFile" accept="image/*" style="margin-top:12px">
+      </div>
+      <div class="form-grid" style="max-width:500px;align-content:start">
+        <div><label>Имя</label><input id="spkName" placeholder="Иван Петров"></div>
+        <div><label>Роль</label><input id="spkRole" placeholder="Тренер по плаванию"></div>
+        <div><label>Категория</label><input id="spkCategory" placeholder="Спорт"></div>
+        <div><label>Порядок</label><input id="spkOrder" type="number" value="0"></div>
+        <div class="form-full"><label>Био</label><input id="spkBio" placeholder="Краткое описание..."></div>
+        <button onclick="saveSpeaker()">Сохранить спикера</button>
+        <button onclick="cancelSpkEdit()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:#7d8694;display:none" id="spkCancelBtn">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STARS -->
+  <div class="panel" id="panel-stars">
+    <h3 style="margin-bottom:16px">Звёзды Кыргызстана</h3>
+    <div class="stream-cards" id="starsList"></div>
+
+    <h3 style="margin:24px 0 16px">Добавить / редактировать звезду</h3>
+    <input type="hidden" id="starEditId" value="">
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <div>
+        <div class="qr-preview" id="starPreview" style="width:180px;height:200px;border-radius:14px">
+          <span class="placeholder">Фото</span>
+        </div>
+        <input type="file" id="starFile" accept="image/*" style="margin-top:12px">
+      </div>
+      <div class="form-grid" style="max-width:500px;align-content:start">
+        <div><label>Имя</label><input id="starName" placeholder="Имя звезды"></div>
+        <div><label>Титул</label><input id="starTitle" placeholder="Олимпийский чемпион"></div>
+        <div><label>Категория</label><input id="starCategory" placeholder="Спорт"></div>
+        <div><label>Порядок</label><input id="starOrder" type="number" value="0"></div>
+        <div class="form-full"><label>Описание</label><input id="starDesc" placeholder="Краткое описание..."></div>
+        <button onclick="saveStar()">Сохранить звезду</button>
+        <button onclick="cancelStarEdit()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:#7d8694;display:none" id="starCancelBtn">Отмена</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDIA -->
+  <div class="panel" id="panel-media">
+    <h3 style="margin-bottom:16px">Управление медиа</h3>
+    <div class="stream-cards" id="mediaList"></div>
+
+    <h3 style="margin:24px 0 16px">Добавить медиа</h3>
+    <input type="hidden" id="medEditId" value="">
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <div>
+        <div class="qr-preview" id="medPreview" style="width:200px;height:160px;border-radius:14px">
+          <span class="placeholder">Превью</span>
+        </div>
+        <input type="file" id="medFile" accept="image/*,video/*" style="margin-top:12px">
+      </div>
+      <div class="form-grid" style="max-width:500px;align-content:start">
+        <div>
+          <label>Тип</label>
+          <select id="medType" style="width:100%;padding:10px;background:#05060a;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8ecf2;font-size:14px">
+            <option value="photo">Фото</option>
+            <option value="video">Видео</option>
+          </select>
+        </div>
+        <div><label>Название</label><input id="medTitle" placeholder="Открытие смены"></div>
+        <div><label>Категория</label><input id="medCategory" placeholder="Лагерь"></div>
+        <div><label>Порядок</label><input id="medOrder" type="number" value="0"></div>
+        <div class="form-full"><label>URL (для видео или внешних ссылок)</label><input id="medUrl" placeholder="https://youtube.com/..."></div>
+        <button onclick="saveMedia()">Сохранить медиа</button>
+        <button onclick="cancelMedEdit()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:#7d8694;display:none" id="medCancelBtn">Отмена</button>
       </div>
     </div>
   </div>
@@ -302,6 +502,9 @@ function switchTab(name) {
   if (name === 'streams') loadStreams();
   if (name === 'bookings') loadBookings();
   if (name === 'champion') loadChampion();
+  if (name === 'speakers') loadSpeakers();
+  if (name === 'stars') loadStars();
+  if (name === 'media') loadMedia();
 }
 
 // ==================== OVERVIEW ====================
@@ -319,7 +522,25 @@ async function loadOverview() {
       <div class="ov-card"><div class="ov-v" style="color:#00c864">${(revenue || 0).toLocaleString()}</div><div class="ov-l">Выручка (сом)</div></div>
     `;
 
-    document.getElementById('streamCards').innerHTML = streams.map(s => {
+    // Общая статистика заполнения
+    const totalCap = streams.reduce((a,s) => a + s.capacity, 0);
+    const totalBooked = streams.reduce((a,s) => a + s.booked, 0);
+    const totalPct = totalCap > 0 ? Math.round((totalBooked / totalCap) * 100) : 0;
+    const totalColor = totalPct >= 90 ? '#ff3d6a' : totalPct >= 60 ? '#ffaa00' : '#00c864';
+
+    document.getElementById('streamCards').innerHTML = `
+      <div style="grid-column:1/-1;padding:20px;background:#10131c;border:1px solid rgba(255,255,255,.07);border-radius:14px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <span style="font-size:14px;font-weight:700">Общее заполнение</span>
+          <span style="font-size:24px;font-weight:800;color:${totalColor}">${totalPct}%</span>
+        </div>
+        <div class="sc-bar-wrap"><div class="sc-bar" style="width:${totalPct}%;background:${totalColor}"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:#7d8694;margin-top:8px">
+          <span><strong style="color:#e8ecf2">${totalBooked}</strong> / ${totalCap} мест</span>
+          <span>${streams.length} потоков</span>
+        </div>
+      </div>
+    ` + streams.map(s => {
       const pct = s.capacity > 0 ? Math.round((s.booked / s.capacity) * 100) : 0;
       const color = pct >= 90 ? '#ff3d6a' : pct >= 60 ? '#ffaa00' : '#00c864';
       return `
@@ -401,11 +622,11 @@ async function loadBookings() {
     `;
 
     document.getElementById('bookingsBody').innerHTML = bookings.map(b => `
-      <tr>
+      <tr style="cursor:pointer" onclick="openBooking(${b.id})">
         <td>${b.id}</td>
         <td><strong>${b.child_name}</strong></td>
         <td>${b.child_age}</td>
-        <td>${b.parent_phone}</td>
+        <td>${phoneLinks(b.parent_phone)}</td>
         <td>${b.parent_name || '—'}</td>
         <td>${b.stream_name}<br><small style="color:#7d8694">${formatDate(b.date_start)} — ${formatDate(b.date_end)}</small></td>
         <td><span class="badge badge-${b.status}">${statusText(b.status)}</span></td>
@@ -420,6 +641,39 @@ async function loadBookings() {
         </td>
       </tr>
     `).join('');
+
+    // Mobile cards
+    document.getElementById('bookingCards').innerHTML = bookings.map(b => {
+      const wa = cleanPhone(b.parent_phone).replace('+','');
+      return `
+      <div class="b-card" onclick="openBooking(${b.id})" style="cursor:pointer">
+        <div class="b-card-top">
+          <span class="b-card-name">${b.child_name}</span>
+          <span class="badge badge-${b.status}" style="font-size:10px">${statusText(b.status)}</span>
+        </div>
+        <div class="b-card-row"><span class="label">Возраст</span><span>${b.child_age} лет</span></div>
+        <div class="b-card-row"><span class="label">Родитель</span><span>${b.parent_name || '—'}</span></div>
+        <div class="b-card-row">
+          <span class="label">Телефон</span>
+          <span class="b-card-phone">
+            <a href="tel:${cleanPhone(b.parent_phone)}" style="color:#e8ecf2">${b.parent_phone}</a>
+            <a href="https://wa.me/${wa}" target="_blank" style="color:#25d366;font-size:18px">💬</a>
+          </span>
+        </div>
+        <div class="b-card-row"><span class="label">Поток</span><span>${b.stream_name}</span></div>
+        <div class="b-card-row"><span class="label">Даты</span><span>${formatDate(b.date_start)} — ${formatDate(b.date_end)}</span></div>
+        <div class="b-card-row"><span class="label">Заявка</span><span style="color:#7d8694">${formatDateTime(b.created_at)}</span></div>
+        <div class="b-card-actions">
+          ${b.status === 'pending' ? `
+            <button class="btn-sm btn-confirm" onclick="updateBooking(${b.id},'confirmed')">✓ Принять</button>
+            <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled')">✗ Отклонить</button>
+          ` : b.status === 'confirmed' ? `
+            <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled')">Отменить</button>
+          ` : '<span style="color:#7d8694;font-size:12px;width:100%;text-align:center">Отменена</span>'}
+        </div>
+      </div>`;
+    }).join('');
+
   } catch(e) { console.error(e); }
 }
 
@@ -552,7 +806,277 @@ async function saveChampion() {
   alert('Чемпион сохранён!');
 }
 
+// ==================== SPEAKERS ====================
+async function loadSpeakers() {
+  try {
+    const r = await fetch(API + '/api/admin/speakers', { headers: headers() });
+    if (r.status === 401) return logout();
+    const speakers = await r.json();
+    document.getElementById('speakersList').innerHTML = speakers.length === 0
+      ? '<p style="color:#7d8694;font-size:13px">Спикеры пока не добавлены</p>'
+      : speakers.map(s => `
+      <div class="entity-card">
+        ${s.photo ? `<img src="${s.photo}" alt="${s.name}">` : `<div class="ec-placeholder">?</div>`}
+        <div class="ec-info">
+          <div class="ec-name">${s.name}</div>
+          <div class="ec-meta">${s.role || ''} ${s.category ? '· ' + s.category : ''}</div>
+          ${s.bio ? `<div class="ec-meta" style="margin-top:2px">${s.bio.substring(0, 80)}${s.bio.length > 80 ? '...' : ''}</div>` : ''}
+        </div>
+        <span class="badge ${s.is_active ? 'badge-confirmed' : 'badge-cancelled'}" style="font-size:10px">${s.is_active ? 'Вкл' : 'Выкл'}</span>
+        <div class="ec-actions">
+          <button class="btn-sm btn-confirm" onclick="editSpeaker(${s.id})">Ред.</button>
+          <button class="btn-sm btn-cancel" onclick="deleteSpeaker(${s.id})">Уд.</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+let speakersCache = [];
+async function editSpeaker(id) {
+  const r = await fetch(API + '/api/admin/speakers', { headers: headers() });
+  speakersCache = await r.json();
+  const s = speakersCache.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('spkEditId').value = s.id;
+  document.getElementById('spkName').value = s.name;
+  document.getElementById('spkRole').value = s.role || '';
+  document.getElementById('spkCategory').value = s.category || '';
+  document.getElementById('spkBio').value = s.bio || '';
+  document.getElementById('spkOrder').value = s.sort_order || 0;
+  if (s.photo) {
+    document.getElementById('spkPreview').innerHTML = `<img src="${s.photo}" style="width:100%;height:100%;object-fit:cover">`;
+  }
+  document.getElementById('spkCancelBtn').style.display = 'block';
+}
+
+function cancelSpkEdit() {
+  document.getElementById('spkEditId').value = '';
+  document.getElementById('spkName').value = '';
+  document.getElementById('spkRole').value = '';
+  document.getElementById('spkCategory').value = '';
+  document.getElementById('spkBio').value = '';
+  document.getElementById('spkOrder').value = '0';
+  document.getElementById('spkFile').value = '';
+  document.getElementById('spkPreview').innerHTML = '<span class="placeholder">Фото</span>';
+  document.getElementById('spkCancelBtn').style.display = 'none';
+}
+
+async function saveSpeaker() {
+  const editId = document.getElementById('spkEditId').value;
+  const fd = new FormData();
+  fd.append('name', document.getElementById('spkName').value);
+  fd.append('role', document.getElementById('spkRole').value);
+  fd.append('category', document.getElementById('spkCategory').value);
+  fd.append('bio', document.getElementById('spkBio').value);
+  fd.append('sort_order', document.getElementById('spkOrder').value);
+  const file = document.getElementById('spkFile').files[0];
+  if (file) fd.append('photo', file);
+
+  const url = editId ? API + '/api/admin/speakers/' + editId : API + '/api/admin/speakers';
+  const method = editId ? 'PATCH' : 'POST';
+  const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+  if (r.ok) {
+    alert(editId ? 'Спикер обновлён!' : 'Спикер добавлен!');
+    cancelSpkEdit();
+    loadSpeakers();
+  } else {
+    const d = await r.json();
+    alert(d.error || 'Ошибка');
+  }
+}
+
+async function deleteSpeaker(id) {
+  if (!confirm('Удалить спикера?')) return;
+  await fetch(API + '/api/admin/speakers/' + id, { method: 'DELETE', headers: headers() });
+  loadSpeakers();
+}
+
+// ==================== STARS ====================
+async function loadStars() {
+  try {
+    const r = await fetch(API + '/api/admin/stars', { headers: headers() });
+    if (r.status === 401) return logout();
+    const stars = await r.json();
+    document.getElementById('starsList').innerHTML = stars.length === 0
+      ? '<p style="color:#7d8694;font-size:13px">Звёзды пока не добавлены</p>'
+      : stars.map(s => `
+      <div class="entity-card">
+        ${s.photo ? `<img src="${s.photo}" alt="${s.name}">` : `<div class="ec-placeholder">★</div>`}
+        <div class="ec-info">
+          <div class="ec-name">${s.name}</div>
+          <div class="ec-meta">${s.title || ''} ${s.category ? '· ' + s.category : ''}</div>
+          ${s.description ? `<div class="ec-meta" style="margin-top:2px">${s.description.substring(0, 80)}${s.description.length > 80 ? '...' : ''}</div>` : ''}
+        </div>
+        <span class="badge ${s.is_active ? 'badge-confirmed' : 'badge-cancelled'}" style="font-size:10px">${s.is_active ? 'Вкл' : 'Выкл'}</span>
+        <div class="ec-actions">
+          <button class="btn-sm btn-confirm" onclick="editStar(${s.id})">Ред.</button>
+          <button class="btn-sm btn-cancel" onclick="deleteStar(${s.id})">Уд.</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function editStar(id) {
+  const r = await fetch(API + '/api/admin/stars', { headers: headers() });
+  const stars = await r.json();
+  const s = stars.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('starEditId').value = s.id;
+  document.getElementById('starName').value = s.name;
+  document.getElementById('starTitle').value = s.title || '';
+  document.getElementById('starCategory').value = s.category || '';
+  document.getElementById('starDesc').value = s.description || '';
+  document.getElementById('starOrder').value = s.sort_order || 0;
+  if (s.photo) {
+    document.getElementById('starPreview').innerHTML = `<img src="${s.photo}" style="width:100%;height:100%;object-fit:cover">`;
+  }
+  document.getElementById('starCancelBtn').style.display = 'block';
+}
+
+function cancelStarEdit() {
+  document.getElementById('starEditId').value = '';
+  document.getElementById('starName').value = '';
+  document.getElementById('starTitle').value = '';
+  document.getElementById('starCategory').value = '';
+  document.getElementById('starDesc').value = '';
+  document.getElementById('starOrder').value = '0';
+  document.getElementById('starFile').value = '';
+  document.getElementById('starPreview').innerHTML = '<span class="placeholder">Фото</span>';
+  document.getElementById('starCancelBtn').style.display = 'none';
+}
+
+async function saveStar() {
+  const editId = document.getElementById('starEditId').value;
+  const fd = new FormData();
+  fd.append('name', document.getElementById('starName').value);
+  fd.append('title', document.getElementById('starTitle').value);
+  fd.append('description', document.getElementById('starDesc').value);
+  fd.append('category', document.getElementById('starCategory').value);
+  fd.append('sort_order', document.getElementById('starOrder').value);
+  const file = document.getElementById('starFile').files[0];
+  if (file) fd.append('photo', file);
+
+  const url = editId ? API + '/api/admin/stars/' + editId : API + '/api/admin/stars';
+  const method = editId ? 'PATCH' : 'POST';
+  const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+  if (r.ok) {
+    alert(editId ? 'Звезда обновлена!' : 'Звезда добавлена!');
+    cancelStarEdit();
+    loadStars();
+  } else {
+    const d = await r.json();
+    alert(d.error || 'Ошибка');
+  }
+}
+
+async function deleteStar(id) {
+  if (!confirm('Удалить звезду?')) return;
+  await fetch(API + '/api/admin/stars/' + id, { method: 'DELETE', headers: headers() });
+  loadStars();
+}
+
+// ==================== MEDIA MANAGEMENT ====================
+async function loadMedia() {
+  try {
+    const r = await fetch(API + '/api/admin/media', { headers: headers() });
+    if (r.status === 401) return logout();
+    const items = await r.json();
+    document.getElementById('mediaList').innerHTML = items.length === 0
+      ? '<p style="color:#7d8694;font-size:13px">Медиа пока не добавлено</p>'
+      : items.map(m => `
+      <div class="entity-card">
+        ${m.type === 'photo' && m.url ? `<img src="${m.url}" class="media-thumb">` :
+          m.thumbnail ? `<img src="${m.thumbnail}" class="media-thumb">` :
+          `<div class="media-placeholder">${m.type === 'video' ? '&#9654;' : '&#128247;'}</div>`}
+        <div class="ec-info">
+          <div class="ec-name">${m.title || 'Без названия'}</div>
+          <div class="ec-meta">${m.type === 'video' ? 'Видео' : 'Фото'} ${m.category ? '· ' + m.category : ''}</div>
+          ${m.url && m.type === 'video' ? `<div class="ec-meta" style="margin-top:2px;word-break:break-all">${m.url.substring(0, 60)}</div>` : ''}
+        </div>
+        <span class="badge ${m.is_active ? 'badge-confirmed' : 'badge-cancelled'}" style="font-size:10px">${m.is_active ? 'Вкл' : 'Выкл'}</span>
+        <div class="ec-actions">
+          <button class="btn-sm btn-confirm" onclick="editMedia(${m.id})">Ред.</button>
+          <button class="btn-sm btn-cancel" onclick="deleteMedia(${m.id})">Уд.</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function editMedia(id) {
+  const r = await fetch(API + '/api/admin/media', { headers: headers() });
+  const items = await r.json();
+  const m = items.find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('medEditId').value = m.id;
+  document.getElementById('medType').value = m.type;
+  document.getElementById('medTitle').value = m.title || '';
+  document.getElementById('medCategory').value = m.category || '';
+  document.getElementById('medOrder').value = m.sort_order || 0;
+  document.getElementById('medUrl').value = m.type === 'video' ? (m.url || '') : '';
+  if (m.url && m.type === 'photo') {
+    document.getElementById('medPreview').innerHTML = `<img src="${m.url}" style="width:100%;height:100%;object-fit:cover">`;
+  } else if (m.thumbnail) {
+    document.getElementById('medPreview').innerHTML = `<img src="${m.thumbnail}" style="width:100%;height:100%;object-fit:cover">`;
+  }
+  document.getElementById('medCancelBtn').style.display = 'block';
+}
+
+function cancelMedEdit() {
+  document.getElementById('medEditId').value = '';
+  document.getElementById('medType').value = 'photo';
+  document.getElementById('medTitle').value = '';
+  document.getElementById('medCategory').value = '';
+  document.getElementById('medOrder').value = '0';
+  document.getElementById('medUrl').value = '';
+  document.getElementById('medFile').value = '';
+  document.getElementById('medPreview').innerHTML = '<span class="placeholder">Превью</span>';
+  document.getElementById('medCancelBtn').style.display = 'none';
+}
+
+async function saveMedia() {
+  const editId = document.getElementById('medEditId').value;
+  const fd = new FormData();
+  fd.append('type', document.getElementById('medType').value);
+  fd.append('title', document.getElementById('medTitle').value);
+  fd.append('category', document.getElementById('medCategory').value);
+  fd.append('sort_order', document.getElementById('medOrder').value);
+  const urlVal = document.getElementById('medUrl').value;
+  if (urlVal) fd.append('url', urlVal);
+  const file = document.getElementById('medFile').files[0];
+  if (file) fd.append('file', file);
+
+  const url = editId ? API + '/api/admin/media/' + editId : API + '/api/admin/media';
+  const method = editId ? 'PATCH' : 'POST';
+  const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+  if (r.ok) {
+    alert(editId ? 'Медиа обновлено!' : 'Медиа добавлено!');
+    cancelMedEdit();
+    loadMedia();
+  } else {
+    const d = await r.json();
+    alert(d.error || 'Ошибка');
+  }
+}
+
+async function deleteMedia(id) {
+  if (!confirm('Удалить медиа?')) return;
+  await fetch(API + '/api/admin/media/' + id, { method: 'DELETE', headers: headers() });
+  loadMedia();
+}
+
 // ==================== HELPERS ====================
+function cleanPhone(p) {
+  return p.replace(/[\s\-\(\)]/g, '').replace(/^8/, '+996');
+}
+function phoneLinks(p) {
+  const c = cleanPhone(p);
+  const wa = c.replace('+', '');
+  return `<a href="tel:${c}" title="Позвонить" style="color:#e8ecf2;text-decoration:none">${p}</a>
+    <a href="https://wa.me/${wa}" target="_blank" title="WhatsApp" style="color:#25d366;font-size:16px;margin-left:6px">💬</a>`;
+}
 function statusText(s) {
   return { pending: 'Ожидает', confirmed: 'Подтверждено', cancelled: 'Отменено' }[s] || s;
 }
@@ -572,6 +1096,51 @@ if (token) {
     .then(r => { if (r.ok) showDashboard(); else logout(); })
     .catch(() => logout());
 }
+// ==================== BOOKING MODAL ====================
+function openBooking(id) {
+  const b = lastBookings.find(x => x.id === id);
+  if (!b) return;
+  const wa = cleanPhone(b.parent_phone).replace('+','');
+  const m = document.getElementById('bModal');
+  m.querySelector('.b-modal').innerHTML = `
+    <button class="b-modal-close" onclick="closeBooking()">✕</button>
+    <h3>${b.child_name}</h3>
+    <div class="b-m-id">ЗАЯВКА #${b.id} · ${formatDateTime(b.created_at)}</div>
+    <div class="b-m-grid">
+      <div class="b-m-field"><span class="label">Возраст</span><span class="val">${b.child_age} лет</span></div>
+      <div class="b-m-field"><span class="label">Статус</span><span class="val"><span class="badge badge-${b.status}">${statusText(b.status)}</span></span></div>
+      <div class="b-m-field"><span class="label">Родитель</span><span class="val">${b.parent_name || '—'}</span></div>
+      <div class="b-m-field"><span class="label">Телефон</span><span class="val">
+        <a href="tel:${cleanPhone(b.parent_phone)}" style="color:#e8ecf2">${b.parent_phone}</a>
+        <a href="https://wa.me/${wa}" target="_blank" style="color:#25d366;margin-left:8px;font-size:18px">💬</a>
+      </span></div>
+      <div class="b-m-field"><span class="label">Поток</span><span class="val">${b.stream_name}</span></div>
+      <div class="b-m-field"><span class="label">Даты</span><span class="val">${formatDate(b.date_start)} — ${formatDate(b.date_end)}</span></div>
+      ${b.parent_city ? `<div class="b-m-field"><span class="label">Город</span><span class="val">${b.parent_city}</span></div>` : ''}
+      ${b.child_gender ? `<div class="b-m-field"><span class="label">Пол</span><span class="val">${b.child_gender}</span></div>` : ''}
+      ${b.tshirt_size ? `<div class="b-m-field"><span class="label">Размер футболки</span><span class="val">${b.tshirt_size}</span></div>` : ''}
+      ${b.notes ? `<div class="b-m-field b-m-full"><span class="label">Примечания</span><span class="val">${b.notes}</span></div>` : ''}
+    </div>
+    <div class="b-m-actions">
+      ${b.status === 'pending' ? `
+        <button class="btn-sm btn-confirm" onclick="updateBooking(${b.id},'confirmed');closeBooking()">✓ Принять</button>
+        <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled');closeBooking()">✗ Отклонить</button>
+      ` : b.status === 'confirmed' ? `
+        <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled');closeBooking()">Отменить</button>
+        <a href="https://wa.me/${wa}" target="_blank" class="btn-sm btn-confirm" style="text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center">💬 Написать в WhatsApp</a>
+      ` : `<span style="color:#7d8694;font-size:13px;width:100%;text-align:center">Заявка отменена</span>`}
+    </div>
+  `;
+  m.classList.add('open');
+}
+function closeBooking() {
+  document.getElementById('bModal').classList.remove('open');
+}
 </script>
+
+<div class="b-modal-bg" id="bModal" onclick="if(event.target===this)closeBooking()">
+  <div class="b-modal"></div>
+</div>
+
 </body>
 </html>

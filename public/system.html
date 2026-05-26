@@ -513,6 +513,10 @@
 .reg-success h3{font-family:'Unbounded',sans-serif;font-weight:800;font-size:32px;color:var(--orange);text-transform:uppercase;letter-spacing:-.02em;margin-bottom:14px}
 .reg-success p{font-size:15px;color:var(--ink-2);line-height:1.7}
 
+/* Базовые стили для мобильных компонентов — скрыты на десктопе */
+.collapse-toggle{ display:none }
+.sticky-cta{ display:none }
+
 /* MOBILE */
 @media(max-width:1100px){
   .sys-hero-inner{grid-template-columns:1fr;gap:48px}
@@ -535,22 +539,253 @@
   .all-cert{grid-template-columns:1fr;gap:16px}
 }
 @media(max-width:680px){
-  .sys-hero{padding:120px 20px 60px}
-  .days,.streams,.accom,.safety,.miss-sys,.prizes,.speakers,.faq,.regsec{padding-left:20px;padding-right:20px;padding-top:72px;padding-bottom:72px}
-  .days-grid{grid-template-columns:repeat(2,1fr)}
-  .streams-grid{grid-template-columns:1fr}
+  /* Hero */
+  .sys-hero{padding:140px 20px 60px;min-height:70vh}
+  .sys-hero h1{font-size:clamp(40px,10vw,64px);margin-bottom:16px}
+  .sys-hero p{font-size:15px}
+  .sys-hero .pre{font-size:10px;padding:6px 12px;margin-bottom:20px}
+  .sys-toc{padding:18px;border-radius:14px;gap:4px}
+  .sys-toc h5{font-size:10px;margin-bottom:8px}
+  .sys-toc a{font-size:12px;padding:8px 10px}
+  /* Sections */
+  .days,.streams,.accom,.safety,.miss-sys,.prizes,.speakers,.faq,.regsec{padding:60px 20px}
+  /* Days — horizontal scroll */
+  .days-head{margin-bottom:32px}
+  .days-grid{
+    grid-template-columns:repeat(10,140px);gap:8px;
+    overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;touch-action:pan-y;
+    padding-bottom:12px;
+  }
+  .days-grid::-webkit-scrollbar{display:none}
+  .day-col{min-height:auto;padding:16px 12px;border-radius:12px;scroll-snap-align:start}
+  .day-col .d-num{font-size:32px}
+  .day-col .d-label{font-size:11px}
+  .day-col .d-mission{font-size:8px}
+  .day-col .d-list span{font-size:11px}
+  /* Streams — горизонтальный свайп */
+  .streams-grid{
+    display:flex;gap:12px;
+    overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;touch-action:pan-y;
+    padding-bottom:8px;
+  }
+  .streams-grid::-webkit-scrollbar{display:none}
+  .stream-it{flex:0 0 240px;scroll-snap-align:start;padding:20px 16px;border-radius:12px}
+  .streams-track{padding:20px 16px;border-radius:14px}
+  .stream-it .n{font-size:32px;margin-bottom:10px}
+  .stream-it .d{font-size:13px}
+  .stream-it .meta{font-size:9px}
+  .stream-it.first::after{font-size:8px;padding:2px 8px}
+  .streams-foot{padding:14px 16px;font-size:10px;border-radius:12px}
+  /* Accommodations */
   .accom-side{flex-direction:column}
-  .accom-grid{grid-template-columns:1fr}
-  .noms-grid{grid-template-columns:1fr}
-  .spk-row{grid-template-columns:80px 1fr;gap:14px;padding:18px}
-  .spk-avatar{width:80px;height:100px}
-  .form-grid{grid-template-columns:1fr}
-  .field.full{grid-column:span 1}
+  .accom-grid{grid-template-columns:1fr 1fr}
+  .accom-hero{border-radius:14px}
+  .accom-hero .ah-info{left:16px;right:16px;bottom:16px}
+  .accom-hero .ah-name{font-size:24px}
+  .accom-hero .ah-coord{font-size:9px}
+  .accom-hero .ah-pills span{font-size:9px;padding:4px 8px}
+  .accom-tile{border-radius:12px;min-height:140px}
+  .accom-spec{padding:18px;border-radius:12px}
+  .accom-spec h4{font-size:15px}
+  .accom-spec p,.accom-spec ul{font-size:12px}
+  /* Safety */
+  .safety-banner{padding:24px 18px;border-radius:14px;gap:12px}
+  .safety-banner .big{font-size:48px}
+  .safety-banner h3{font-size:17px}
+  .safety-banner p{font-size:12px}
+  .safety-banner .pill{font-size:10px;padding:6px 12px}
+  .safety-card{padding:20px;border-radius:12px}
+  .safety-card .sc-num{font-size:48px}
+  .safety-card h4{font-size:15px}
+  .safety-card p{font-size:12px}
+  /* Points */
+  .points-card{padding:20px;border-radius:14px}
+  .points-card h3{font-size:17px}
+  .points-row{grid-template-columns:36px 1fr 70px;gap:8px;padding:12px;border-radius:10px}
+  .points-row .pn{font-size:18px}
+  .points-row .pt{font-size:12px}
+  .points-row .pd{font-size:11px}
+  .points-row .pxp{font-size:15px}
+  .rule-card{padding:20px;border-radius:14px}
+  .rule-card h3{font-size:22px}
+  .rule-card p{font-size:13px}
+  .rule-formula{gap:8px;padding:16px;border-radius:10px}
+  .rule-formula .f,.rule-formula .op{font-size:15px}
+  /* Prizes */
+  .podium{gap:10px}
+  .pod{padding:24px 18px 20px;border-radius:14px}
+  .pod-place{font-size:72px}
+  .pod-disc{font-size:24px}
+  .pod-r{font-size:10px}
+  .pod-lbl{font-size:9px}
+  .pod-d{font-size:12px}
+  .noms-wrap{padding:20px;border-radius:14px}
+  .noms-head h3{font-size:18px}
+  .noms-head .badge{font-size:10px;padding:5px 10px}
+  .noms-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .nom{padding:14px;border-radius:10px}
+  .nom-i{font-size:9px}
+  .nom-t{font-size:12px}
+  .all-cert{padding:18px;border-radius:12px;gap:14px}
+  .all-cert .ic{font-size:12px}
+  .all-cert p{font-size:12px}
+  /* Speakers */
+  .spk-list{
+    display:flex;gap:12px;
+    overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;touch-action:pan-y;
+    padding-bottom:12px;
+  }
+  .spk-list::-webkit-scrollbar{display:none}
+  .spk-row{
+    flex:0 0 280px;scroll-snap-align:start;
+    display:flex;flex-direction:column;gap:12px;
+    padding:16px;border-radius:12px;
+  }
+  .spk-avatar{width:100%;height:180px;border-radius:10px;background-position:top center}
+  .spk-info .cat{font-size:9px}
+  .spk-info h4{font-size:15px}
+  .spk-info .role{font-size:11px;margin-bottom:8px}
+  .spk-info ul li{font-size:11px}
+  /* FAQ */
+  .faq-item{border-radius:12px}
+  .faq-q{padding:16px 18px;font-size:13px;gap:12px}
+  .faq-q .qn{font-size:10px;margin-right:6px}
+  .faq-arr{width:28px;height:28px;font-size:12px}
+  .faq-a{padding:0 18px;font-size:12px}
+  .faq-item.open .faq-a{padding:0 18px 16px}
+  /* Registration */
+  .reg-head{margin-bottom:32px}
+  .reg-wrap{padding:24px 18px;border-radius:16px}
+  .steps{margin-bottom:28px}
+  .step-n{width:32px;height:32px;font-size:12px}
   .step-l{display:none}
-  .reg-wrap{padding:32px 24px}
-  .points-row{grid-template-columns:40px 1fr 80px;gap:10px}
-  .rule-formula{gap:10px}
-  .rule-formula .f,.rule-formula .op{font-size:16px}
+  .step-pane h3{font-size:17px}
+  .step-pane .sub{font-size:12px}
+  .form-grid{grid-template-columns:1fr;gap:12px}
+  .field.full{grid-column:span 1}
+  .field label{font-size:9px}
+  .field input,.field select,.field textarea{padding:14px;font-size:15px;border-radius:10px}
+  .step-nav{gap:10px}
+  .step-btn{padding:14px 20px;font-size:12px;border-radius:24px;flex:1}
+  .step-btn.next{justify-content:center}
+  .step-btn.prev{justify-content:center}
+  .reg-success h3{font-size:22px}
+  .reg-success-icon{width:60px;height:60px;font-size:28px}
+  .reg-success p{font-size:13px}
+
+  /* ===== TOC — только 3 ключевые ссылки на мобилке ===== */
+  .sys-toc{display:none}
+
+  /* ===== Аккордеон-секции: скрываем контент ===== */
+  .collapse-toggle{
+    display:inline-flex;align-items:center;gap:8px;
+    margin-top:20px;
+    padding:12px 24px;border-radius:60px;
+    background:transparent;
+    border:1px solid var(--line-2);
+    color:var(--ink-dim);
+    font-family:'Unbounded',sans-serif;font-weight:600;font-size:12px;
+    letter-spacing:1px;text-transform:uppercase;
+    cursor:pointer;transition:all .25s;
+  }
+  .collapse-toggle:hover,
+  .mob-open .collapse-toggle{
+    border-color:var(--orange);color:var(--orange);
+  }
+  .collapse-arrow{
+    font-size:14px;transition:transform .35s ease;display:inline-block;
+  }
+  .mob-open .collapse-arrow{
+    transform:rotate(180deg);
+  }
+
+  .collapse-body{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .5s cubic-bezier(.2,.7,.2,1);
+  }
+
+  /* Убираем section-lede margin-bottom, toggle его заменяет */
+  .accom-head .section-lede,
+  .miss-sys-head .section-lede,
+  .prizes-head .section-lede{
+    margin-bottom:0;
+  }
+
+  /* ===== Sticky CTA кнопка ===== */
+  .sticky-cta{
+    position:fixed;
+    bottom:16px;left:16px;right:16px;
+    z-index:100;
+    display:flex;align-items:center;justify-content:center;
+    padding:16px 24px;
+    background:var(--orange);
+    color:#000;
+    font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;
+    letter-spacing:1px;text-transform:uppercase;text-decoration:none;
+    border-radius:60px;
+    box-shadow:0 4px 24px rgba(255,106,31,.45), 0 0 0 1px rgba(255,106,31,.6);
+    transition:all .3s cubic-bezier(.2,.7,.2,1);
+  }
+  .sticky-cta:active{
+    transform:scale(.97);
+    background:#fff;
+  }
+
+  /* Добавляем отступ внизу body чтобы кнопка не перекрывала контент */
+  body{ padding-bottom:72px }
+}
+@media(max-width:480px){
+  .sys-hero{padding:100px 16px 32px}
+  .sys-hero h1{font-size:clamp(32px,9vw,48px)}
+  .sys-hero p{font-size:14px}
+  .sys-toc{padding:14px;gap:2px}
+  .sys-toc a{font-size:11px;padding:7px 8px}
+  .days,.streams,.accom,.safety,.miss-sys,.prizes,.speakers,.faq,.regsec{padding:48px 16px}
+  /* Days */
+  .days-grid{grid-template-columns:repeat(10,130px);gap:6px}
+  .day-col{padding:14px 10px}
+  .day-col .d-num{font-size:26px}
+  .day-col .d-label{font-size:10px}
+  .day-col .d-list span{font-size:10px}
+  /* Streams */
+  .streams-track{padding:16px 12px;border-radius:12px}
+  .stream-it{flex:0 0 210px;padding:16px 12px}
+  .stream-it .n{font-size:26px;margin-bottom:8px}
+  .stream-it .d{font-size:12px}
+  .stream-it .meta{font-size:8px}
+  /* Safety */
+  .safety-banner{padding:18px 14px}
+  .safety-banner .big{font-size:36px}
+  .safety-banner h3{font-size:15px}
+  .safety-card .sc-num{font-size:36px}
+  .safety-card{padding:16px}
+  /* Points */
+  .points-row{grid-template-columns:1fr;gap:4px;padding:12px}
+  .points-row .pn{display:none}
+  .points-row .pxp{text-align:left;font-size:14px}
+  /* Prizes */
+  .pod{padding:20px 14px 16px}
+  .pod-place{font-size:56px}
+  .pod-disc{font-size:20px}
+  .noms-grid{grid-template-columns:1fr}
+  .nom{padding:12px}
+  /* Registration */
+  .reg-wrap{padding:20px 14px;border-radius:14px}
+  .step-pane h3{font-size:15px}
+  .step-btn{padding:14px 16px;font-size:11px}
+  .rule-formula{flex-wrap:wrap;padding:12px}
+  .rule-formula .f,.rule-formula .op{font-size:13px}
+  .all-cert{grid-template-columns:1fr;gap:8px;padding:14px}
+  /* Speakers */
+  .spk-row{flex:0 0 240px;padding:14px}
+  .spk-avatar{height:160px;background-position:top center}
+  .spk-info h4{font-size:14px}
+  /* FAQ */
+  .faq-q{padding:14px 14px;font-size:12px}
 }
 </style>
 </head>
@@ -577,9 +812,16 @@
       <li><a href="media.html">Медиа</a></li>
     </ul>
     <a href="#register" class="nav-cta">Войти в систему</a>
-    <button class="mob-menu">MENU</button>
+    <button class="mob-menu" onclick="document.getElementById('mobOverlay').classList.add('open')">MENU</button>
   </div>
 </nav>
+<div class="mob-overlay" id="mobOverlay">
+  <button class="mob-close" onclick="this.parentElement.classList.remove('open')">CLOSE</button>
+  <a href="index.html">Главная</a>
+  <a href="system.html" class="active">Система</a>
+  <a href="media.html">Медиа</a>
+  <a href="#register" class="mob-cta" onclick="this.parentElement.classList.remove('open')">Войти в систему</a>
+</div>
 
 <!-- ===== HERO ===== -->
 <section class="sys-hero">
@@ -761,8 +1003,10 @@
     <div class="eyebrow reveal">[03] / КОРПУСА · ИНФРАСТРУКТУРА</div>
     <h2 class="section-title reveal">Лагерь <em>«Маяк».</em></h2>
     <p class="section-lede reveal">Побережье Иссык-Куля. Полная инфраструктура: проживание, питание, охрана, медпункт, спорт-площадки, пляж. Всё на одной территории.</p>
+    <button class="collapse-toggle" onclick="toggleCollapse(this)">Подробнее <span class="collapse-arrow">&#9662;</span></button>
   </div>
 
+  <div class="collapse-body">
   <div class="accom-main">
     <div class="accom-hero reveal">
       <div class="ah-img"></div>
@@ -843,6 +1087,7 @@
       </ul>
     </div>
   </div>
+  </div><!-- /.collapse-body -->
 </section>
 
 <!-- ===== SAFETY ===== -->
@@ -908,8 +1153,10 @@
     <div class="eyebrow reveal">[05] / СИСТЕМА МИССИЙ</div>
     <h2 class="section-title reveal">Как стать <em>чемпионом.</em></h2>
     <p class="section-lede reveal">Очки начисляются за каждое испытание, активность и достижение. По итогу 10 дней — лидеры рейтинга становятся чемпионами потока.</p>
+    <button class="collapse-toggle" onclick="toggleCollapse(this)">Подробнее <span class="collapse-arrow">&#9662;</span></button>
   </div>
 
+  <div class="collapse-body">
   <div class="miss-sys-main">
     <div class="points-card reveal">
       <h3>Как начисляются <em>очки</em></h3>
@@ -967,6 +1214,7 @@
       <p style="font-size:13px;color:var(--ink-dim)">Финал даёт двойные очки. Это шанс взять рейтинг даже если ты не лидировал в начале.</p>
     </div>
   </div>
+  </div><!-- /.collapse-body -->
 </section>
 
 <!-- ===== PRIZES ===== -->
@@ -975,8 +1223,10 @@
     <div class="eyebrow reveal" style="margin-left:50%;transform:translateX(-50%)">[06] / HALL OF FAME</div>
     <h2 class="section-title reveal" style="text-align:center">Награды<br>и <em>номинации.</em></h2>
     <p class="section-lede reveal" style="margin:0 auto 0;text-align:center">3 чемпиона по очкам + 10 номинантов по достижениям. Все участники получают сертификаты.</p>
+    <button class="collapse-toggle" onclick="toggleCollapse(this)" style="margin:0 auto">Подробнее <span class="collapse-arrow">&#9662;</span></button>
   </div>
 
+  <div class="collapse-body">
   <div class="podium reveal" style="margin-top:48px">
     <div class="pod silv">
       <div class="pod-r">// RANK.02</div>
@@ -1025,6 +1275,7 @@
     <p>Каждый юнит получает <strong>именной сертификат «Прошёл АПГРЕЙД»</strong> + <strong>5% скидку</strong> на любой будущий поток. Все скидки можно передать.</p>
     <span class="arr">→</span>
   </div>
+  </div><!-- /.collapse-body -->
 </section>
 
 <!-- ===== SPEAKERS ===== -->
@@ -1461,6 +1712,46 @@ function daysBetween(a,b) {
     }).join('');
   } catch(e) { console.error(e); }
 })();
+
+// Мобильный аккордеон — toggle секций
+function toggleCollapse(btn) {
+  const section = btn.closest('section');
+  const body = section.querySelector('.collapse-body');
+  section.classList.toggle('mob-open');
+  if (section.classList.contains('mob-open')) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+  } else {
+    body.style.maxHeight = '0';
+  }
+}
+
+// Мобильный аккордеон — сброс max-height при ресайзе
+window.addEventListener('resize', () => {
+  document.querySelectorAll('.collapse-body').forEach(b => {
+    if (b.closest('section').classList.contains('mob-open')) {
+      b.style.maxHeight = b.scrollHeight + 'px';
+    }
+  });
+});
+
 </script>
+
+<!-- Sticky CTA — мобильная кнопка бронирования -->
+<a href="#register" class="sticky-cta" id="stickyCta">Забронировать</a>
+
+<script>
+// Sticky CTA — прячем когда секция регистрации видна
+(function(){
+  const btn = document.getElementById('stickyCta');
+  const reg = document.getElementById('register');
+  if(!btn || !reg) return;
+  new IntersectionObserver(([e]) => {
+    btn.style.opacity = e.isIntersecting ? '0' : '1';
+    btn.style.pointerEvents = e.isIntersecting ? 'none' : 'auto';
+    btn.style.transform = e.isIntersecting ? 'translateY(20px)' : 'translateY(0)';
+  }, { threshold: 0.05 }).observe(reg);
+})();
+</script>
+
 </body>
 </html>

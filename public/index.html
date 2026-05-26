@@ -224,9 +224,10 @@
   filter:saturate(.8) contrast(1.05);
 }
 .intro-collage .img-2{
-  bottom:0;right:0;width:55%;height:55%;
-  border:1px solid var(--orange);
-  box-shadow:0 30px 60px rgba(0,0,0,.4),0 0 0 1px rgba(255,106,31,.15);
+  bottom:0;right:0;width:45%;height:auto;aspect-ratio:1;
+  object-fit:cover;border-radius:50%;
+  border:none;
+  box-shadow:0 30px 60px rgba(0,0,0,.4);
 }
 .intro-collage::before{
   content:'';position:absolute;top:50%;left:50%;width:80%;height:80%;transform:translate(-50%,-50%);
@@ -652,19 +653,148 @@
   .final-cta-meta{gap:24px}
 }
 @media(max-width:680px){
-  .hero{padding:120px 20px 40px}
-  .hero-meta{gap:18px}
+  /* Hero mobile — clean cinematic layout */
+  .hero{padding:140px 20px 60px;min-height:auto;text-align:center;align-items:stretch}
+  .hero-left{
+    display:flex;flex-direction:column;align-items:center;
+  }
+  .hero-bg::before{background:linear-gradient(180deg,rgba(5,6,10,.3) 0%,rgba(5,6,10,.5) 40%,#05060a 100%)}
+  .hero-pretitle{display:none}
+  .hero-title{margin-bottom:14px}
+  .hero-tagline{font-size:clamp(16px,4vw,22px);margin-bottom:6px}
+  .hero-subtag{font-size:10px;letter-spacing:2px;margin-bottom:28px;opacity:.6}
+  .hero-actions{gap:10px;margin-bottom:28px;width:100%;justify-content:center}
+  .hero-actions .btn-primary{padding:16px 28px;font-size:13px;width:100%;justify-content:center}
+  .hero-actions .btn-ghost{width:100%;justify-content:center}
+  .hero-meta{
+    gap:0;flex-wrap:nowrap;width:100%;
+    justify-content:space-between;
+    padding:16px 0 0;margin:0;
+    border-top:1px solid rgba(255,255,255,.1);
+  }
+  .hero-m{flex:1;text-align:center}
+  .hero-m .v{font-size:20px}
+  .hero-m .l{font-size:8px;letter-spacing:1.5px}
+  .hero-scan{display:none}
+  /* Sections */
   .intro,.missions,.lboard,.speakers,.final-cta{padding-left:20px;padding-right:20px;padding-top:80px;padding-bottom:80px}
+  .intro-text .lead{font-size:clamp(36px,9vw,56px)}
+  .intro-text p{font-size:15px}
+  .intro-text>div:last-child{display:none}
+  .intro-collage{
+    height:auto;position:relative;
+    display:block;
+    margin-top:24px;
+  }
+  .intro-collage .img-1{
+    position:static;width:100%;height:auto;
+    aspect-ratio:16/10;object-fit:cover;border-radius:14px;
+    border:1px solid var(--line-2);
+  }
+  .intro-collage .img-2{
+    position:absolute;bottom:-16px;right:-8px;
+    width:35%;height:auto;aspect-ratio:1;
+    object-fit:cover;border-radius:50%;
+    border:none;
+    box-shadow:0 12px 32px rgba(0,0,0,.6);
+  }
+  .intro-collage .tag-float{display:none}
+  .intro-collage::before{display:none}
+  .intro-mob-btn{display:block!important;padding-top:8px}
+  /* Missions */
+  .missions-grid{grid-template-columns:1fr;grid-template-areas:"m1" "m2" "m3" "m4" "m5";min-height:auto}
+  .miss-card{aspect-ratio:5/4;border-radius:16px}
+  .miss-card .miss-head{padding:20px}
+  .miss-card .miss-num{font-size:56px}
+  .miss-card.lg .miss-num{font-size:72px}
+  .miss-card .miss-body{left:20px;right:20px;bottom:20px}
+  .miss-card .miss-name{font-size:24px}
+  .miss-card.lg .miss-name{font-size:32px}
+  .miss-card .miss-desc{max-height:100px;opacity:.85}
+  /* Atmosphere */
   .atmos{padding-top:80px}
   .atmos-head,.atmos-controls{padding:0 20px}
-  .atmos-scroll{padding:0 20px 32px}
-  .atmos-card{width:280px}
-  .missions-grid{grid-template-columns:1fr;grid-template-areas:"m1" "m2" "m3" "m4" "m5";min-height:auto}
-  .miss-card{aspect-ratio:5/4}
+  .atmos-scroll{padding:0 20px 32px;gap:10px}
+  .atmos-card{width:280px;max-width:85vw;border-radius:16px;aspect-ratio:3/4}
+  .atmos-card .ac-title{font-size:20px}
+  .atmos-card .ac-num{font-size:36px}
+  .atmos-arrow{width:42px;height:42px;font-size:14px}
+  /* Speakers */
   .spk-grid{grid-template-columns:1fr 1fr;gap:10px}
+  .spk-card{aspect-ratio:2/3;border-radius:14px}
+  .spk-card .spk-info{left:14px;right:14px;bottom:14px}
+  .spk-card .spk-name{font-size:14px}
+  .spk-card .spk-role{font-size:9px}
+  .spk-card .spk-corner.tl{top:10px;left:10px;width:16px;height:16px}
+  .spk-card .spk-corner.br{bottom:10px;right:10px;width:16px;height:16px}
+  .spk-card .spk-cat{top:12px;right:12px;font-size:8px;padding:4px 8px}
+  .spk-footer{padding:14px 16px;font-size:10px;flex-direction:column;gap:8px;text-align:center}
+  /* Leaderboard */
   .lb-header,.lb-row{grid-template-columns:32px 1fr 80px;gap:10px;padding:14px}
   .lb-header .h4,.lb-row .lb-stream{display:none}
+  .lb-row:not(.r1):not(.r2):not(.r3){display:none}
+  .lb-rank{font-size:22px}
+  .lb-user .uname{font-size:14px}
+  .lb-avatar{width:36px;height:36px;font-size:14px;border-radius:10px}
+  .lb-footer{padding:14px;font-size:10px}
+  .lboard-head .stats{grid-template-columns:1fr 1fr;gap:8px}
+  .lboard-head .stats .s{padding:10px 14px;border-radius:10px}
+  .lboard-head .stats .s .v{font-size:22px}
+  .lboard-head .stats .s .l{font-size:8px;letter-spacing:1.5px}
+  /* Access panel */
+  .access-panel{padding:24px 16px;border-radius:16px}
+  .ap-title{font-size:18px}
+  .ap-sub{font-size:12px}
+  .ap-field input,.ap-field select{padding:14px 12px;font-size:15px;border-radius:10px}
+  .ap-submit{padding:16px;font-size:12px;border-radius:10px}
   .ap-row{grid-template-columns:1fr}
+  .ap-header{flex-direction:column;gap:6px;align-items:flex-start}
+  .ap-note{flex-direction:column;gap:4px;font-size:9px}
+  /* Final CTA */
+  .final-cta{min-height:auto;padding:80px 20px}
+  .final-cta h2{font-size:clamp(40px,10vw,72px);margin-bottom:20px}
+  .final-cta p{font-size:15px;margin-bottom:32px}
+  .final-cta .pre{font-size:11px;letter-spacing:2px;margin-bottom:20px}
+  .final-cta .pre::before,.final-cta .pre::after{width:24px}
+  .final-cta-actions .btn-primary{padding:18px 28px;font-size:13px;width:100%}
+  .final-cta-meta{
+    flex-direction:row;flex-wrap:wrap;gap:0;
+    justify-content:space-between;
+    margin-top:40px;padding-top:32px;
+  }
+  .final-cta-meta .m{flex:1 1 25%;min-width:0}
+  .final-cta-meta .m .v{font-size:20px}
+  .final-cta-meta .m .l{font-size:8px;letter-spacing:1.5px}
+}
+@media(max-width:480px){
+  .hero{padding:120px 16px 48px}
+  .hero-left{}
+  .hero-title{font-size:clamp(44px,13vw,72px)}
+  .hero-tagline{font-size:clamp(14px,3.5vw,18px)}
+  .hero-subtag{font-size:9px;letter-spacing:1.5px;margin-bottom:24px}
+  .hero-actions{margin-bottom:24px}
+  .hero-meta{padding-top:14px}
+  .hero-m .v{font-size:18px}
+  .hero-m .l{font-size:7px;letter-spacing:1px}
+  .intro-text .lead{font-size:clamp(28px,8vw,44px)}
+  .atmos-card{width:250px;max-width:78vw}
+  .atmos-card .ac-title{font-size:18px}
+  .miss-card{aspect-ratio:4/3}
+  .miss-card .miss-num{font-size:44px}
+  .miss-card.lg .miss-num{font-size:56px}
+  .miss-card .miss-name{font-size:20px}
+  .miss-card.lg .miss-name{font-size:26px}
+  .miss-card .miss-meta{font-size:9px}
+  .spk-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .spk-card{aspect-ratio:2/3}
+  .spk-card .spk-name{font-size:13px}
+  .access-panel{padding:20px 12px}
+  .ap-title{font-size:16px}
+  .ap-field label{font-size:8px}
+  .lboard-head{gap:16px}
+  .lboard-head .stats{grid-template-columns:1fr 1fr;gap:6px}
+  .lboard-head .stats .s .v{font-size:18px}
+  .final-cta h2{font-size:clamp(32px,9vw,56px)}
 }
 </style>
 </head>
@@ -691,9 +821,16 @@
       <li><a href="media.html">Медиа</a></li>
     </ul>
     <a href="system.html#register" class="nav-cta">Войти в систему</a>
-    <button class="mob-menu">MENU</button>
+    <button class="mob-menu" onclick="document.getElementById('mobOverlay').classList.add('open')">MENU</button>
   </div>
 </nav>
+<div class="mob-overlay" id="mobOverlay">
+  <button class="mob-close" onclick="this.parentElement.classList.remove('open')">CLOSE</button>
+  <a href="index.html" class="active">Главная</a>
+  <a href="system.html">Система</a>
+  <a href="media.html">Медиа</a>
+  <a href="system.html#register" class="mob-cta">Войти в систему</a>
+</div>
 
 <!-- ===== HERO ===== -->
 <section class="hero" id="home">
@@ -754,6 +891,9 @@
     <div class="intro-collage reveal">
       <img class="img-1" src="img/camp-team.png" alt="Команда АПГРЕЙД у озера">
       <img class="img-2" src="img/medal.png" alt="Медаль АПГРЕЙД">
+    </div>
+    <div class="intro-mob-btn reveal" style="margin-top:28px;display:none">
+      <a href="system.html" class="btn btn-ghost">Узнать программу<span class="arr">→</span></a>
     </div>
   </div>
 </section>
@@ -938,77 +1078,8 @@
     <p class="section-lede reveal">Олимпийские чемпионы, программисты Google/Amazon/Meta, учёные ведущих университетов, актёры кино, IT-предприниматели. Каждый поток — новый состав. Наведи курсор.</p>
   </div>
 
-  <div class="spk-grid reveal">
-    <div class="spk-card">
-      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=85')"></div>
-      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
-      <span class="spk-cat">// SPORT</span>
-      <div class="spk-info">
-        <div class="spk-name">Олимпийский чемпион</div>
-        <div class="spk-role">// БОРЬБА · СБОРНАЯ КР</div>
-        <p class="spk-bio">Чемпион мира, тренер сборной. Проводит мастер-класс и личные сессии с юнитами.</p>
-      </div>
-    </div>
-    <div class="spk-card">
-      <div class="spk-img" style="background-image:url('img/azamat-zhanaliev.jpg')"></div>
-      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
-      <span class="spk-cat">// ART</span>
-      <div class="spk-info">
-        <div class="spk-name">Азамат Жаналиев</div>
-        <div class="spk-role">// ЛЕГЕНДАРНЫЙ ХУДОЖНИК</div>
-        <p class="spk-bio">Автор портретов для В. Путина, К. Роналду, Ч. Айтматова. Мастер-класс по живописи и творческому мышлению.</p>
-      </div>
-    </div>
-    <div class="spk-card">
-      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=900&q=85')"></div>
-      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
-      <span class="spk-cat">// CREATIVE</span>
-      <div class="spk-info">
-        <div class="spk-name">Актриса кино</div>
-        <div class="spk-role">// ФИЛЬМ-ЛАУРЕАТ</div>
-        <p class="spk-bio">Кыргызская актриса, лауреат фестивалей. Мастер-класс по актёрскому мастерству.</p>
-      </div>
-    </div>
-    <div class="spk-card">
-      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1560250097-0b93528c311a?w=900&q=85')"></div>
-      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
-      <span class="spk-cat">// BUSINESS</span>
-      <div class="spk-info">
-        <div class="spk-name">CEO · Tech Startup</div>
-        <div class="spk-role">// БИШКЕК → SF</div>
-        <p class="spk-bio">Основатель стартапа, привлёк $5M раунд. Лекция о предпринимательстве из Кыргызстана.</p>
-      </div>
-    </div>
-    <div class="spk-card">
-      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?w=900&q=85')"></div>
-      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
-      <span class="spk-cat">// SCIENCE</span>
-      <div class="spk-info">
-        <div class="spk-name">Биолог · Genetics</div>
-        <div class="spk-role">// MAX PLANCK</div>
-        <p class="spk-bio">Молодой исследователь генетики. Лаборатория-эксперимент в полевых условиях.</p>
-      </div>
-    </div>
-    <div class="spk-card">
-      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1573497019418-b400bb3ab074?w=900&q=85')"></div>
-      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
-      <span class="spk-cat">// IT</span>
-      <div class="spk-info">
-        <div class="spk-name">Eng @ Meta</div>
-        <div class="spk-role">// LONDON · REACT</div>
-        <p class="spk-bio">Инженер из Кыргызстана. Workshop по frontend, AI-инструментам и карьерной траектории.</p>
-      </div>
-    </div>
-    <div class="spk-card">
-      <div class="spk-img" style="background-image:url('https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=900&q=85')"></div>
-      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
-      <span class="spk-cat">// SPORT</span>
-      <div class="spk-info">
-        <div class="spk-name">Тренер · UFC</div>
-        <div class="spk-role">// MMA · ЧМ-БРОНЗА</div>
-        <p class="spk-bio">Боец MMA и тренер. Учит дисциплине, выносливости и работе в команде.</p>
-      </div>
-    </div>
+  <div class="spk-grid reveal" id="starsGrid">
+    <!-- Загружается из API -->
   </div>
 
   <div class="spk-footer reveal">
@@ -1153,6 +1224,24 @@
     c.appendChild(p);
   }
 })();
+
+// Load stars from API
+fetch('/api/admin/public/stars').then(r=>r.json()).then(stars=>{
+  const grid=document.getElementById('starsGrid');
+  if(!grid||!stars.length) return;
+  grid.innerHTML=stars.map(s=>`
+    <div class="spk-card">
+      <div class="spk-img" style="background-image:url('${s.photo||''}')"></div>
+      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
+      <span class="spk-cat">// ${(s.category||'').toUpperCase()}</span>
+      <div class="spk-info">
+        <div class="spk-name">${s.name}</div>
+        <div class="spk-role">// ${(s.title||'').toUpperCase()}</div>
+        <p class="spk-bio">${s.description||''}</p>
+      </div>
+    </div>
+  `).join('');
+}).catch(()=>{});
 
 // Reveal on scroll
 const io=new IntersectionObserver((entries)=>{

@@ -379,6 +379,10 @@
 .med-cta p{font-size:17px;color:var(--ink-dim);line-height:1.7;max-width:560px;margin:0 auto 32px}
 .med-cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 
+/* Hide mobile-only elements on desktop */
+.gal-show-more{display:none}
+.mob-sticky-cta{display:none}
+
 /* MOBILE */
 @media(max-width:1100px){
   .med-hero-inner{grid-template-columns:1fr;gap:48px}
@@ -391,21 +395,166 @@
   .reels{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:680px){
+  /* Hero */
   .med-hero{padding:110px 20px 40px}
-  .med-hero h1{font-size:48px}
+  .med-hero h1{font-size:clamp(40px,10vw,56px)}
+  .med-hero p{font-size:15px}
+  .med-hero .pre{font-size:10px;padding:6px 12px}
   .featured,.top-week,.gallery,.stories,.social,.med-cta{padding-left:20px;padding-right:20px;padding-top:72px;padding-bottom:72px}
-  .cd-panel{padding:24px}
-  .cd-grid{gap:6px}
-  .cd-cell{padding:14px 4px}
-  .cd-cell .v{font-size:36px}
+  /* Countdown — clean, no background */
+  .cd-panel{
+    background:none;backdrop-filter:none;border:none;border-radius:0;
+    padding:0;margin-top:24px;
+  }
+  .cd-panel .ap-corner{display:none}
+  .cd-head{display:none}
+  .cd-target{font-size:16px;margin-bottom:16px}
+  .cd-grid{grid-template-columns:repeat(4,1fr);gap:8px}
+  .cd-cell{padding:14px 6px;border-radius:10px;background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)}
+  .cd-cell .v{font-size:28px}
+  .cd-cell .l{font-size:7px;letter-spacing:1.5px}
+  .cd-foot{font-size:10px;flex-direction:column;gap:8px;border-top:none;padding-top:12px}
+  /* Featured — horizontal carousel */
+  .feat-grid{
+    display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    gap:12px;padding-bottom:8px;scrollbar-width:none;touch-action:pan-y;
+  }
+  .feat-grid::-webkit-scrollbar{display:none}
+  .feat-grid .feat-main,
+  .feat-grid .feat-side{
+    flex:0 0 85vw;scroll-snap-align:start;min-width:0;
+  }
+  .feat-grid .feat-main{border-radius:16px;aspect-ratio:16/12}
+  .feat-grid .feat-side{display:flex;flex-direction:column;gap:12px}
+  .feat-grid .feat-side .feat-card{min-height:200px}
+  .feat-main .fm-info{left:20px;right:20px;bottom:20px}
   .feat-main h3{font-size:24px}
-  .masonry{column-count:2;column-gap:8px}
-  .gal-card{margin-bottom:8px}
-  .st-grid{grid-template-columns:1fr}
-  .reels{grid-template-columns:repeat(2,1fr)}
-  .feat-tabs{flex-wrap:wrap}
+  .feat-main .meta{font-size:10px;gap:12px}
+  .feat-main .badge{top:16px;left:16px;font-size:9px;padding:5px 10px}
+  .feat-card{border-radius:14px}
+  .feat-card .fc-info{left:16px;right:16px;bottom:16px}
+  .feat-card .fc-title{font-size:16px}
+  .feat-tabs{flex-wrap:wrap;gap:4px}
+  .feat-tab{font-size:10px;padding:8px 12px}
+  /* Top Week — show only top 3 */
+  .tw-spotlight{border-radius:18px;aspect-ratio:3/4}
+  .tw-spot-info{left:20px;right:20px;bottom:20px}
   .tw-spot-info h3{font-size:24px}
-  .tw-spot-rank{font-size:96px}
+  .tw-spot-info .xp{font-size:15px}
+  .tw-spot-info p{font-size:12px}
+  .tw-spot-rank{font-size:96px;top:14px;right:14px}
+  .tw-spot-badge{top:20px;left:20px;font-size:10px;padding:5px 10px}
+  .tw-spot-corner{width:24px;height:24px}
+  .tw-row{padding:14px 16px;border-radius:12px;grid-template-columns:48px 1fr auto;gap:12px}
+  .tw-row .tw-r{font-size:22px}
+  .tw-row .tw-avatar{width:38px;height:38px;font-size:12px;border-radius:10px}
+  .tw-row .uname{font-size:13px}
+  .tw-row .tw-xp{font-size:14px}
+  .tw-foot{padding:12px 16px;font-size:9px}
+  .tw-row:not(.r2):not(.r3){display:none}
+  /* Gallery — show first 6, hide rest */
+  .masonry{column-count:2;column-gap:8px}
+  .gal-card{margin-bottom:8px;border-radius:12px}
+  .gal-card .overlay{padding:14px}
+  .gal-card .overlay h4{font-size:12px}
+  .gal-card .play-icon{width:30px;height:30px;font-size:10px}
+  .gal-actions{flex-wrap:wrap;gap:4px}
+  .gal-filter{font-size:10px;padding:7px 12px}
+  .masonry .gal-card:nth-child(n+7){display:none}
+  .masonry.gal-expanded .gal-card:nth-child(n+7){display:block}
+  .gal-show-more{
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    margin:24px auto 0;
+    font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--orange);background:rgba(255,106,31,.08);
+    border:1px solid rgba(255,106,31,.35);border-radius:30px;
+    padding:14px 32px;cursor:pointer;transition:all .25s;min-height:48px;
+  }
+  .gal-show-more:hover{background:rgba(255,106,31,.15);border-color:var(--orange)}
+  /* Stories — горизонтальная карусель */
+  .st-grid{
+    display:flex;overflow-x:auto;scroll-snap-type:x mandatory;
+    gap:12px;padding-bottom:8px;scrollbar-width:none;
+    overscroll-behavior-x:contain;
+  }
+  .st-grid::-webkit-scrollbar{display:none}
+  .st-grid .st-card{
+    flex:0 0 80vw;scroll-snap-align:start;min-width:0;border-radius:16px;
+  }
+  .st-card .st-photo{aspect-ratio:1/1;overflow:hidden}
+  .st-card .st-photo img{width:100%;height:100%;object-fit:cover;object-position:top center}
+  .st-card .st-body{padding:16px}
+  .st-card .st-quote{font-size:14px}
+  .st-card .st-quote-mark{font-size:40px;top:10px;right:12px}
+  .st-card .st-author .name{font-size:12px}
+  .st-card .st-author .name span{font-size:9px}
+  /* Social / Reels — horizontal carousel */
+  .reels{
+    display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    gap:10px;padding-bottom:8px;scrollbar-width:none;touch-action:pan-y;
+  }
+  .reels::-webkit-scrollbar{display:none}
+  .reels .reel{
+    flex:0 0 45vw;scroll-snap-align:start;min-width:0;border-radius:14px;
+  }
+  .reel .r-info h5{font-size:12px}
+  .soc-head .links{flex-wrap:wrap;gap:6px}
+  .soc-link{font-size:10px;padding:7px 12px}
+  /* CTA */
+  .med-cta{padding:80px 20px}
+  .med-cta h2{font-size:clamp(36px,8vw,64px)}
+  .med-cta p{font-size:15px}
+  .med-cta .pre{font-size:11px;letter-spacing:2px}
+  .med-cta .pre::before,.med-cta .pre::after{width:24px}
+  .med-cta-btns .btn{width:100%}
+  /* Sticky CTA */
+  .mob-sticky-cta{
+    display:flex;
+    position:fixed;bottom:0;left:0;right:0;z-index:900;
+    padding:12px 16px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+    background:linear-gradient(180deg,transparent 0%,rgba(5,6,10,.95) 30%);
+    pointer-events:none;
+  }
+  .mob-sticky-cta a{
+    pointer-events:all;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;min-height:52px;
+    font-family:'Unbounded',sans-serif;font-weight:700;font-size:14px;letter-spacing:.02em;text-transform:uppercase;
+    color:#000;background:var(--orange);border-radius:14px;text-decoration:none;
+    box-shadow:0 0 32px rgba(255,106,31,.45),0 0 80px rgba(255,106,31,.15);
+    transition:opacity .3s,transform .3s;
+  }
+  .mob-sticky-cta a::after{content:'→';margin-left:4px}
+  .mob-sticky-cta.hidden a{opacity:0;transform:translateY(20px)}
+}
+@media(max-width:480px){
+  .med-hero{padding:100px 16px 32px}
+  .med-hero h1{font-size:clamp(32px,9vw,44px)}
+  .med-hero p{font-size:14px}
+  .cd-cell .v{font-size:24px}
+  .cd-cell{padding:12px 4px}
+  .cd-target{font-size:13px}
+  .feat-grid .feat-main,
+  .feat-grid .feat-side{flex:0 0 88vw}
+  .feat-main h3{font-size:20px}
+  .feat-main .meta{font-size:9px;gap:8px;flex-wrap:wrap}
+  .feat-card .fc-title{font-size:14px}
+  .masonry{column-count:1;column-gap:0}
+  .gal-card{margin-bottom:12px;border-radius:12px}
+  .gal-card .overlay h4{font-size:11px}
+  .reels .reel{flex:0 0 55vw;border-radius:12px}
+  .tw-spotlight{aspect-ratio:3/4;border-radius:14px}
+  .tw-spot-rank{font-size:64px}
+  .tw-spot-info h3{font-size:20px}
+  .tw-spot-info .xp{font-size:14px}
+  .tw-row{grid-template-columns:40px 1fr auto;gap:10px;padding:12px}
+  .tw-row .tw-r{font-size:18px}
+  .tw-row .tw-avatar{width:34px;height:34px;font-size:11px}
+  .tw-row .uname{font-size:12px}
+  .st-card .st-body{padding:14px}
+  .st-card .st-quote{font-size:13px}
+  .med-cta h2{font-size:clamp(28px,8vw,48px)}
+  .med-cta p{font-size:14px;margin-bottom:24px}
 }
 </style>
 </head>
@@ -432,9 +581,16 @@
       <li><a href="media.html" class="active">Медиа</a></li>
     </ul>
     <a href="system.html#register" class="nav-cta">Войти в систему</a>
-    <button class="mob-menu">MENU</button>
+    <button class="mob-menu" onclick="document.getElementById('mobOverlay').classList.add('open')">MENU</button>
   </div>
 </nav>
+<div class="mob-overlay" id="mobOverlay">
+  <button class="mob-close" onclick="this.parentElement.classList.remove('open')">CLOSE</button>
+  <a href="index.html">Главная</a>
+  <a href="system.html">Система</a>
+  <a href="media.html" class="active">Медиа</a>
+  <a href="system.html#register" class="mob-cta">Войти в систему</a>
+</div>
 
 <!-- ===== HERO + COUNTDOWN ===== -->
 <section class="med-hero">
@@ -624,20 +780,10 @@
     </div>
   </div>
 
-  <div class="masonry reveal">
-    <div class="gal-card"><img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=900&q=85" alt=""><div class="overlay"><div><div class="cat">// SPORT</div><h4>Утренние тренировки</h4></div></div></div>
-    <div class="gal-card"><span class="video-tag">▶ VIDEO · 0:42</span><img src="https://images.unsplash.com/photo-1475139441338-693e7dbe20b6?w=900&q=85" alt=""><div class="play-icon">▶</div><div class="overlay"><div><div class="cat">// EVENING</div><h4>Костёр под звёздами</h4></div></div></div>
-    <div class="gal-card"><img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=900&q=85" alt=""><div class="overlay"><div><div class="cat">// IT</div><h4>Хакатон-финал</h4></div></div></div>
-    <div class="gal-card"><img src="https://images.unsplash.com/photo-1454942901704-3c44c11b2ad1?w=900&q=85" alt=""><div class="overlay"><div><div class="cat">// MOUNTAIN</div><h4>Восхождение</h4></div></div></div>
-    <div class="gal-card"><img src="https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?w=900&q=85" alt=""><div class="overlay"><div><div class="cat">// LAKE</div><h4>Утро на Иссык-Куле</h4></div></div></div>
-    <div class="gal-card"><span class="video-tag">▶ VIDEO · 1:18</span><img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&q=85" alt=""><div class="play-icon">▶</div><div class="overlay"><div><div class="cat">// NIGHT</div><h4>Вечеринка финала</h4></div></div></div>
-    <div class="gal-card"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=85" alt=""><div class="overlay"><div><div class="cat">// TEAM</div><h4>Командный квест</h4></div></div></div>
-    <div class="gal-card"><img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=85" alt=""><div class="overlay"><div><div class="cat">// SPORT</div><h4>Турнир потока</h4></div></div></div>
-    <div class="gal-card"><img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=900&q=85" alt=""><div class="overlay"><div><div class="cat">// CREATIVE</div><h4>Творческая мастерская</h4></div></div></div>
-    <div class="gal-card"><span class="video-tag">▶ VIDEO · 2:34</span><img src="https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=900&q=85" alt=""><div class="play-icon">▶</div><div class="overlay"><div><div class="cat">// CEREMONY</div><h4>Награждение</h4></div></div></div>
-    <div class="gal-card"><img src="https://images.unsplash.com/photo-1517022812141-23620dba5c23?w=900&q=85" alt=""><div class="overlay"><div><div class="cat">// FRIENDS</div><h4>Команда дня 3</h4></div></div></div>
-    <div class="gal-card"><img src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=900&q=85" alt=""><div class="overlay"><div><div class="cat">// PORTRAIT</div><h4>Юнит #047</h4></div></div></div>
+  <div class="masonry reveal" id="galleryGrid">
+    <!-- Загружается из API -->
   </div>
+  <button class="gal-show-more" id="galShowMore" onclick="toggleGallery()">Показать ещё ↓</button>
 </section>
 
 <!-- ===== STORIES ===== -->
@@ -651,7 +797,7 @@
   <div class="st-grid">
     <div class="st-card reveal">
       <div class="st-photo">
-        <img src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=900&q=85" alt="">
+        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=600&h=600&fit=crop&q=85" alt="">
         <div class="st-quote-mark">"</div>
         <span class="st-stream">// ПОТОК 03 · 2025</span>
       </div>
@@ -663,7 +809,7 @@
 
     <div class="st-card reveal">
       <div class="st-photo">
-        <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=900&q=85" alt="">
+        <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=600&h=600&fit=crop&q=85" alt="">
         <div class="st-quote-mark">"</div>
         <span class="st-stream">// ПОТОК 05 · 2025</span>
       </div>
@@ -675,7 +821,7 @@
 
     <div class="st-card reveal">
       <div class="st-photo">
-        <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=900&q=85" alt="">
+        <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=600&h=600&fit=crop&q=85" alt="">
         <div class="st-quote-mark">"</div>
         <span class="st-stream">// ПОТОК 02 · 2025</span>
       </div>
@@ -687,7 +833,7 @@
 
     <div class="st-card reveal">
       <div class="st-photo">
-        <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=900&q=85" alt="">
+        <img src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=600&h=600&fit=crop&q=85" alt="">
         <div class="st-quote-mark">"</div>
         <span class="st-stream">// ПОТОК 06 · 2025</span>
       </div>
@@ -699,7 +845,7 @@
 
     <div class="st-card reveal">
       <div class="st-photo">
-        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=900&q=85" alt="">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&h=600&fit=crop&q=85" alt="">
         <div class="st-quote-mark">"</div>
         <span class="st-stream">// ПОТОК 04 · 2025</span>
       </div>
@@ -711,7 +857,7 @@
 
     <div class="st-card reveal">
       <div class="st-photo">
-        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=900&q=85" alt="">
+        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&h=600&fit=crop&q=85" alt="">
         <div class="st-quote-mark">"</div>
         <span class="st-stream">// ПОТОК 07 · 2025</span>
       </div>
@@ -824,6 +970,11 @@
   </div>
 </footer>
 
+<!-- STICKY MOBILE CTA -->
+<div class="mob-sticky-cta" id="mobStickyCta">
+  <a href="system.html#register">Забронировать</a>
+</div>
+
 <script>
 // Reveal
 const io=new IntersectionObserver((entries)=>{
@@ -885,6 +1036,56 @@ fetch('/api/admin/champion').then(r=>r.json()).then(data=>{
   if(data.role) document.getElementById('champRole').textContent = data.role;
   if(data.description) document.getElementById('champDesc').textContent = data.description;
 }).catch(()=>{});
+
+// Load gallery from API
+fetch('/api/admin/public/media').then(r=>r.json()).then(items=>{
+  const grid=document.getElementById('galleryGrid');
+  if(!grid||!items.length) return;
+  grid.innerHTML=items.map(m=>`
+    <div class="gal-card">
+      ${m.type==='video'?`<span class="video-tag">▶ VIDEO</span>`:''}
+      <img src="${m.url||m.thumbnail||''}" alt="${m.title||''}">
+      ${m.type==='video'?`<div class="play-icon">▶</div>`:''}
+      <div class="overlay"><div><div class="cat">// ${(m.category||'').toUpperCase()}</div><h4>${m.title||''}</h4></div></div>
+    </div>
+  `).join('');
+  // Re-observe for reveal animation
+  grid.querySelectorAll('.gal-card').forEach(el=>{el.classList.add('show')});
+}).catch(()=>{});
+
+// Gallery toggle (mobile)
+function toggleGallery(){
+  const m=document.querySelector('.masonry');
+  const btn=document.getElementById('galShowMore');
+  m.classList.toggle('gal-expanded');
+  if(m.classList.contains('gal-expanded')){
+    btn.textContent='Скрыть ↑';
+  } else {
+    btn.textContent='Показать ещё ↓';
+    m.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
+// Sticky CTA — show/hide based on scroll + footer proximity
+(function(){
+  const cta=document.getElementById('mobStickyCta');
+  if(!cta) return;
+  const mq=window.matchMedia('(max-width:680px)');
+  function checkCta(){
+    if(!mq.matches){cta.style.display='none';return;}
+    cta.style.display='';
+    const sc=document.documentElement.scrollTop||document.body.scrollTop;
+    const docH=document.documentElement.scrollHeight;
+    const winH=window.innerHeight;
+    // hide near top (hero visible) and near footer
+    const atTop=sc<400;
+    const atBottom=sc+winH>docH-200;
+    if(atTop||atBottom){cta.classList.add('hidden');}else{cta.classList.remove('hidden');}
+  }
+  window.addEventListener('scroll',checkCta,{passive:true});
+  window.addEventListener('resize',checkCta);
+  checkCta();
+})();
 </script>
 </body>
 </html>

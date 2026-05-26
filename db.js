@@ -34,6 +34,40 @@ db.exec(`
     key   TEXT PRIMARY KEY,
     value TEXT NOT NULL
   );
+
+  CREATE TABLE IF NOT EXISTS speakers (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    name       TEXT NOT NULL,
+    role       TEXT DEFAULT '',
+    category   TEXT DEFAULT '',
+    bio        TEXT DEFAULT '',
+    photo      TEXT DEFAULT '',
+    sort_order INTEGER DEFAULT 0,
+    is_active  INTEGER DEFAULT 1
+  );
+
+  CREATE TABLE IF NOT EXISTS stars (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT NOT NULL,
+    title       TEXT DEFAULT '',
+    description TEXT DEFAULT '',
+    photo       TEXT DEFAULT '',
+    category    TEXT DEFAULT '',
+    sort_order  INTEGER DEFAULT 0,
+    is_active   INTEGER DEFAULT 1
+  );
+
+  CREATE TABLE IF NOT EXISTS media (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    type       TEXT NOT NULL DEFAULT 'photo',
+    title      TEXT DEFAULT '',
+    category   TEXT DEFAULT '',
+    url        TEXT DEFAULT '',
+    thumbnail  TEXT DEFAULT '',
+    sort_order INTEGER DEFAULT 0,
+    is_active  INTEGER DEFAULT 1,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
 `);
 
 // Seed streams if empty

@@ -147,16 +147,7 @@ nav.main-nav.hide{transform:translateY(-180%);opacity:0}
    COMMON UI
    ============================================ */
 
-.eyebrow{
-  display:inline-flex;align-items:center;gap:10px;
-  padding:6px 14px;border-radius:30px;
-  background:var(--orange-soft);
-  border:1px solid rgba(255,106,31,.25);
-  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--orange);
-  letter-spacing:2px;text-transform:uppercase;
-  margin-bottom:24px;
-}
-.eyebrow::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--orange);box-shadow:0 0 8px var(--orange-glow)}
+.eyebrow{display:none}
 
 .section-title{
   font-family:'Unbounded',sans-serif;font-weight:800;
@@ -255,13 +246,85 @@ footer{
   .foot-top{grid-template-columns:1fr 1fr;gap:32px}
   .frame-corners{display:none}
 }
+/* Mobile menu overlay */
+.mob-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(5,6,10,.97);
+  backdrop-filter:blur(24px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  opacity:0;visibility:hidden;
+  transition:opacity .35s cubic-bezier(.2,.7,.2,1),visibility .35s;
+}
+.mob-overlay.open{opacity:1;visibility:visible}
+.mob-overlay a{
+  font-family:'Unbounded',sans-serif;font-weight:700;font-size:clamp(28px,7vw,42px);
+  color:var(--ink);text-decoration:none;text-transform:uppercase;
+  padding:12px 24px;border-radius:16px;
+  transition:color .2s,background .2s;
+  letter-spacing:-.02em;
+}
+.mob-overlay a:hover,.mob-overlay a.active{color:var(--orange);background:var(--orange-soft)}
+.mob-overlay .mob-cta{
+  margin-top:32px;
+  background:var(--orange);color:#000;
+  font-family:'Unbounded',sans-serif;font-weight:600;font-size:14px;
+  padding:16px 32px;border-radius:60px;text-transform:uppercase;letter-spacing:1px;
+  text-decoration:none;
+  transition:background .2s;
+}
+.mob-overlay .mob-cta:hover{background:#fff}
+.mob-close{
+  position:absolute;top:28px;right:24px;
+  background:none;border:1px solid var(--line-2);color:var(--ink);
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;
+  padding:8px 16px;border-radius:30px;cursor:pointer;
+  transition:border-color .2s,color .2s;
+}
+.mob-close:hover{border-color:var(--orange);color:var(--orange)}
+
 @media(max-width:680px){
   nav.main-nav{top:24px;padding:0 16px}
+  .nav-inner{padding:10px 12px 10px 18px;border-radius:40px}
+  .nav-logo{font-size:14px;gap:8px}
   .nav-links,.nav-cta{display:none}
-  .mob-menu{display:block}
+  .mob-menu{display:block;padding:10px 16px;font-size:10px;min-height:40px}
   .statusbar{padding:6px 16px;font-size:9px}
   .statusbar span:nth-child(2){display:none}
   section{padding:72px 20px}
-  .foot-top{grid-template-columns:1fr;gap:28px}
-  footer{padding:60px 20px 24px}
+  .section-title{font-size:clamp(28px,8vw,48px);margin-bottom:16px}
+  .section-lede{font-size:15px;margin-bottom:40px}
+  .btn{padding:16px 24px;font-size:12px;width:100%;justify-content:center;min-height:48px}
+  .btn-ghost{min-height:48px}
+  .foot-top{
+    grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;
+    margin-bottom:24px;padding-bottom:24px;
+  }
+  .foot-logo{font-size:16px;margin-bottom:6px}
+  .foot-desc{font-size:10px;max-width:100%;margin-bottom:10px;line-height:1.5}
+  .foot-stamp{font-size:8px;padding:4px 8px}
+  .foot-col h5{font-size:9px;margin-bottom:8px;letter-spacing:1.5px}
+  .foot-col a{font-size:11px;padding:2px 0;min-height:auto;margin-bottom:6px}
+  .foot-bot{font-size:8px;text-align:center}
+  footer{padding:40px 16px 16px}
+  .ticker-track{font-size:14px;gap:32px}
+  .ticker{padding:14px 0}
+}
+@media(max-width:480px){
+  nav.main-nav{top:16px;padding:0 12px}
+  .nav-inner{padding:8px 10px 8px 14px}
+  .nav-logo{font-size:13px}
+  section{padding:56px 16px}
+  .statusbar{display:none}
+  .section-title{font-size:clamp(24px,7vw,36px)}
+  .section-lede{font-size:14px;margin-bottom:32px}
+  .eyebrow{font-size:10px;padding:5px 10px}
+  .foot-top{grid-template-columns:1.4fr 1fr 1fr 1fr;gap:12px}
+  .foot-logo{font-size:14px}
+  .foot-desc{font-size:9px;line-height:1.5}
+  .foot-stamp{font-size:7px;padding:3px 6px}
+  .foot-col h5{font-size:8px;letter-spacing:1px;margin-bottom:6px}
+  .foot-col a{font-size:10px;margin-bottom:4px}
+  footer{padding:32px 12px 12px}
+  .ticker-track{font-size:12px;gap:24px}
+  .ticker{padding:12px 0}
 }
