@@ -114,4 +114,53 @@ if (count.c === 0) {
   console.log('Seeded 7 streams');
 }
 
+// Seed speakers if empty
+const speakerCount = db.prepare('SELECT COUNT(*) as c FROM speakers').get();
+if (speakerCount.c === 0) {
+  const ins = db.prepare('INSERT INTO speakers (name, role, category, bio, photo, sort_order) VALUES (?, ?, ?, ?, ?, ?)');
+  const speakers = [
+    ['Олимпийские чемпионы', 'Чемпионы мира · Тренеры сборной КР', 'Спорт', 'Борьба, дзюдо, спортивная гимнастика. Личные сессии, лекции о пути к золоту.', 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=85', 1],
+    ['Учёные мирового уровня', 'Физики · Биологи · MIT, ETH, Max Planck', 'Наука', 'Эксперименты вживую, лекции о физике, генетике, ИИ. Лабораторные сессии.', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=85', 2],
+    ['Программисты Google · Meta', 'Senior Engineers · ML / AI', 'IT', 'Кыргызстанцы в Big Tech. AI workshops, карьерные траектории, менторство.', 'https://images.unsplash.com/photo-1556157382-97eda2d62296?w=600&q=85', 3],
+    ['Актёры · Музыканты · Дизайнеры', 'Лауреаты фестивалей', 'Творчество', 'Актёры кино, архитекторы, видеомейкеры. Мастер-классы по самовыражению.', 'https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=600&q=85', 4],
+    ['IT-предприниматели', 'Основатели стартапов', 'Бизнес', 'Кыргызские IT-стартапы. Лекции об инвестициях, networking, менторство.', 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=85', 5],
+    ['Специальные гости', 'Меняются каждый поток', 'Special', 'Космонавты, путешественники, блогеры. Анонсы перед стартом потока.', 'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=600&q=85', 6],
+  ];
+  const tx = db.transaction(() => { for (const s of speakers) ins.run(...s); });
+  tx();
+  console.log('Seeded 6 speakers');
+}
+
+// Seed stars if empty
+const starCount = db.prepare('SELECT COUNT(*) as c FROM stars').get();
+if (starCount.c === 0) {
+  db.prepare('INSERT INTO stars (name, title, category, description, photo, sort_order) VALUES (?, ?, ?, ?, ?, ?)').run(
+    'Азамат Жаналиев', 'Олимпийский чемпион', 'Спорт', 'Двукратный чемпион мира по борьбе. Гордость Кыргызстана.', 'img/azamat-zhanaliev.jpg', 1
+  );
+  console.log('Seeded 1 star');
+}
+
+// Seed media if empty
+const mediaCount = db.prepare('SELECT COUNT(*) as c FROM media').get();
+if (mediaCount.c === 0) {
+  const ins = db.prepare('INSERT INTO media (type, title, category, url, sort_order) VALUES (?, ?, ?, ?, ?)');
+  const media = [
+    ['photo', 'Утренние тренировки', 'Sport', 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=900&q=85', 1],
+    ['video', 'Костёр под звёздами', 'Evening', 'https://images.unsplash.com/photo-1475139441338-693e7dbe20b6?w=900&q=85', 2],
+    ['photo', 'Хакатон-финал', 'IT', 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=900&q=85', 3],
+    ['photo', 'Восхождение', 'Mountain', 'https://images.unsplash.com/photo-1454942901704-3c44c11b2ad1?w=900&q=85', 4],
+    ['photo', 'Утро на Иссык-Куле', 'Lake', 'https://images.unsplash.com/photo-1465056836041-7f43ac27dcb5?w=900&q=85', 5],
+    ['video', 'Вечеринка финала', 'Night', 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=900&q=85', 6],
+    ['photo', 'Командный квест', 'Team', 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=900&q=85', 7],
+    ['photo', 'Турнир потока', 'Sport', 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=85', 8],
+    ['photo', 'Творческая мастерская', 'Creative', 'https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=900&q=85', 9],
+    ['video', 'Награждение', 'Ceremony', 'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=900&q=85', 10],
+    ['photo', 'Команда дня 3', 'Friends', 'https://images.unsplash.com/photo-1517022812141-23620dba5c23?w=900&q=85', 11],
+    ['photo', 'Юнит #047', 'Portrait', 'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=900&q=85', 12],
+  ];
+  const tx = db.transaction(() => { for (const m of media) ins.run(...m); });
+  tx();
+  console.log('Seeded 12 media');
+}
+
 module.exports = db;
