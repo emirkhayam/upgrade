@@ -134,10 +134,18 @@ if (speakerCount.c === 0) {
 // Seed stars if empty
 const starCount = db.prepare('SELECT COUNT(*) as c FROM stars').get();
 if (starCount.c === 0) {
-  db.prepare('INSERT INTO stars (name, title, category, description, photo, sort_order) VALUES (?, ?, ?, ?, ?, ?)').run(
-    'Азамат Жаналиев', 'Олимпийский чемпион', 'Спорт', 'Двукратный чемпион мира по борьбе. Гордость Кыргызстана.', 'img/azamat-zhanaliev.jpg', 1
-  );
-  console.log('Seeded 1 star');
+  const insStar = db.prepare('INSERT INTO stars (name, title, category, description, photo, sort_order) VALUES (?, ?, ?, ?, ?, ?)');
+  const stars = [
+    ['Айсулуу Тыныбекова', 'Олимпийская чемпионка по борьбе', 'Спорт', 'Первая олимпийская чемпионка Кыргызстана. Многократная чемпионка мира и Азии по женской борьбе.', 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=85', 1],
+    ['Акжол Махмудов', 'Олимпийский чемпион по борьбе', 'Спорт', 'Золото Олимпийских игр в греко-римской борьбе. Гордость кыргызского спорта.', 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=85', 2],
+    ['Эрнест Абдыжапаров', 'Senior Engineer, Google', 'IT', 'Кыргызстанец в Google. Разработка AI-систем, менторство молодых программистов из ЦА.', 'https://images.unsplash.com/photo-1556157382-97eda2d62296?w=600&q=85', 3],
+    ['Азамат Жаналиев', 'Чемпион мира по борьбе', 'Спорт', 'Двукратный чемпион мира по борьбе. Тренер молодёжной сборной Кыргызстана.', 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&q=85', 4],
+    ['Нурбек Изабеков', 'Основатель IT-стартапа', 'Бизнес', 'Серийный предприниматель из Бишкека. Создатель нескольких успешных tech-стартапов в регионе.', 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=85', 5],
+    ['Алтынай Омурбекова', 'Учёный-биолог', 'Наука', 'PhD в молекулярной биологии. Исследования в области генетики в ведущих лабораториях Европы.', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=85', 6],
+  ];
+  const tx = db.transaction(() => { for (const s of stars) insStar.run(...s); });
+  tx();
+  console.log('Seeded 6 stars');
 }
 
 // Seed media if empty
