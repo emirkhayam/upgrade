@@ -39,7 +39,7 @@
   content:'';position:absolute;inset:0;z-index:1;
   background:radial-gradient(ellipse 70% 60% at 30% 50%,transparent 0%,rgba(5,6,10,.35) 70%,rgba(5,6,10,.8) 100%);
 }
-.hero-particles{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.hero-particles{position:fixed;inset:0;z-index:9999;pointer-events:none}
 .hero-particles .p{
   position:absolute;width:2px;height:2px;border-radius:50%;background:var(--orange);
   box-shadow:0 0 6px var(--orange-glow);
@@ -833,6 +833,9 @@
   <a href="system.html#register" class="mob-cta">Войти в систему</a>
 </div>
 
+<!-- Global particles -->
+<div class="hero-particles" id="particles"></div>
+
 <!-- ===== HERO ===== -->
 <section class="hero" id="home">
   <div class="hero-bg">
@@ -841,7 +844,6 @@
     </video>
   </div>
   <div class="hero-scan"></div>
-  <div class="hero-particles" id="particles"></div>
 
   <div class="hero-left">
     <div class="hero-pretitle">
@@ -1215,13 +1217,13 @@
 // Particles
 (function(){
   const c=document.getElementById('particles');
-  for(let i=0;i<24;i++){
+  for(let i=0;i<50;i++){
     const p=document.createElement('div');
     p.className='p';
     p.style.left=(Math.random()*100)+'%';
-    p.style.bottom=(-Math.random()*30)+'px';
-    p.style.animationDuration=(8+Math.random()*12)+'s';
-    p.style.animationDelay=(Math.random()*6)+'s';
+    p.style.bottom=(Math.random()*100)+'%';
+    p.style.animationDuration=(10+Math.random()*18)+'s';
+    p.style.animationDelay=(Math.random()*12)+'s';
     c.appendChild(p);
   }
 })();
