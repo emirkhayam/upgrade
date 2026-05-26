@@ -5,11 +5,16 @@ const router = Router();
 
 // POST /api/bookings — create a booking
 router.post('/', (req, res) => {
-  const { stream_id, child_name, child_age, parent_phone, parent_name } = req.body;
+  const { stream_id, child_name, child_age, parent_phone, parent_name, gender,
+    parent_city, parent_email, alt_phone, tshirt_size, health, allergies, about_child, wishes } = req.body;
 
   // Validation
-  if (!stream_id || !child_name || !child_age || !parent_phone) {
+  if (!stream_id || !child_name || !child_age || !parent_phone || !gender) {
     return res.status(400).json({ error: 'Заполните все обязательные поля' });
+  }
+
+  if (!['M', 'F'].includes(gender)) {
+    return res.status(400).json({ error: 'Укажите пол ребёнка' });
   }
 
   const age = parseInt(child_age, 10);
@@ -38,10 +43,25 @@ router.post('/', (req, res) => {
       return { error: 'К сожалению, все места на этот поток заняты', status: 409 };
     }
 
+    // Gender quota check (40 per gender)
+    const GENDER_LIMIT = 40;
+    const genderCount = db.prepare(
+      "SELECT COUNT(*) as cnt FROM bookings WHERE stream_id = ? AND gender = ? AND status != 'cancelled'"
+    ).get(stream_id, gender);
+
+    if (genderCount.cnt >= GENDER_LIMIT) {
+      const label = gender === 'M' ? 'мальчиков' : 'девочек';
+      return { error: `Места для ${label} на этом потоке закончились. Выберите другой поток.`, status: 409 };
+    }
+
     const result = db.prepare(`
-      INSERT INTO bookings (stream_id, child_name, child_age, parent_phone, parent_name)
-      VALUES (?, ?, ?, ?, ?)
-    `).run(stream_id, child_name.trim(), age, phone, (parent_name || '').trim());
+      INSERT INTO bookings (stream_id, child_name, child_age, parent_phone, parent_name, gender,
+        parent_city, parent_email, alt_phone, tshirt_size, health, allergies, about_child, wishes)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(stream_id, child_name.trim(), age, phone, (parent_name || '').trim(), gender,
+      (parent_city || '').trim(), (parent_email || '').trim(), (alt_phone || '').trim(),
+      (tshirt_size || '').trim(), (health || '').trim(), (allergies || '').trim(),
+      (about_child || '').trim(), (wishes || '').trim());
 
     return { booking_id: result.lastInsertRowid };
   });

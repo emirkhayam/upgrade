@@ -70,6 +70,27 @@ db.exec(`
   );
 `);
 
+// Migrations: add missing columns to bookings
+const bookingMigrations = [
+  ['gender', "TEXT DEFAULT ''"],
+  ['parent_city', "TEXT DEFAULT ''"],
+  ['parent_email', "TEXT DEFAULT ''"],
+  ['alt_phone', "TEXT DEFAULT ''"],
+  ['tshirt_size', "TEXT DEFAULT ''"],
+  ['health', "TEXT DEFAULT ''"],
+  ['allergies', "TEXT DEFAULT ''"],
+  ['about_child', "TEXT DEFAULT ''"],
+  ['wishes', "TEXT DEFAULT ''"],
+];
+for (const [col, def] of bookingMigrations) {
+  try {
+    db.prepare(`SELECT ${col} FROM bookings LIMIT 1`).get();
+  } catch {
+    db.exec(`ALTER TABLE bookings ADD COLUMN ${col} ${def}`);
+    console.log(`Migration: added ${col} column to bookings`);
+  }
+}
+
 // Seed streams if empty
 const count = db.prepare('SELECT COUNT(*) as c FROM streams').get();
 if (count.c === 0) {

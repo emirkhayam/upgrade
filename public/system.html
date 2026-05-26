@@ -1419,10 +1419,10 @@
           <div class="field"><label>Фамилия</label><input id="childLast" type="text" placeholder="Сейтова" required></div>
           <div class="field"><label>Возраст (12–15)</label><input id="childAge" type="number" min="12" max="15" placeholder="13" required></div>
           <div class="field"><label>Пол · корпус</label>
-            <select required><option value="">Выберите</option><option>Мальчик · Корпус 01</option><option>Девочка · Корпус 02</option></select>
+            <select id="childGender" required><option value="">Выберите</option><option value="M">Мальчик · Корпус 01</option><option value="F">Девочка · Корпус 02</option></select>
           </div>
           <div class="field"><label>Город / Регион</label>
-            <select required>
+            <select id="parentCity" required>
               <option value="">Выберите</option>
               <option>Бишкек</option><option>Ош</option><option>Джалал-Абад</option>
               <option>Нарын</option><option>Талас</option><option>Баткен</option>
@@ -1430,7 +1430,7 @@
             </select>
           </div>
           <div class="field"><label>Размер футболки</label>
-            <select required><option value="">XS / S / M / L / XL</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option></select>
+            <select id="tshirtSize" required><option value="">XS / S / M / L / XL</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option></select>
           </div>
         </div>
         <div class="step-nav">
@@ -1447,8 +1447,8 @@
           <div class="field"><label>Имя родителя</label><input id="parentFirst" type="text" placeholder="Айгуль" required></div>
           <div class="field"><label>Фамилия родителя</label><input id="parentLast" type="text" placeholder="Сейтова"></div>
           <div class="field full"><label>Телефон (WhatsApp)</label><input id="parentPhone" type="tel" placeholder="+996 700 000 000" required></div>
-          <div class="field full"><label>Email (для договора)</label><input type="email" placeholder="parent@mail.kg" required></div>
-          <div class="field full"><label>Альтернативный контакт</label><input type="tel" placeholder="+996 555 000 000"></div>
+          <div class="field full"><label>Email (для договора)</label><input id="parentEmail" type="email" placeholder="parent@mail.kg" required></div>
+          <div class="field full"><label>Альтернативный контакт</label><input id="altPhone" type="tel" placeholder="+996 555 000 000"></div>
         </div>
         <div class="step-nav">
           <button type="button" class="step-btn prev" onclick="prevStep(1)">Назад</button>
@@ -1466,10 +1466,10 @@
               <option value="">Загрузка потоков...</option>
             </select>
           </div>
-          <div class="field full"><label>Хронические заболевания</label><input type="text" placeholder="Нет / опишите"></div>
-          <div class="field full"><label>Аллергии · диета</label><input type="text" placeholder="Нет / опишите"></div>
-          <div class="field full"><label>Кратко о ребёнке (необязательно)</label><textarea placeholder="Что любит, какие интересы, особенности характера. Помогает вожатым подобрать команду."></textarea></div>
-          <div class="field full"><label>Пожелания по потоку</label><input type="text" placeholder="Например: хочу с другом из 7А"></div>
+          <div class="field full"><label>Хронические заболевания</label><input id="health" type="text" placeholder="Нет / опишите"></div>
+          <div class="field full"><label>Аллергии · диета</label><input id="allergies" type="text" placeholder="Нет / опишите"></div>
+          <div class="field full"><label>Кратко о ребёнке (необязательно)</label><textarea id="aboutChild" placeholder="Что любит, какие интересы, особенности характера. Помогает вожатым подобрать команду."></textarea></div>
+          <div class="field full"><label>Пожелания по потоку</label><input id="wishes" type="text" placeholder="Например: хочу с другом из 7А"></div>
         </div>
         <div class="step-nav">
           <button type="button" class="step-btn prev" onclick="prevStep(2)">Назад</button>
@@ -1581,7 +1581,9 @@ async function loadStreams() {
       streams.map(s => {
         const start = formatDate(s.date_start);
         const end = formatDate(s.date_end);
-        return `<option value="${s.id}">${s.name} · ${start} — ${end} · ${s.spots_left} мест · ${s.price.toLocaleString()} сом</option>`;
+        const mLeft = 40 - (s.males || 0);
+        const fLeft = 40 - (s.females || 0);
+        return `<option value="${s.id}">${s.name} · ${start} — ${end} · 👦${mLeft} 👧${fLeft} мест · ${s.price.toLocaleString()} сом</option>`;
       }).join('');
   } catch {
     sel.innerHTML = '<option value="">Ошибка загрузки</option>';
@@ -1632,7 +1634,16 @@ async function submitReg(e){
     child_name: document.getElementById('childFirst').value + ' ' + document.getElementById('childLast').value,
     child_age: parseInt(document.getElementById('childAge').value),
     parent_phone: document.getElementById('parentPhone').value,
-    parent_name: document.getElementById('parentFirst').value + ' ' + (document.getElementById('parentLast').value || '')
+    parent_name: document.getElementById('parentFirst').value + ' ' + (document.getElementById('parentLast').value || ''),
+    gender: document.getElementById('childGender').value,
+    parent_city: document.getElementById('parentCity').value,
+    parent_email: document.getElementById('parentEmail').value,
+    alt_phone: document.getElementById('altPhone').value,
+    tshirt_size: document.getElementById('tshirtSize').value,
+    health: document.getElementById('health').value,
+    allergies: document.getElementById('allergies').value,
+    about_child: document.getElementById('aboutChild').value,
+    wishes: document.getElementById('wishes').value
   };
 
   try {
@@ -1706,7 +1717,7 @@ function daysBetween(a,b) {
           <div class="d">${fmtStreamDate(s.date_start, s.date_end)}</div>
           <div class="meta">
             <span class="avail ${hasSpots?'open':'full'}"><span class="dot"></span>${hasSpots?'ЕСТЬ МЕСТА':'МЕСТ НЕТ'}</span>
-            <strong>${days} ДНЕЙ</strong>
+            <strong>👦${40-(s.males||0)} 👧${40-(s.females||0)}</strong>
           </div>
         </div>`;
     }).join('');

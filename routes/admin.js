@@ -84,7 +84,9 @@ router.get('/stats', auth, (req, res) => {
     SELECT s.id, s.name, s.capacity, s.date_start, s.date_end, s.is_active, s.price,
       (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status = 'confirmed') AS confirmed,
       (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status = 'pending') AS pending,
-      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status != 'cancelled') AS booked
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status != 'cancelled') AS booked,
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.gender = 'M' AND b.status != 'cancelled') AS males,
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.gender = 'F' AND b.status != 'cancelled') AS females
     FROM streams s ORDER BY s.date_start
   `).all();
 
