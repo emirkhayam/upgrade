@@ -74,6 +74,10 @@ db.exec(`
 // Migrations: add missing columns to bookings
 const bookingMigrations = [
   ['gender', "TEXT DEFAULT ''"],
+  // Channel the lead arrived from: website | telegram | whatsapp | manual
+  ['source', "TEXT DEFAULT 'website'"],
+  // Messenger handle for write-back (Telegram @username or chat id, etc.)
+  ['contact_handle', "TEXT DEFAULT ''"],
   ['parent_city', "TEXT DEFAULT ''"],
   ['parent_email', "TEXT DEFAULT ''"],
   ['alt_phone', "TEXT DEFAULT ''"],

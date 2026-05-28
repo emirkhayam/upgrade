@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const db = require('../db');
 const auth = require('../middleware/auth');
+const { updateBooking } = require('../lib/bookingService');
 
 const router = Router();
 
@@ -107,54 +108,10 @@ router.get('/stats', auth, (req, res) => {
   res.json({ streams, totals, revenue: revenue.total });
 });
 
-const LEAD_STATUSES = ['new', 'calling', 'awaiting_payment', 'reserved', 'paid', 'rejected'];
-
 router.patch('/bookings/:id', auth, (req, res) => {
-  const booking = db.prepare('SELECT * FROM bookings WHERE id = ?').get(req.params.id);
-  if (!booking) return res.status(404).json({ error: 'Заявка не найдена' });
-
-  const { status, manager, next_action, next_contact_date, discount, paid_amount, payment_date, receipt } = req.body;
-
-  if (status !== undefined && !LEAD_STATUSES.includes(status)) {
-    return res.status(400).json({ error: 'Невалидный статус' });
-  }
-
-  const newDiscount = discount !== undefined ? Math.max(0, Math.min(100, parseInt(discount) || 0)) : booking.discount;
-  const newPaid = paid_amount !== undefined ? Math.max(0, parseInt(paid_amount) || 0) : booking.paid_amount;
-  const amountDue = Math.round((booking.base_price || 0) * (100 - newDiscount) / 100);
-
-  // Payment status is derived from the money, never set by hand
-  let paymentStatus;
-  if (amountDue > 0 && newPaid >= amountDue) paymentStatus = 'paid';
-  else if (newPaid > 0) paymentStatus = 'partial';
-  else paymentStatus = 'none';
-
-  // Stamp the payment date automatically once fully paid, if not already set
-  let newPaymentDate = payment_date !== undefined ? payment_date : booking.payment_date;
-  if (paymentStatus === 'paid' && !newPaymentDate) {
-    newPaymentDate = new Date().toISOString().slice(0, 10);
-  }
-
-  db.prepare(`
-    UPDATE bookings SET
-      status = ?, manager = ?, next_action = ?, next_contact_date = ?,
-      discount = ?, paid_amount = ?, payment_status = ?, payment_date = ?, receipt = ?
-    WHERE id = ?
-  `).run(
-    status ?? booking.status,
-    manager !== undefined ? manager : booking.manager,
-    next_action !== undefined ? next_action : booking.next_action,
-    next_contact_date !== undefined ? next_contact_date : booking.next_contact_date,
-    newDiscount,
-    newPaid,
-    paymentStatus,
-    newPaymentDate,
-    receipt !== undefined ? receipt : booking.receipt,
-    req.params.id
-  );
-
-  const updated = db.prepare('SELECT * FROM bookings WHERE id = ?').get(req.params.id);
-  res.json({ ok: true, booking: updated });
+  const outcome = updateBooking(req.params.id, req.body);
+  if (outcome.error) return res.status(outcome.status).json({ error: outcome.error });
+  res.json({ ok: true, booking: outcome.booking });
 });
 
 // ==================== STREAMS ====================

@@ -18,6 +18,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/streams', require('./routes/streams'));
 app.use('/api/streams-status', require('./routes/streams-status'));
 app.use('/api/bookings', require('./routes/bookings'));
+app.use('/api/bot', require('./routes/bot'));
 app.use('/api/admin', require('./routes/admin'));
 
 // Health check
