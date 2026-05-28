@@ -1091,6 +1091,19 @@
   </div>
 </section>
 
+<!-- ===== SPEAKERS (отдельный блок — данные из вкладки «Спикеры») ===== -->
+<section class="speakers" id="speakersBlock">
+  <div class="spk-head">
+    <div class="eyebrow reveal">// СПИКЕРЫ</div>
+    <h2 class="section-title reveal">Спикеры и<br><em>наставники.</em></h2>
+    <p class="section-lede reveal">Кто проводит лекции, мастер-классы и личные сессии на потоках. Состав обновляется каждый поток.</p>
+  </div>
+
+  <div class="spk-grid reveal" id="speakersGrid">
+    <!-- Загружается из API: /api/admin/public/speakers -->
+  </div>
+</section>
+
 <!-- ===== ATMOSPHERE ===== -->
 <section class="atmos" id="atmos">
   <div class="atmos-head">
@@ -1241,6 +1254,24 @@ fetch('/api/admin/public/stars').then(r=>r.json()).then(stars=>{
         <div class="spk-name">${s.name}</div>
         <div class="spk-role">// ${(s.title||'').toUpperCase()}</div>
         <p class="spk-bio">${s.description||''}</p>
+      </div>
+    </div>
+  `).join('');
+}).catch(()=>{});
+
+// Load speakers from API (вкладка «Спикеры» в админке)
+fetch('/api/admin/public/speakers').then(r=>r.json()).then(list=>{
+  const grid=document.getElementById('speakersGrid');
+  if(!grid||!list.length) return;
+  grid.innerHTML=list.map(s=>`
+    <div class="spk-card">
+      <div class="spk-img" style="background-image:url('${s.photo||''}')"></div>
+      <i class="spk-corner tl"></i><i class="spk-corner br"></i>
+      <span class="spk-cat">// ${(s.category||'').toUpperCase()}</span>
+      <div class="spk-info">
+        <div class="spk-name">${s.name}</div>
+        <div class="spk-role">// ${(s.role||'').toUpperCase()}</div>
+        <p class="spk-bio">${s.bio||''}</p>
       </div>
     </div>
   `).join('');

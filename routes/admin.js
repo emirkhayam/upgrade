@@ -20,7 +20,8 @@ const qrStorage = multer.diskStorage({
   destination: path.join(__dirname, '..', 'uploads', 'qr'),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    cb(null, 'payment-qr' + ext);
+    // Unique name per upload so a new QR isn't masked by the browser/CDN cache of the old file.
+    cb(null, 'payment-qr-' + Date.now() + ext);
   }
 });
 const uploadQR = multer({
@@ -184,7 +185,8 @@ const champStorage = multer.diskStorage({
   destination: path.join(__dirname, '..', 'uploads', 'champion'),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    cb(null, 'champion' + ext);
+    // Unique name per upload so a new photo isn't masked by the browser/CDN cache of the old file.
+    cb(null, 'champion-' + Date.now() + ext);
   }
 });
 const uploadChamp = multer({
