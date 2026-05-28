@@ -7,17 +7,19 @@ const fs = require('fs');
 const db = require('../db');
 const auth = require('../middleware/auth');
 const { updateBooking } = require('../lib/bookingService');
+const { uploadsDir } = require('../lib/paths');
 
 const router = Router();
 
-// Ensure upload directories exist
-['speakers', 'stars', 'media'].forEach(dir => {
-  fs.mkdirSync(path.join(__dirname, '..', 'uploads', dir), { recursive: true });
+// Ensure all upload directories exist on the persistent volume (created at startup so
+// they're present even on a fresh volume / new server).
+['speakers', 'stars', 'media', 'qr', 'champion'].forEach(dir => {
+  fs.mkdirSync(path.join(uploadsDir, dir), { recursive: true });
 });
 
 // QR upload config
 const qrStorage = multer.diskStorage({
-  destination: path.join(__dirname, '..', 'uploads', 'qr'),
+  destination: path.join(uploadsDir, 'qr'),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     // Unique name per upload so a new QR isn't masked by the browser/CDN cache of the old file.
@@ -182,7 +184,7 @@ router.get('/settings/qr', (req, res) => {
 // ==================== CHAMPION ====================
 
 const champStorage = multer.diskStorage({
-  destination: path.join(__dirname, '..', 'uploads', 'champion'),
+  destination: path.join(uploadsDir, 'champion'),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     // Unique name per upload so a new photo isn't masked by the browser/CDN cache of the old file.
@@ -240,7 +242,7 @@ router.get('/public/media', (req, res) => {
 // ==================== SPEAKERS ====================
 
 const speakerStorage = multer.diskStorage({
-  destination: path.join(__dirname, '..', 'uploads', 'speakers'),
+  destination: path.join(uploadsDir, 'speakers'),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     cb(null, 'speaker-' + Date.now() + ext);
@@ -294,7 +296,7 @@ router.delete('/speakers/:id', auth, (req, res) => {
 // ==================== STARS ====================
 
 const starStorage = multer.diskStorage({
-  destination: path.join(__dirname, '..', 'uploads', 'stars'),
+  destination: path.join(uploadsDir, 'stars'),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     cb(null, 'star-' + Date.now() + ext);
@@ -348,7 +350,7 @@ router.delete('/stars/:id', auth, (req, res) => {
 // ==================== MEDIA ====================
 
 const mediaStorage = multer.diskStorage({
-  destination: path.join(__dirname, '..', 'uploads', 'media'),
+  destination: path.join(uploadsDir, 'media'),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
     cb(null, 'media-' + Date.now() + ext);
