@@ -39,7 +39,7 @@
   content:'';position:absolute;inset:0;z-index:1;
   background:radial-gradient(ellipse 70% 60% at 30% 50%,transparent 0%,rgba(5,6,10,.35) 70%,rgba(5,6,10,.8) 100%);
 }
-.hero-particles{position:fixed;inset:0;z-index:9999;pointer-events:none}
+.hero-particles{position:fixed;inset:0;z-index:-1;pointer-events:none}
 .hero-particles .p{
   position:absolute;width:4px;height:4px;border-radius:50%;background:#ff8a2b;
   box-shadow:0 0 8px 2px rgba(255,106,31,.8),0 0 20px 4px rgba(255,106,31,.4);
@@ -194,7 +194,7 @@
 
 /* ===== INTRO SPLIT ===== */
 .intro{
-  position:relative;padding:140px 40px;background:var(--bg);overflow:hidden;
+  position:relative;padding:140px 40px;overflow:hidden;
 }
 .intro-grid{
   max-width:1320px;margin:0 auto;
@@ -250,7 +250,6 @@
 /* ===== MISSIONS ===== */
 .missions{
   position:relative;padding:140px 40px;
-  background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%);
 }
 .missions-head{
   max-width:1320px;margin:0 auto 64px;
@@ -365,7 +364,7 @@
 
 /* ===== LEADERBOARD ===== */
 .lboard{
-  position:relative;padding:140px 40px;background:var(--bg);
+  position:relative;padding:140px 40px;
   overflow:hidden;
 }
 .lboard::before{
@@ -461,7 +460,6 @@
 /* ===== SPEAKERS CINEMATIC ===== */
 .speakers{
   position:relative;padding:140px 40px;
-  background:linear-gradient(180deg,var(--bg) 0%,var(--bg-2) 100%);
   overflow:hidden;
 }
 .spk-head{max-width:1320px;margin:0 auto 64px}
@@ -531,7 +529,6 @@
 /* ===== ATMOSPHERE GALLERY ===== */
 .atmos{
   position:relative;padding:140px 0 80px;
-  background:var(--bg);
 }
 .atmos-head{max-width:1320px;margin:0 auto 64px;padding:0 40px}
 .atmos-scroll{
@@ -1274,7 +1271,16 @@ function atmosScroll(dir){
   s.scrollBy({left:dir*440, behavior:'smooth'});
 }
 
-
 </script>
+
+<!-- ============================================================
+     AI ЧАТ-ПОМОЩНИК — место для виджета бота.
+     Команда бота вставляет сюда свой код (тег <script ...>)
+     или монтирует виджет в контейнер #ai-chat-widget ниже.
+     Рекомендация: фиксированная позиция справа снизу, z-index >= 2000.
+     ============================================================ -->
+<div id="ai-chat-widget"></div>
+<script src="/chat-widget.js" defer></script>
+
 </body>
 </html>

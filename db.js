@@ -27,7 +27,7 @@ db.exec(`
     child_age    INTEGER NOT NULL,
     parent_phone TEXT NOT NULL,
     parent_name  TEXT DEFAULT '',
-    status       TEXT DEFAULT 'pending',
+    status       TEXT DEFAULT 'new',
     created_at   TEXT DEFAULT (datetime('now'))
   );
 
@@ -82,6 +82,16 @@ const bookingMigrations = [
   ['allergies', "TEXT DEFAULT ''"],
   ['about_child', "TEXT DEFAULT ''"],
   ['wishes', "TEXT DEFAULT ''"],
+  // Payment + sales-funnel fields (ТЗ §3)
+  ['base_price', 'INTEGER DEFAULT 19998'],
+  ['discount', 'INTEGER DEFAULT 0'],
+  ['paid_amount', 'INTEGER DEFAULT 0'],
+  ['payment_status', "TEXT DEFAULT 'none'"],
+  ['payment_date', "TEXT DEFAULT ''"],
+  ['receipt', "TEXT DEFAULT ''"],
+  ['manager', "TEXT DEFAULT ''"],
+  ['next_action', "TEXT DEFAULT ''"],
+  ['next_contact_date', "TEXT DEFAULT ''"],
 ];
 for (const [col, def] of bookingMigrations) {
   try {
@@ -90,6 +100,13 @@ for (const [col, def] of bookingMigrations) {
     db.exec(`ALTER TABLE bookings ADD COLUMN ${col} ${def}`);
     console.log(`Migration: added ${col} column to bookings`);
   }
+}
+
+// Migrate legacy lead statuses (pending/confirmed/cancelled) to the 6-stage funnel
+const legacyStatusMap = { pending: 'new', confirmed: 'reserved', cancelled: 'rejected' };
+for (const [oldVal, newVal] of Object.entries(legacyStatusMap)) {
+  const r = db.prepare('UPDATE bookings SET status = ? WHERE status = ?').run(newVal, oldVal);
+  if (r.changes > 0) console.log(`Migration: remapped ${r.changes} booking(s) "${oldVal}" -> "${newVal}"`);
 }
 
 // Seed streams if empty

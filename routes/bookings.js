@@ -30,8 +30,8 @@ router.post('/', (req, res) => {
   // Atomic booking inside transaction
   const createBooking = db.transaction(() => {
     const stream = db.prepare(`
-      SELECT capacity,
-        (SELECT COUNT(*) FROM bookings WHERE stream_id = ? AND status != 'cancelled') AS booked
+      SELECT capacity, price,
+        (SELECT COUNT(*) FROM bookings WHERE stream_id = ? AND status != 'rejected') AS booked
       FROM streams WHERE id = ? AND is_active = 1
     `).get(stream_id, stream_id);
 
@@ -46,7 +46,7 @@ router.post('/', (req, res) => {
     // Gender quota check (40 per gender)
     const GENDER_LIMIT = 40;
     const genderCount = db.prepare(
-      "SELECT COUNT(*) as cnt FROM bookings WHERE stream_id = ? AND gender = ? AND status != 'cancelled'"
+      "SELECT COUNT(*) as cnt FROM bookings WHERE stream_id = ? AND gender = ? AND status != 'rejected'"
     ).get(stream_id, gender);
 
     if (genderCount.cnt >= GENDER_LIMIT) {
@@ -54,14 +54,16 @@ router.post('/', (req, res) => {
       return { error: `Места для ${label} на этом потоке закончились. Выберите другой поток.`, status: 409 };
     }
 
+    const basePrice = stream.price || 19998;
     const result = db.prepare(`
       INSERT INTO bookings (stream_id, child_name, child_age, parent_phone, parent_name, gender,
-        parent_city, parent_email, alt_phone, tshirt_size, health, allergies, about_child, wishes)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        parent_city, parent_email, alt_phone, tshirt_size, health, allergies, about_child, wishes,
+        status, base_price, discount, paid_amount, payment_status, next_action)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'new', ?, 0, 0, 'none', 'Позвонить / написать в WhatsApp')
     `).run(stream_id, child_name.trim(), age, phone, (parent_name || '').trim(), gender,
       (parent_city || '').trim(), (parent_email || '').trim(), (alt_phone || '').trim(),
       (tshirt_size || '').trim(), (health || '').trim(), (allergies || '').trim(),
-      (about_child || '').trim(), (wishes || '').trim());
+      (about_child || '').trim(), (wishes || '').trim(), basePrice);
 
     return { booking_id: result.lastInsertRowid };
   });

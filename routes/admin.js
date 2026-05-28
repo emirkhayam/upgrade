@@ -82,44 +82,79 @@ router.get('/bookings', auth, (req, res) => {
 router.get('/stats', auth, (req, res) => {
   const streams = db.prepare(`
     SELECT s.id, s.name, s.capacity, s.date_start, s.date_end, s.is_active, s.price,
-      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status = 'confirmed') AS confirmed,
-      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status = 'pending') AS pending,
-      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status != 'cancelled') AS booked,
-      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.gender = 'M' AND b.status != 'cancelled') AS males,
-      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.gender = 'F' AND b.status != 'cancelled') AS females
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status != 'rejected') AS booked,
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.payment_status = 'paid') AS paid_total,
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.payment_status = 'paid' AND b.gender = 'M') AS paid_males,
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.payment_status = 'paid' AND b.gender = 'F') AS paid_females,
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status IN ('new','calling','awaiting_payment')) AS pending,
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.gender = 'M' AND b.status != 'rejected') AS males,
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.gender = 'F' AND b.status != 'rejected') AS females
     FROM streams s ORDER BY s.date_start
   `).all();
 
   const totals = db.prepare(`
     SELECT
       COUNT(*) as total,
-      SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
-      SUM(CASE WHEN status = 'confirmed' THEN 1 ELSE 0 END) as confirmed,
-      SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled
+      SUM(CASE WHEN status IN ('new','calling','awaiting_payment') THEN 1 ELSE 0 END) as in_progress,
+      SUM(CASE WHEN status = 'reserved' THEN 1 ELSE 0 END) as reserved,
+      SUM(CASE WHEN payment_status = 'paid' THEN 1 ELSE 0 END) as paid,
+      SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected
     FROM bookings
   `).get();
 
-  const revenue = db.prepare(`
-    SELECT COALESCE(SUM(s.price), 0) as total
-    FROM bookings b JOIN streams s ON s.id = b.stream_id
-    WHERE b.status = 'confirmed'
-  `).get();
+  const revenue = db.prepare(`SELECT COALESCE(SUM(paid_amount), 0) as total FROM bookings`).get();
 
   res.json({ streams, totals, revenue: revenue.total });
 });
 
+const LEAD_STATUSES = ['new', 'calling', 'awaiting_payment', 'reserved', 'paid', 'rejected'];
+
 router.patch('/bookings/:id', auth, (req, res) => {
-  const { status } = req.body;
-  const validStatuses = ['pending', 'confirmed', 'cancelled'];
-  if (!validStatuses.includes(status)) {
+  const booking = db.prepare('SELECT * FROM bookings WHERE id = ?').get(req.params.id);
+  if (!booking) return res.status(404).json({ error: 'Заявка не найдена' });
+
+  const { status, manager, next_action, next_contact_date, discount, paid_amount, payment_date, receipt } = req.body;
+
+  if (status !== undefined && !LEAD_STATUSES.includes(status)) {
     return res.status(400).json({ error: 'Невалидный статус' });
   }
 
-  const result = db.prepare('UPDATE bookings SET status = ? WHERE id = ?').run(status, req.params.id);
-  if (result.changes === 0) {
-    return res.status(404).json({ error: 'Заявка не найдена' });
+  const newDiscount = discount !== undefined ? Math.max(0, Math.min(100, parseInt(discount) || 0)) : booking.discount;
+  const newPaid = paid_amount !== undefined ? Math.max(0, parseInt(paid_amount) || 0) : booking.paid_amount;
+  const amountDue = Math.round((booking.base_price || 0) * (100 - newDiscount) / 100);
+
+  // Payment status is derived from the money, never set by hand
+  let paymentStatus;
+  if (amountDue > 0 && newPaid >= amountDue) paymentStatus = 'paid';
+  else if (newPaid > 0) paymentStatus = 'partial';
+  else paymentStatus = 'none';
+
+  // Stamp the payment date automatically once fully paid, if not already set
+  let newPaymentDate = payment_date !== undefined ? payment_date : booking.payment_date;
+  if (paymentStatus === 'paid' && !newPaymentDate) {
+    newPaymentDate = new Date().toISOString().slice(0, 10);
   }
-  res.json({ ok: true });
+
+  db.prepare(`
+    UPDATE bookings SET
+      status = ?, manager = ?, next_action = ?, next_contact_date = ?,
+      discount = ?, paid_amount = ?, payment_status = ?, payment_date = ?, receipt = ?
+    WHERE id = ?
+  `).run(
+    status ?? booking.status,
+    manager !== undefined ? manager : booking.manager,
+    next_action !== undefined ? next_action : booking.next_action,
+    next_contact_date !== undefined ? next_contact_date : booking.next_contact_date,
+    newDiscount,
+    newPaid,
+    paymentStatus,
+    newPaymentDate,
+    receipt !== undefined ? receipt : booking.receipt,
+    req.params.id
+  );
+
+  const updated = db.prepare('SELECT * FROM bookings WHERE id = ?').get(req.params.id);
+  res.json({ ok: true, booking: updated });
 });
 
 // ==================== STREAMS ====================

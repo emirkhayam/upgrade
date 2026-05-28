@@ -52,6 +52,25 @@ tr:hover{background:rgba(255,106,31,.03)}
 .badge-pending{background:rgba(255,170,0,.12);color:#ffaa00;border:1px solid rgba(255,170,0,.3)}
 .badge-confirmed{background:rgba(0,200,100,.12);color:#00c864;border:1px solid rgba(0,200,100,.3)}
 .badge-cancelled{background:rgba(255,61,106,.12);color:#ff3d6a;border:1px solid rgba(255,61,106,.3)}
+/* Lead funnel statuses */
+.badge-new{background:rgba(80,150,255,.12);color:#5096ff;border:1px solid rgba(80,150,255,.3)}
+.badge-calling{background:rgba(255,170,0,.12);color:#ffaa00;border:1px solid rgba(255,170,0,.3)}
+.badge-awaiting_payment{background:rgba(255,140,30,.12);color:#ff8c1e;border:1px solid rgba(255,140,30,.3)}
+.badge-reserved{background:rgba(120,90,255,.14);color:#9b7bff;border:1px solid rgba(120,90,255,.3)}
+.badge-paid{background:rgba(0,200,100,.12);color:#00c864;border:1px solid rgba(0,200,100,.3)}
+.badge-rejected{background:rgba(255,61,106,.12);color:#ff3d6a;border:1px solid rgba(255,61,106,.3)}
+/* Payment statuses */
+.badge-pay-none{background:rgba(125,134,148,.12);color:#9aa3b2;border:1px solid rgba(125,134,148,.3)}
+.badge-pay-partial{background:rgba(255,170,0,.12);color:#ffaa00;border:1px solid rgba(255,170,0,.3)}
+.badge-pay-paid{background:rgba(0,200,100,.12);color:#00c864;border:1px solid rgba(0,200,100,.3)}
+/* Editable fields in booking modal */
+.b-m-edit{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0;padding-top:14px;border-top:1px solid rgba(255,255,255,.07)}
+.b-m-edit label{font-size:10px;color:#7d8694;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;display:block}
+.b-m-edit input,.b-m-edit select{width:100%;padding:9px;background:#05060a;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8ecf2;font-size:13px}
+.b-m-edit input:focus,.b-m-edit select:focus{outline:none;border-color:#ff6a1f}
+.b-m-edit .full{grid-column:1/-1}
+.pay-summary{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin:4px 0 0}
+.pay-summary b{color:#e8ecf2}
 
 .btn-sm{padding:6px 12px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s}
 .btn-confirm{background:rgba(0,200,100,.15);color:#00c864;border:1px solid rgba(0,200,100,.3)}
@@ -287,13 +306,16 @@ tr:hover{background:rgba(255,106,31,.03)}
       </select>
       <select id="filterStatus" onchange="loadBookings()">
         <option value="">Все статусы</option>
-        <option value="pending">Ожидает</option>
-        <option value="confirmed">Подтверждено</option>
-        <option value="cancelled">Отменено</option>
+        <option value="new">Новая</option>
+        <option value="calling">Дозвон</option>
+        <option value="awaiting_payment">Ожидает оплаты</option>
+        <option value="reserved">Бронь</option>
+        <option value="paid">Оплачено</option>
+        <option value="rejected">Отказ</option>
       </select>
     </div>
     <table class="bookings-table">
-      <thead><tr><th>#</th><th>Ребёнок</th><th>Возраст</th><th>Телефон</th><th>Родитель</th><th>Поток</th><th>Статус</th><th>Дата</th><th>Действия</th></tr></thead>
+      <thead><tr><th>#</th><th>Ребёнок</th><th>Телефон</th><th>Поток</th><th>Статус</th><th>Оплата</th><th>Менеджер</th><th>Дата</th></tr></thead>
       <tbody id="bookingsBody"></tbody>
     </table>
     <div class="booking-cards" id="bookingCards"></div>
@@ -518,37 +540,38 @@ async function loadOverview() {
 
     document.getElementById('ovStats').innerHTML = `
       <div class="ov-card"><div class="ov-v">${totals.total || 0}</div><div class="ov-l">Всего заявок</div></div>
-      <div class="ov-card"><div class="ov-v" style="color:#ffaa00">${totals.pending || 0}</div><div class="ov-l">Ожидает</div></div>
-      <div class="ov-card"><div class="ov-v" style="color:#00c864">${totals.confirmed || 0}</div><div class="ov-l">Подтверждено</div></div>
-      <div class="ov-card"><div class="ov-v" style="color:#ff3d6a">${totals.cancelled || 0}</div><div class="ov-l">Отменено</div></div>
-      <div class="ov-card"><div class="ov-v" style="color:#00c864">${(revenue || 0).toLocaleString()}</div><div class="ov-l">Выручка (сом)</div></div>
+      <div class="ov-card"><div class="ov-v" style="color:#ffaa00">${totals.in_progress || 0}</div><div class="ov-l">В работе</div></div>
+      <div class="ov-card"><div class="ov-v" style="color:#9b7bff">${totals.reserved || 0}</div><div class="ov-l">Бронь</div></div>
+      <div class="ov-card"><div class="ov-v" style="color:#00c864">${totals.paid || 0}</div><div class="ov-l">Оплачено</div></div>
+      <div class="ov-card"><div class="ov-v" style="color:#00c864">${money(revenue)}</div><div class="ov-l">Собрано (сом)</div></div>
     `;
 
-    // Общая статистика заполнения
+    // Общее заполнение — по фактически оплаченным местам (ТЗ §4.1)
     const totalCap = streams.reduce((a,s) => a + s.capacity, 0);
-    const totalBooked = streams.reduce((a,s) => a + s.booked, 0);
-    const totalPct = totalCap > 0 ? Math.round((totalBooked / totalCap) * 100) : 0;
+    const totalPaid = streams.reduce((a,s) => a + (s.paid_total||0), 0);
+    const totalPct = totalCap > 0 ? Math.round((totalPaid / totalCap) * 100) : 0;
     const totalColor = totalPct >= 90 ? '#ff3d6a' : totalPct >= 60 ? '#ffaa00' : '#00c864';
 
     document.getElementById('streamCards').innerHTML = `
       <div style="grid-column:1/-1;padding:20px;background:#10131c;border:1px solid rgba(255,255,255,.07);border-radius:14px;margin-bottom:8px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <span style="font-size:14px;font-weight:700">Общее заполнение</span>
+          <span style="font-size:14px;font-weight:700">Оплачено мест (всего)</span>
           <span style="font-size:24px;font-weight:800;color:${totalColor}">${totalPct}%</span>
         </div>
         <div class="sc-bar-wrap"><div class="sc-bar" style="width:${totalPct}%;background:${totalColor}"></div></div>
         <div style="display:flex;justify-content:space-between;font-size:12px;color:#7d8694;margin-top:8px">
-          <span><strong style="color:#e8ecf2">${totalBooked}</strong> / ${totalCap} мест</span>
+          <span><strong style="color:#e8ecf2">${totalPaid}</strong> / ${totalCap} мест оплачено</span>
           <span>${streams.length} потоков</span>
         </div>
       </div>
     ` + streams.map(s => {
-      const pct = s.capacity > 0 ? Math.round((s.booked / s.capacity) * 100) : 0;
+      const paidTotal = s.paid_total || 0;
+      const pct = s.capacity > 0 ? Math.round((paidTotal / s.capacity) * 100) : 0;
       const color = pct >= 90 ? '#ff3d6a' : pct >= 60 ? '#ffaa00' : '#00c864';
       return `
         <div class="sc">
           <div class="sc-head">
-            <span class="sc-name">${s.name}</span>
+            <span class="sc-name">${esc(s.name)}</span>
             <span class="badge ${s.is_active ? 'badge-confirmed' : 'badge-cancelled'}" style="font-size:10px">${s.is_active ? 'Активен' : 'Скрыт'}</span>
           </div>
           <div class="sc-dates">${formatDate(s.date_start)} — ${formatDate(s.date_end)}</div>
@@ -556,14 +579,14 @@ async function loadOverview() {
             <div class="sc-bar" style="width:${pct}%;background:${color}"></div>
           </div>
           <div class="sc-nums">
-            <span><strong>${s.booked}</strong> / ${s.capacity} мест</span>
+            <span><strong>${paidTotal}</strong> / ${s.capacity} оплачено</span>
             <span style="color:${color};font-weight:700">${pct}%</span>
           </div>
           <div class="sc-bottom">
-            <span>👦 <strong>${s.males||0}</strong>/40</span>
-            <span>👧 <strong>${s.females||0}</strong>/40</span>
-            <span>Ожид: <strong>${s.pending}</strong></span>
-            <span>${s.price.toLocaleString()} сом</span>
+            <span>👧 <strong>${s.paid_females||0}</strong>/40</span>
+            <span>👦 <strong>${s.paid_males||0}</strong>/40</span>
+            <span>В работе: <strong>${s.pending||0}</strong></span>
+            <span>${money(s.price)} сом</span>
           </div>
         </div>
       `;
@@ -582,12 +605,16 @@ let lastBookings = [];
 
 function exportCSV() {
   if (!lastBookings.length) return alert('Нет данных для экспорта');
-  const header = 'ID,Ребёнок,Возраст,Телефон,Родитель,Поток,Начало,Конец,Статус,Дата заявки';
-  const rows = lastBookings.map(b =>
-    [b.id, b.child_name, b.child_age, b.parent_phone, b.parent_name || '', b.stream_name,
-     b.date_start, b.date_end, statusText(b.status), b.created_at]
-    .map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')
-  );
+  const header = 'ID,Ребёнок,Возраст,Пол,Телефон,Родитель,Город,Поток,Начало,Конец,Статус,Менеджер,Статус оплаты,Скидка %,К оплате,Оплачено,Остаток,Дата оплаты,Дата заявки';
+  const rows = lastBookings.map(b => {
+    const due = amountDue(b);
+    const gender = b.gender === 'M' ? 'М' : b.gender === 'F' ? 'Ж' : '';
+    return [b.id, b.child_name, b.child_age, gender, b.parent_phone, b.parent_name || '', b.parent_city || '',
+     b.stream_name, b.date_start, b.date_end, statusText(b.status), b.manager || '',
+     payStatusText(b.payment_status), b.discount || 0, due, b.paid_amount || 0, Math.max(0, due - (b.paid_amount||0)),
+     b.payment_date || '', b.created_at]
+    .map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',');
+  });
   const csv = '\uFEFF' + header + '\n' + rows.join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
@@ -614,34 +641,29 @@ async function loadBookings() {
 
     // Stats
     const all = bookings.length;
-    const pending = bookings.filter(b => b.status === 'pending').length;
-    const confirmed = bookings.filter(b => b.status === 'confirmed').length;
-    const cancelled = bookings.filter(b => b.status === 'cancelled').length;
+    const inProgress = bookings.filter(b => ['new','calling','awaiting_payment'].includes(b.status)).length;
+    const paid = bookings.filter(b => b.payment_status === 'paid').length;
+    const rejected = bookings.filter(b => b.status === 'rejected').length;
     document.getElementById('statsRow').innerHTML = `
       <div class="stat"><div class="v">${all}</div><div class="l">Всего заявок</div></div>
-      <div class="stat"><div class="v" style="color:#ffaa00">${pending}</div><div class="l">Ожидает</div></div>
-      <div class="stat"><div class="v" style="color:#00c864">${confirmed}</div><div class="l">Подтверждено</div></div>
-      <div class="stat"><div class="v" style="color:#ff3d6a">${cancelled}</div><div class="l">Отменено</div></div>
+      <div class="stat"><div class="v" style="color:#ffaa00">${inProgress}</div><div class="l">В работе</div></div>
+      <div class="stat"><div class="v" style="color:#00c864">${paid}</div><div class="l">Оплачено</div></div>
+      <div class="stat"><div class="v" style="color:#ff3d6a">${rejected}</div><div class="l">Отказ</div></div>
     `;
 
     document.getElementById('bookingsBody').innerHTML = bookings.map(b => `
       <tr style="cursor:pointer" onclick="openBooking(${b.id})">
         <td>${b.id}</td>
-        <td><strong>${b.child_name}</strong></td>
-        <td>${b.child_age}</td>
+        <td><strong>${esc(b.child_name)}</strong></td>
         <td>${phoneLinks(b.parent_phone)}</td>
-        <td>${b.parent_name || '—'}</td>
-        <td>${b.stream_name}<br><small style="color:#7d8694">${formatDate(b.date_start)} — ${formatDate(b.date_end)}</small></td>
+        <td>${esc(b.stream_name)}<br><small style="color:#7d8694">${formatDate(b.date_start)} — ${formatDate(b.date_end)}</small></td>
         <td><span class="badge badge-${b.status}">${statusText(b.status)}</span></td>
-        <td><small style="color:#7d8694">${formatDateTime(b.created_at)}</small></td>
         <td>
-          ${b.status === 'pending' ? `
-            <button class="btn-sm btn-confirm" onclick="updateBooking(${b.id},'confirmed')">Принять</button>
-            <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled')" style="margin-left:4px">Отклонить</button>
-          ` : b.status === 'confirmed' ? `
-            <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled')">Отменить</button>
-          ` : '—'}
+          <span class="badge badge-pay-${b.payment_status}">${payStatusText(b.payment_status)}</span><br>
+          <small style="color:#7d8694">${money(b.paid_amount)} / ${money(amountDue(b))} сом</small>
         </td>
+        <td>${esc(b.manager) || '<span style="color:#494f5b">—</span>'}</td>
+        <td><small style="color:#7d8694">${formatDateTime(b.created_at)}</small></td>
       </tr>
     `).join('');
 
@@ -651,43 +673,25 @@ async function loadBookings() {
       return `
       <div class="b-card" onclick="openBooking(${b.id})" style="cursor:pointer">
         <div class="b-card-top">
-          <span class="b-card-name">${b.child_name}</span>
+          <span class="b-card-name">${esc(b.child_name)}</span>
           <span class="badge badge-${b.status}" style="font-size:10px">${statusText(b.status)}</span>
         </div>
         <div class="b-card-row"><span class="label">Возраст</span><span>${b.child_age} лет</span></div>
-        <div class="b-card-row"><span class="label">Родитель</span><span>${b.parent_name || '—'}</span></div>
         <div class="b-card-row">
           <span class="label">Телефон</span>
           <span class="b-card-phone">
-            <a href="tel:${cleanPhone(b.parent_phone)}" style="color:#e8ecf2">${b.parent_phone}</a>
+            <a href="tel:${cleanPhone(b.parent_phone)}" style="color:#e8ecf2">${esc(b.parent_phone)}</a>
             <a href="https://wa.me/${wa}" target="_blank" style="color:#25d366;font-size:18px">💬</a>
           </span>
         </div>
-        <div class="b-card-row"><span class="label">Поток</span><span>${b.stream_name}</span></div>
-        <div class="b-card-row"><span class="label">Даты</span><span>${formatDate(b.date_start)} — ${formatDate(b.date_end)}</span></div>
+        <div class="b-card-row"><span class="label">Поток</span><span>${esc(b.stream_name)}</span></div>
+        <div class="b-card-row"><span class="label">Оплата</span><span><span class="badge badge-pay-${b.payment_status}" style="font-size:10px">${payStatusText(b.payment_status)}</span> ${money(b.paid_amount)} / ${money(amountDue(b))}</span></div>
+        <div class="b-card-row"><span class="label">Менеджер</span><span>${esc(b.manager) || '—'}</span></div>
         <div class="b-card-row"><span class="label">Заявка</span><span style="color:#7d8694">${formatDateTime(b.created_at)}</span></div>
-        <div class="b-card-actions">
-          ${b.status === 'pending' ? `
-            <button class="btn-sm btn-confirm" onclick="updateBooking(${b.id},'confirmed')">✓ Принять</button>
-            <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled')">✗ Отклонить</button>
-          ` : b.status === 'confirmed' ? `
-            <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled')">Отменить</button>
-          ` : '<span style="color:#7d8694;font-size:12px;width:100%;text-align:center">Отменена</span>'}
-        </div>
       </div>`;
     }).join('');
 
   } catch(e) { console.error(e); }
-}
-
-async function updateBooking(id, status) {
-  const action = status === 'confirmed' ? 'подтвердить' : 'отклонить';
-  if (!confirm(`Вы уверены что хотите ${action} заявку #${id}?`)) return;
-  await fetch(API + '/api/admin/bookings/' + id, {
-    method: 'PATCH', headers: headers(),
-    body: JSON.stringify({ status })
-  });
-  loadBookings();
 }
 
 // ==================== STREAMS ====================
@@ -1093,7 +1097,24 @@ function phoneLinks(p) {
     <a href="https://wa.me/${wa}" target="_blank" title="WhatsApp" style="color:#25d366;font-size:16px;margin-left:6px">💬</a>`;
 }
 function statusText(s) {
-  return { pending: 'Ожидает', confirmed: 'Подтверждено', cancelled: 'Отменено' }[s] || s;
+  return {
+    new: 'Новая', calling: 'Дозвон', awaiting_payment: 'Ожидает оплаты',
+    reserved: 'Бронь', paid: 'Оплачено', rejected: 'Отказ'
+  }[s] || s;
+}
+function payStatusText(s) {
+  return { none: 'Нет оплаты', partial: 'Частично', paid: 'Оплачено' }[s] || s;
+}
+function money(n) {
+  return (Number(n) || 0).toLocaleString('ru-RU');
+}
+function amountDue(b) {
+  return Math.round((b.base_price || 0) * (100 - (b.discount || 0)) / 100);
+}
+// Escape user-supplied text before injecting into HTML (prevents stored XSS)
+function esc(v) {
+  if (v === null || v === undefined) return '';
+  return String(v).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
 }
 function formatDate(d) {
   if (!d) return '';
@@ -1116,50 +1137,105 @@ function openBooking(id) {
   const b = lastBookings.find(x => x.id === id);
   if (!b) return;
   const wa = cleanPhone(b.parent_phone).replace('+','');
+  const due = amountDue(b);
+  const remaining = Math.max(0, due - (b.paid_amount || 0));
+  const opt = (v, label) => `<option value="${v}" ${b.status===v?'selected':''}>${label}</option>`;
   const m = document.getElementById('bModal');
   m.querySelector('.b-modal').innerHTML = `
     <button class="b-modal-close" onclick="closeBooking()">✕</button>
-    <h3>${b.child_name}</h3>
+    <h3>${esc(b.child_name)}</h3>
     <div class="b-m-id">ЗАЯВКА #${b.id} · ${formatDateTime(b.created_at)}</div>
     <div class="b-m-grid">
       <div class="b-m-field"><span class="label">Возраст</span><span class="val">${b.child_age} лет</span></div>
       <div class="b-m-field"><span class="label">Пол</span><span class="val">${b.gender === 'M' ? 'Мальчик' : b.gender === 'F' ? 'Девочка' : '—'}</span></div>
-      <div class="b-m-field"><span class="label">Статус</span><span class="val"><span class="badge badge-${b.status}">${statusText(b.status)}</span></span></div>
-      <div class="b-m-field"><span class="label">Размер футболки</span><span class="val">${b.tshirt_size || '—'}</span></div>
-      <div class="b-m-field"><span class="label">Поток</span><span class="val">${b.stream_name}</span></div>
+      <div class="b-m-field"><span class="label">Размер футболки</span><span class="val">${esc(b.tshirt_size) || '—'}</span></div>
+      <div class="b-m-field"><span class="label">Поток</span><span class="val">${esc(b.stream_name)}</span></div>
       <div class="b-m-field"><span class="label">Даты</span><span class="val">${formatDate(b.date_start)} — ${formatDate(b.date_end)}</span></div>
     </div>
     <div style="border-top:1px solid rgba(255,255,255,.07);margin:14px 0;padding-top:14px">
       <div style="font-size:11px;color:#494f5b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Контакты родителя</div>
       <div class="b-m-grid">
-        <div class="b-m-field"><span class="label">Родитель</span><span class="val">${b.parent_name || '—'}</span></div>
-        <div class="b-m-field"><span class="label">Город</span><span class="val">${b.parent_city || '—'}</span></div>
-        <div class="b-m-field"><span class="label">Телефон</span><span class="val"><a href="tel:${cleanPhone(b.parent_phone)}" style="color:#e8ecf2">${b.parent_phone}</a></span></div>
-        <div class="b-m-field"><span class="label">Email</span><span class="val">${b.parent_email || '—'}</span></div>
-        ${b.alt_phone ? `<div class="b-m-field"><span class="label">Альт. контакт</span><span class="val">${b.alt_phone}</span></div>` : ''}
+        <div class="b-m-field"><span class="label">Родитель</span><span class="val">${esc(b.parent_name) || '—'}</span></div>
+        <div class="b-m-field"><span class="label">Город</span><span class="val">${esc(b.parent_city) || '—'}</span></div>
+        <div class="b-m-field"><span class="label">Телефон</span><span class="val"><a href="tel:${cleanPhone(b.parent_phone)}" style="color:#e8ecf2">${esc(b.parent_phone)}</a></span></div>
+        <div class="b-m-field"><span class="label">Email</span><span class="val">${esc(b.parent_email) || '—'}</span></div>
+        ${b.alt_phone ? `<div class="b-m-field"><span class="label">Альт. контакт</span><span class="val">${esc(b.alt_phone)}</span></div>` : ''}
       </div>
     </div>
     <div style="border-top:1px solid rgba(255,255,255,.07);margin:14px 0;padding-top:14px">
       <div style="font-size:11px;color:#494f5b;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Медицина и пожелания</div>
       <div class="b-m-grid">
-        <div class="b-m-field"><span class="label">Заболевания</span><span class="val">${b.health || 'Нет'}</span></div>
-        <div class="b-m-field"><span class="label">Аллергии / диета</span><span class="val">${b.allergies || 'Нет'}</span></div>
-        ${b.about_child ? `<div class="b-m-field b-m-full"><span class="label">О ребёнке</span><span class="val">${b.about_child}</span></div>` : ''}
-        ${b.wishes ? `<div class="b-m-field b-m-full"><span class="label">Пожелания</span><span class="val">${b.wishes}</span></div>` : ''}
+        <div class="b-m-field"><span class="label">Заболевания</span><span class="val">${esc(b.health) || 'Нет'}</span></div>
+        <div class="b-m-field"><span class="label">Аллергии / диета</span><span class="val">${esc(b.allergies) || 'Нет'}</span></div>
+        ${b.about_child ? `<div class="b-m-field b-m-full"><span class="label">О ребёнке</span><span class="val">${esc(b.about_child)}</span></div>` : ''}
+        ${b.wishes ? `<div class="b-m-field b-m-full"><span class="label">Пожелания</span><span class="val">${esc(b.wishes)}</span></div>` : ''}
       </div>
     </div>
+
+    <div class="b-m-edit">
+      <div><label>Статус заявки</label>
+        <select id="bm_status">
+          ${opt('new','Новая')}${opt('calling','Дозвон')}${opt('awaiting_payment','Ожидает оплаты')}${opt('reserved','Бронь')}${opt('paid','Оплачено')}${opt('rejected','Отказ')}
+        </select>
+      </div>
+      <div><label>Менеджер</label><input id="bm_manager" value="${esc(b.manager)}" placeholder="Имя"></div>
+      <div class="full"><label>Следующее действие</label><input id="bm_next_action" value="${esc(b.next_action)}" placeholder="Позвонить / написать в WhatsApp"></div>
+      <div><label>Дата след. контакта</label><input id="bm_next_contact_date" type="date" value="${esc(b.next_contact_date)}"></div>
+    </div>
+
+    <div class="b-m-edit" style="border-top:none;padding-top:0">
+      <div class="full" style="font-size:11px;color:#494f5b;text-transform:uppercase;letter-spacing:1px">Оплата</div>
+      <div><label>Скидка %</label><input id="bm_discount" type="number" min="0" max="100" value="${b.discount || 0}" oninput="recalcPay(${b.base_price || 0})"></div>
+      <div><label>Оплачено (сом)</label><input id="bm_paid" type="number" min="0" value="${b.paid_amount || 0}" oninput="recalcPay(${b.base_price || 0})"></div>
+      <div><label>Дата оплаты</label><input id="bm_payment_date" type="date" value="${esc(b.payment_date)}"></div>
+      <div><label>Чек / ссылка / коммент</label><input id="bm_receipt" value="${esc(b.receipt)}" placeholder="Ссылка или № чека"></div>
+      <div class="full pay-summary">
+        <span>Базовая: <b>${money(b.base_price)}</b></span>
+        <span>К оплате: <b id="bm_due">${money(due)}</b></span>
+        <span>Остаток: <b id="bm_remaining">${money(remaining)}</b></span>
+      </div>
+    </div>
+
     <div class="b-m-actions">
-      <a href="https://wa.me/${wa}" target="_blank" class="btn-sm" style="background:#25d366;color:#fff;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;border-radius:8px;font-weight:600;font-size:13px">WhatsApp</a>
-      ${b.status === 'pending' ? `
-        <button class="btn-sm btn-confirm" onclick="updateBooking(${b.id},'confirmed');closeBooking()">Принять</button>
-        <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled');closeBooking()">Отклонить</button>
-      ` : b.status === 'confirmed' ? `
-        <button class="btn-sm btn-cancel" onclick="updateBooking(${b.id},'cancelled');closeBooking()">Отменить</button>
-      ` : `<span style="color:#7d8694;font-size:13px">Заявка отменена</span>`}
+      <a href="https://wa.me/${wa}" target="_blank" class="btn-sm" style="background:#25d366;color:#fff;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:8px;font-weight:600;font-size:13px">WhatsApp</a>
+      <button class="btn-sm btn-confirm" style="padding:12px 16px;flex:1" onclick="saveBooking(${b.id})">Сохранить</button>
     </div>
   `;
   m.classList.add('open');
 }
+
+function recalcPay(basePrice) {
+  const disc = Math.max(0, Math.min(100, parseInt(document.getElementById('bm_discount').value) || 0));
+  const paidV = Math.max(0, parseInt(document.getElementById('bm_paid').value) || 0);
+  const due = Math.round(basePrice * (100 - disc) / 100);
+  document.getElementById('bm_due').textContent = money(due);
+  document.getElementById('bm_remaining').textContent = money(Math.max(0, due - paidV));
+}
+
+async function saveBooking(id) {
+  const body = {
+    status: document.getElementById('bm_status').value,
+    manager: document.getElementById('bm_manager').value,
+    next_action: document.getElementById('bm_next_action').value,
+    next_contact_date: document.getElementById('bm_next_contact_date').value,
+    discount: parseInt(document.getElementById('bm_discount').value) || 0,
+    paid_amount: parseInt(document.getElementById('bm_paid').value) || 0,
+    payment_date: document.getElementById('bm_payment_date').value,
+    receipt: document.getElementById('bm_receipt').value
+  };
+  const r = await fetch(API + '/api/admin/bookings/' + id, {
+    method: 'PATCH', headers: headers(), body: JSON.stringify(body)
+  });
+  if (r.ok) {
+    closeBooking();
+    loadBookings();
+    if (document.getElementById('panel-overview').classList.contains('active')) loadOverview();
+  } else {
+    const d = await r.json().catch(() => ({}));
+    alert(d.error || 'Ошибка сохранения');
+  }
+}
+
 function closeBooking() {
   document.getElementById('bModal').classList.remove('open');
 }

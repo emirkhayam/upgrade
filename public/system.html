@@ -1703,26 +1703,28 @@ function fmtStreamDate(start, end) {
 function daysBetween(a,b) {
   return Math.round((new Date(b) - new Date(a)) / 86400000);
 }
-(async function loadStreamsGrid(){
+async function loadStreamsGrid(){
   try {
-    const r = await fetch('/api/streams');
-    const streams = await r.json();
+    const r = await fetch('/api/streams-status', { cache: 'no-store' });
+    const { streams } = await r.json();
     const grid = document.getElementById('streamsGrid');
+    if (!grid) return;
     grid.innerHTML = streams.map((s, i) => {
-      const hasSpots = s.spots_left > 0;
-      const days = daysBetween(s.date_start, s.date_end);
+      const hasSpots = s.free_total > 0;
       return `
         <div class="stream-it${i===0?' first':''}${!hasSpots?' sold-out':''}">
           <div class="n">${String(i+1).padStart(2,'0')}</div>
           <div class="d">${fmtStreamDate(s.date_start, s.date_end)}</div>
           <div class="meta">
             <span class="avail ${hasSpots?'open':'full'}"><span class="dot"></span>${hasSpots?'ЕСТЬ МЕСТА':'МЕСТ НЕТ'}</span>
-            <strong>👦${40-(s.males||0)} 👧${40-(s.females||0)}</strong>
+            <strong>👦${s.boys.free} 👧${s.girls.free}</strong>
           </div>
         </div>`;
     }).join('');
   } catch(e) { console.error(e); }
-})();
+}
+loadStreamsGrid();
+setInterval(loadStreamsGrid, 60000);
 
 // Мобильный аккордеон — toggle секций
 function toggleCollapse(btn) {
@@ -1763,6 +1765,18 @@ window.addEventListener('resize', () => {
   }, { threshold: 0.05 }).observe(reg);
 })();
 </script>
+
+<!-- ============================================================
+     AI ЧАТ-ПОМОЩНИК — место для виджета бота.
+     Команда бота вставляет сюда свой код (тег <script ...>)
+     или монтирует виджет в контейнер #ai-chat-widget ниже.
+     Рекомендация: фиксированная позиция справа снизу, z-index >= 2000.
+     ВАЖНО: на мобильном внизу есть кнопка «Забронировать»
+     (.sticky-cta, bottom:16px, во всю ширину) — поднимите окно/кнопку
+     чата выше (например bottom:84px), чтобы не перекрывать её.
+     ============================================================ -->
+<div id="ai-chat-widget"></div>
+<script src="/chat-widget.js" defer></script>
 
 </body>
 </html>
