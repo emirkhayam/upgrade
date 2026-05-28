@@ -260,7 +260,6 @@ tr:hover{background:rgba(255,106,31,.03)}
     <input type="text" id="loginUser" placeholder="Логин" value="admin">
     <input type="password" id="loginPass" placeholder="Пароль">
     <button onclick="doLogin()">Войти</button>
-    <button onclick="devLogin()" style="width:100%;padding:10px;margin-top:8px;background:transparent;border:1px solid rgba(255,255,255,.15);color:#7d8694;border-radius:8px;font-size:12px;cursor:pointer">⚡ DEV вход</button>
     <div class="login-error" id="loginErr">Неверный логин или пароль</div>
   </div>
 </div>
@@ -465,12 +464,6 @@ const API = '';
 let token = localStorage.getItem('admin_token');
 
 // ==================== AUTH ====================
-function devLogin() {
-  document.getElementById('loginUser').value = 'admin';
-  document.getElementById('loginPass').value = 'upgrade2026';
-  doLogin();
-}
-
 async function doLogin() {
   const user = document.getElementById('loginUser').value;
   const pass = document.getElementById('loginPass').value;
