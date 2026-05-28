@@ -13,23 +13,26 @@ function fmtDate(iso) {
   return `${d} ${MONTHS[m - 1]}`;
 }
 
-// GET /api/streams-status — aggregated PAID occupancy per stream (public, no auth, ТЗ §4-5).
-// A seat counts as taken only when payment_status = 'paid'.
+// A seat counts as TAKEN when it's reserved (Бронь) or has confirmed money (partial deposit or full).
+// So a deposit holds the spot — it stops showing as free. Leads without confirmed money don't hold a seat.
+const OCCUPIED = "(b.status = 'reserved' OR b.payment_status IN ('partial','paid'))";
+
+// GET /api/streams-status — aggregated occupancy per stream (public, no auth, ТЗ §4-5).
 router.get('/', (req, res) => {
   const rows = db.prepare(`
     SELECT s.id, s.name, s.date_start, s.date_end, s.capacity,
-      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.payment_status = 'paid' AND b.gender = 'F') AS girls_paid,
-      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.payment_status = 'paid' AND b.gender = 'M') AS boys_paid
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND ${OCCUPIED} AND b.gender = 'F') AS girls_taken,
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND ${OCCUPIED} AND b.gender = 'M') AS boys_taken
     FROM streams s
     WHERE s.is_active = 1
     ORDER BY s.date_start
   `).all();
 
   const streams = rows.map(s => {
-    const girlsPaid = Math.min(s.girls_paid, GENDER_CAP);
-    const boysPaid = Math.min(s.boys_paid, GENDER_CAP);
-    const paidTotal = girlsPaid + boysPaid;
-    const freeTotal = Math.max(0, s.capacity - paidTotal);
+    const girlsTaken = Math.min(s.girls_taken, GENDER_CAP);
+    const boysTaken = Math.min(s.boys_taken, GENDER_CAP);
+    const takenTotal = girlsTaken + boysTaken;
+    const freeTotal = Math.max(0, s.capacity - takenTotal);
     return {
       id: s.id,
       name: s.name,
@@ -39,18 +42,18 @@ router.get('/', (req, res) => {
       capacity_total: s.capacity,
       capacity_girls: GENDER_CAP,
       capacity_boys: GENDER_CAP,
-      paid_total: paidTotal,
+      taken_total: takenTotal,
       free_total: freeTotal,
-      percent_total: Math.round((paidTotal / s.capacity) * 100),
+      percent_total: Math.round((takenTotal / s.capacity) * 100),
       girls: {
-        paid: girlsPaid,
-        free: Math.max(0, GENDER_CAP - girlsPaid),
-        percent: Math.round((girlsPaid / GENDER_CAP) * 100)
+        taken: girlsTaken,
+        free: Math.max(0, GENDER_CAP - girlsTaken),
+        percent: Math.round((girlsTaken / GENDER_CAP) * 100)
       },
       boys: {
-        paid: boysPaid,
-        free: Math.max(0, GENDER_CAP - boysPaid),
-        percent: Math.round((boysPaid / GENDER_CAP) * 100)
+        taken: boysTaken,
+        free: Math.max(0, GENDER_CAP - boysTaken),
+        percent: Math.round((boysTaken / GENDER_CAP) * 100)
       },
       status: freeTotal <= 0 ? 'full' : freeTotal <= 20 ? 'limited' : 'available'
     };

@@ -56,6 +56,7 @@ tr:hover{background:rgba(255,106,31,.03)}
 .badge-new{background:rgba(80,150,255,.12);color:#5096ff;border:1px solid rgba(80,150,255,.3)}
 .badge-calling{background:rgba(255,170,0,.12);color:#ffaa00;border:1px solid rgba(255,170,0,.3)}
 .badge-awaiting_payment{background:rgba(255,140,30,.12);color:#ff8c1e;border:1px solid rgba(255,140,30,.3)}
+.badge-client_paid{background:rgba(31,184,212,.12);color:#1fb8d4;border:1px solid rgba(31,184,212,.3)}
 .badge-reserved{background:rgba(120,90,255,.14);color:#9b7bff;border:1px solid rgba(120,90,255,.3)}
 .badge-paid{background:rgba(0,200,100,.12);color:#00c864;border:1px solid rgba(0,200,100,.3)}
 .badge-rejected{background:rgba(255,61,106,.12);color:#ff3d6a;border:1px solid rgba(255,61,106,.3)}
@@ -308,6 +309,7 @@ tr:hover{background:rgba(255,106,31,.03)}
         <option value="new">Новая</option>
         <option value="calling">Дозвон</option>
         <option value="awaiting_payment">Ожидает оплаты</option>
+        <option value="client_paid">Клиент оплатил</option>
         <option value="reserved">Бронь</option>
         <option value="paid">Оплачено</option>
         <option value="rejected">Отказ</option>
@@ -634,7 +636,7 @@ async function loadBookings() {
 
     // Stats
     const all = bookings.length;
-    const inProgress = bookings.filter(b => ['new','calling','awaiting_payment'].includes(b.status)).length;
+    const inProgress = bookings.filter(b => ['new','calling','awaiting_payment','client_paid'].includes(b.status)).length;
     const paid = bookings.filter(b => b.payment_status === 'paid').length;
     const rejected = bookings.filter(b => b.status === 'rejected').length;
     document.getElementById('statsRow').innerHTML = `
@@ -1093,7 +1095,7 @@ function phoneLinks(p) {
 function statusText(s) {
   return {
     new: 'Новая', calling: 'Дозвон', awaiting_payment: 'Ожидает оплаты',
-    reserved: 'Бронь', paid: 'Оплачено', rejected: 'Отказ'
+    client_paid: 'Клиент оплатил', reserved: 'Бронь', paid: 'Оплачено', rejected: 'Отказ'
   }[s] || s;
 }
 function payStatusText(s) {
@@ -1183,7 +1185,7 @@ function openBooking(id) {
     <div class="b-m-edit">
       <div><label>Статус заявки</label>
         <select id="bm_status">
-          ${opt('new','Новая')}${opt('calling','Дозвон')}${opt('awaiting_payment','Ожидает оплаты')}${opt('reserved','Бронь')}${opt('paid','Оплачено')}${opt('rejected','Отказ')}
+          ${opt('new','Новая')}${opt('calling','Дозвон')}${opt('awaiting_payment','Ожидает оплаты')}${opt('client_paid','Клиент оплатил')}${opt('reserved','Бронь')}${opt('paid','Оплачено')}${opt('rejected','Отказ')}
         </select>
       </div>
       <div><label>Менеджер</label><input id="bm_manager" value="${esc(b.manager)}" placeholder="Имя"></div>

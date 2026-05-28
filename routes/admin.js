@@ -87,7 +87,7 @@ router.get('/stats', auth, (req, res) => {
       (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.payment_status = 'paid') AS paid_total,
       (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.payment_status = 'paid' AND b.gender = 'M') AS paid_males,
       (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.payment_status = 'paid' AND b.gender = 'F') AS paid_females,
-      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status IN ('new','calling','awaiting_payment')) AS pending,
+      (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.status IN ('new','calling','awaiting_payment','client_paid')) AS pending,
       (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.gender = 'M' AND b.status != 'rejected') AS males,
       (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.gender = 'F' AND b.status != 'rejected') AS females
     FROM streams s ORDER BY s.date_start
@@ -96,7 +96,7 @@ router.get('/stats', auth, (req, res) => {
   const totals = db.prepare(`
     SELECT
       COUNT(*) as total,
-      SUM(CASE WHEN status IN ('new','calling','awaiting_payment') THEN 1 ELSE 0 END) as in_progress,
+      SUM(CASE WHEN status IN ('new','calling','awaiting_payment','client_paid') THEN 1 ELSE 0 END) as in_progress,
       SUM(CASE WHEN status = 'reserved' THEN 1 ELSE 0 END) as reserved,
       SUM(CASE WHEN payment_status = 'paid' THEN 1 ELSE 0 END) as paid,
       SUM(CASE WHEN status = 'rejected' THEN 1 ELSE 0 END) as rejected

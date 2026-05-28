@@ -51,4 +51,19 @@ router.patch('/bookings/:id', (req, res) => {
   res.json({ ok: true, booking: outcome.booking });
 });
 
+// POST /api/bot/bookings/:id/client-paid — клиент сообщил, что оплатил.
+// Ставит статус "client_paid" для проверки менеджером и НЕ трогает деньги/места:
+// сумма (paid_amount) и подтверждение оплаты остаются за менеджером.
+// Body (опц.): { receipt: "ссылка/№ чека", next_action }.
+router.post('/bookings/:id/client-paid', (req, res) => {
+  const { receipt, next_action } = req.body;
+  const outcome = updateBooking(req.params.id, {
+    status: 'client_paid',
+    receipt,
+    next_action: next_action || 'Проверить оплату клиента'
+  });
+  if (outcome.error) return res.status(outcome.status).json({ error: outcome.error });
+  res.json({ ok: true, booking: outcome.booking });
+});
+
 module.exports = router;
