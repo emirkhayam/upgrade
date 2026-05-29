@@ -284,6 +284,7 @@ tr:hover{background:rgba(255,106,31,.03)}
     <button class="tab" onclick="switchTab('speakers')">Спикеры</button>
     <button class="tab" onclick="switchTab('stars')">Звёзды</button>
     <button class="tab" onclick="switchTab('media')">Медиа</button>
+    <button class="tab" onclick="switchTab('news')">Новости</button>
   </div>
 
   <!-- OVERVIEW -->
@@ -461,6 +462,32 @@ tr:hover{background:rgba(255,106,31,.03)}
       </div>
     </div>
   </div>
+
+  <!-- NEWS -->
+  <div class="panel" id="panel-news">
+    <h3 style="margin-bottom:16px">Новости (блок «Главное в новостях» на странице Медиа)</h3>
+    <p style="color:#7d8694;font-size:13px;margin-bottom:16px">Первая новость показывается крупной карточкой, остальные — справа. Порядок задаётся полем «Порядок».</p>
+    <div class="stream-cards" id="newsList"></div>
+
+    <h3 style="margin:24px 0 16px">Добавить / редактировать новость</h3>
+    <input type="hidden" id="newsEditId" value="">
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <div>
+        <div class="qr-preview" id="newsPreview" style="width:220px;height:150px;border-radius:14px">
+          <span class="placeholder">Картинка</span>
+        </div>
+        <input type="file" id="newsFile" accept="image/*" style="margin-top:12px" onchange="previewSelectedFile(this,'newsPreview')">
+      </div>
+      <div class="form-grid" style="max-width:500px;align-content:start">
+        <div class="form-full"><label>Заголовок</label><input id="newsTitle" placeholder="Регистрация на лето 2026 — открыта"></div>
+        <div><label>Категория</label><input id="newsCategory" placeholder="Анонс"></div>
+        <div><label>Порядок</label><input id="newsOrder" type="number" value="0"></div>
+        <div class="form-full"><label>Дата / подпись</label><input id="newsDate" placeholder="15 МАЯ 2026 · АНОНС"></div>
+        <button onclick="saveNews()">Сохранить новость</button>
+        <button onclick="cancelNewsEdit()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:#7d8694;display:none" id="newsCancelBtn">Отмена</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -542,6 +569,7 @@ function switchTab(name) {
   if (name === 'speakers') loadSpeakers();
   if (name === 'stars') loadStars();
   if (name === 'media') loadMedia();
+  if (name === 'news') loadNews();
 }
 
 // ==================== OVERVIEW ====================
@@ -1134,6 +1162,92 @@ async function deleteMedia(id) {
   if (!confirm('Удалить медиа?')) return;
   await fetch(API + '/api/admin/media/' + id, { method: 'DELETE', headers: headers() });
   loadMedia();
+}
+
+// ==================== NEWS ====================
+async function loadNews() {
+  try {
+    const r = await fetch(API + '/api/admin/news', { headers: headers() });
+    if (r.status === 401) return logout();
+    const items = await r.json();
+    document.getElementById('newsList').innerHTML = items.length === 0
+      ? '<p style="color:#7d8694;font-size:13px">Новости пока не добавлены</p>'
+      : items.map((n, i) => `
+      <div class="entity-card">
+        ${n.image ? `<img class="ec-photo" src="${n.image}" alt="">` : `<div class="ec-placeholder">📰</div>`}
+        <div class="ec-body">
+          <div class="ec-info">
+            <div class="ec-name">${i === 0 ? '⭐ ' : ''}${n.title || 'Без заголовка'}</div>
+            <div class="ec-meta">${n.category || ''}${n.date_text ? ' · ' + n.date_text : ''}</div>
+          </div>
+          <div class="ec-footer">
+            <span class="badge ${n.is_active ? 'badge-confirmed' : 'badge-cancelled'}" style="font-size:10px">${n.is_active ? 'Вкл' : 'Выкл'}</span>
+            <div class="ec-actions">
+              <button class="btn-sm btn-confirm" onclick="editNews(${n.id})">Ред.</button>
+              <button class="btn-sm btn-cancel" onclick="deleteNews(${n.id})">Уд.</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function editNews(id) {
+  const r = await fetch(API + '/api/admin/news', { headers: headers() });
+  const items = await r.json();
+  const n = items.find(x => x.id === id);
+  if (!n) return;
+  document.getElementById('newsEditId').value = n.id;
+  document.getElementById('newsTitle').value = n.title || '';
+  document.getElementById('newsCategory').value = n.category || '';
+  document.getElementById('newsDate').value = n.date_text || '';
+  document.getElementById('newsOrder').value = n.sort_order || 0;
+  document.getElementById('newsPreview').innerHTML = n.image
+    ? `<img src="${n.image}" style="width:100%;height:100%;object-fit:cover">`
+    : '<span class="placeholder">Картинка</span>';
+  document.getElementById('newsCancelBtn').style.display = 'block';
+}
+
+function cancelNewsEdit() {
+  document.getElementById('newsEditId').value = '';
+  document.getElementById('newsTitle').value = '';
+  document.getElementById('newsCategory').value = '';
+  document.getElementById('newsDate').value = '';
+  document.getElementById('newsOrder').value = '0';
+  document.getElementById('newsFile').value = '';
+  document.getElementById('newsPreview').innerHTML = '<span class="placeholder">Картинка</span>';
+  document.getElementById('newsCancelBtn').style.display = 'none';
+}
+
+async function saveNews() {
+  const editId = document.getElementById('newsEditId').value;
+  const fd = new FormData();
+  fd.append('title', document.getElementById('newsTitle').value);
+  fd.append('category', document.getElementById('newsCategory').value);
+  fd.append('date_text', document.getElementById('newsDate').value);
+  fd.append('sort_order', document.getElementById('newsOrder').value);
+  const file = document.getElementById('newsFile').files[0];
+  if (file) fd.append('image', file);
+  const url = editId ? API + '/api/admin/news/' + editId : API + '/api/admin/news';
+  const method = editId ? 'PATCH' : 'POST';
+  try {
+    const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+    if (r.ok) {
+      alert(editId ? 'Новость обновлена!' : 'Новость добавлена!');
+      cancelNewsEdit();
+      loadNews();
+    } else {
+      const d = await r.json().catch(() => ({}));
+      alert(d.error || ('Ошибка ' + r.status));
+    }
+  } catch (e) { alert('Ошибка соединения: ' + e.message); }
+}
+
+async function deleteNews(id) {
+  if (!confirm('Удалить новость?')) return;
+  await fetch(API + '/api/admin/news/' + id, { method: 'DELETE', headers: headers() });
+  loadNews();
 }
 
 // ==================== HELPERS ====================

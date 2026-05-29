@@ -598,8 +598,8 @@
   <div class="med-hero-inner">
     <div>
       <div class="pre">// MEDIA HUB · LIVE</div>
-      <h1>Медиа<br><em>феед.</em></h1>
-      <p>Новости лагеря, истории участников, фото и видео с потоков, обратный отсчёт до старта сезона. Бренд АПГРЕЙД живёт здесь.</p>
+      <h1>Медиа<br><em>новости.</em></h1>
+      <p>Новости лагеря, фото и видео с потоков, обратный отсчёт до старта сезона. Бренд АПГРЕЙД живёт здесь.</p>
     </div>
 
     <!-- COUNTDOWN PANEL -->
@@ -629,7 +629,7 @@
   <div class="featured-head">
     <div>
       <div class="eyebrow reveal" style="margin-bottom:18px">[01] / TOP NEWS</div>
-      <h2 class="reveal">Главное<br>в <em>феед.</em></h2>
+      <h2 class="reveal">Главное<br>в <em>новостях.</em></h2>
     </div>
     <div class="feat-tabs reveal">
       <button class="feat-tab active">Всё</button>
@@ -639,48 +639,8 @@
     </div>
   </div>
 
-  <div class="feat-grid">
-    <div class="feat-main reveal">
-      <div class="fm-img"></div>
-      <span class="badge">LIVE · АНОНС</span>
-      <i class="corner tr"></i><i class="corner bl"></i>
-      <div class="fm-info">
-        <div class="fm-cat">// SEASON.2026 · ANNOUNCE</div>
-        <h3>Регистрация на лето 2026 — открыта</h3>
-        <div class="meta">
-          <span>15 МАЯ 2026</span>
-          <span>4 МИН · ЧТЕНИЕ</span>
-          <span>RU · KG</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="feat-side">
-      <div class="feat-card reveal">
-        <div class="fc-img" style="background-image:url('https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1000&q=85')"></div>
-        <div class="fc-info">
-          <div class="fc-cat">// LINEUP</div>
-          <div class="fc-title">Топ-10 спикеров сезона анонсированы</div>
-          <div class="fc-date">14 МАЯ 2026 · ПРЕСС-РЕЛИЗ</div>
-        </div>
-      </div>
-      <div class="feat-card reveal">
-        <div class="fc-img" style="background-image:url('https://images.unsplash.com/photo-1454942901704-3c44c11b2ad1?w=1000&q=85')"></div>
-        <div class="fc-info">
-          <div class="fc-cat">// PARTNERSHIP</div>
-          <div class="fc-title">MBank — официальный партнёр рассрочки</div>
-          <div class="fc-date">12 МАЯ 2026 · ПАРТНЁРЫ</div>
-        </div>
-      </div>
-      <div class="feat-card reveal">
-        <div class="fc-img" style="background-image:url('https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=1000&q=85')"></div>
-        <div class="fc-info">
-          <div class="fc-cat">// SAFETY</div>
-          <div class="fc-title">Личная страховка — у каждого юнита</div>
-          <div class="fc-date">10 МАЯ 2026 · НОВОСТЬ</div>
-        </div>
-      </div>
-    </div>
+  <div class="feat-grid" id="newsGrid">
+    <!-- Загружается из админки: /api/admin/public/news -->
   </div>
 </section>
 
@@ -786,14 +746,8 @@
   <button class="gal-show-more" id="galShowMore" onclick="toggleGallery()">Показать ещё ↓</button>
 </section>
 
-<!-- ===== STORIES ===== -->
-<section class="stories">
-  <div class="st-head">
-    <div class="eyebrow reveal">[04] / STORIES</div>
-    <h2 class="section-title reveal">Истории<br><em>участников.</em></h2>
-    <p class="section-lede reveal">Реальные слова реальных юнитов. После 10 дней что-то меняется внутри — вот как это звучит их голосами.</p>
-  </div>
-
+<!-- ===== STORIES (убрано по запросу) ===== -->
+<section class="stories" style="display:none">
   <div class="st-grid">
     <div class="st-card reveal">
       <div class="st-photo">
@@ -1051,6 +1005,35 @@ fetch('/api/admin/public/media').then(r=>r.json()).then(items=>{
   `).join('');
   // Re-observe for reveal animation
   grid.querySelectorAll('.gal-card').forEach(el=>{el.classList.add('show')});
+}).catch(()=>{});
+
+// Load news (блок «Главное в новостях») from admin
+fetch('/api/admin/public/news').then(r=>r.json()).then(items=>{
+  const grid=document.getElementById('newsGrid');
+  if(!grid||!items.length) return;
+  const main=items[0];
+  const side=items.slice(1,4);
+  const mainHtml=`
+    <div class="feat-main reveal show">
+      <div class="fm-img" style="background-image:url('${main.image||''}')"></div>
+      <span class="badge">${(main.category||'НОВОСТЬ').toUpperCase()}</span>
+      <i class="corner tr"></i><i class="corner bl"></i>
+      <div class="fm-info">
+        <div class="fm-cat">// ${(main.category||'').toUpperCase()}</div>
+        <h3>${main.title||''}</h3>
+        <div class="meta"><span>${main.date_text||''}</span></div>
+      </div>
+    </div>`;
+  const sideHtml=`<div class="feat-side">`+side.map(n=>`
+      <div class="feat-card reveal show">
+        <div class="fc-img" style="background-image:url('${n.image||''}')"></div>
+        <div class="fc-info">
+          <div class="fc-cat">// ${(n.category||'').toUpperCase()}</div>
+          <div class="fc-title">${n.title||''}</div>
+          <div class="fc-date">${n.date_text||''}</div>
+        </div>
+      </div>`).join('')+`</div>`;
+  grid.innerHTML=mainHtml+sideHtml;
 }).catch(()=>{});
 
 // Gallery toggle (mobile)

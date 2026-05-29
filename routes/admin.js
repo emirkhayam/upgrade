@@ -13,7 +13,7 @@ const router = Router();
 
 // Ensure all upload directories exist on the persistent volume (created at startup so
 // they're present even on a fresh volume / new server).
-['speakers', 'stars', 'media', 'qr', 'champion'].forEach(dir => {
+['speakers', 'stars', 'media', 'qr', 'champion', 'news'].forEach(dir => {
   fs.mkdirSync(path.join(uploadsDir, dir), { recursive: true });
 });
 
@@ -239,6 +239,11 @@ router.get('/public/media', (req, res) => {
   res.json(rows);
 });
 
+router.get('/public/news', (req, res) => {
+  const rows = db.prepare('SELECT * FROM news WHERE is_active = 1 ORDER BY sort_order, id').all();
+  res.json(rows);
+});
+
 // ==================== SPEAKERS ====================
 
 const speakerStorage = multer.diskStorage({
@@ -408,6 +413,58 @@ router.patch('/media/:id', auth, uploadMedia.single('file'), (req, res) => {
 router.delete('/media/:id', auth, (req, res) => {
   const result = db.prepare('DELETE FROM media WHERE id = ?').run(req.params.id);
   if (result.changes === 0) return res.status(404).json({ error: 'Медиа не найдено' });
+  res.json({ ok: true });
+});
+
+// ==================== NEWS (Новости / медиа-феед) ====================
+
+const newsStorage = multer.diskStorage({
+  destination: path.join(uploadsDir, 'news'),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, 'news-' + Date.now() + ext);
+  }
+});
+const uploadNews = multer({
+  storage: newsStorage,
+  limits: { fileSize: 15 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(new Error('Только изображения'));
+  }
+});
+
+router.get('/news', auth, (req, res) => {
+  res.json(db.prepare('SELECT * FROM news ORDER BY sort_order, id').all());
+});
+
+router.post('/news', auth, uploadNews.single('image'), (req, res) => {
+  const { category, title, date_text, sort_order, is_active } = req.body;
+  const image = req.file ? '/uploads/news/' + req.file.filename : '';
+  const result = db.prepare(
+    'INSERT INTO news (category, title, date_text, image, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?)'
+  ).run(category || '', title || '', date_text || '', image, parseInt(sort_order) || 0, is_active !== undefined ? parseInt(is_active) : 1);
+  res.status(201).json({ id: result.lastInsertRowid });
+});
+
+router.patch('/news/:id', auth, uploadNews.single('image'), (req, res) => {
+  const item = db.prepare('SELECT * FROM news WHERE id = ?').get(req.params.id);
+  if (!item) return res.status(404).json({ error: 'Новость не найдена' });
+  const { category, title, date_text, sort_order, is_active } = req.body;
+  const image = req.file ? '/uploads/news/' + req.file.filename : item.image;
+  db.prepare(
+    'UPDATE news SET category=?, title=?, date_text=?, image=?, sort_order=?, is_active=? WHERE id=?'
+  ).run(
+    category ?? item.category, title ?? item.title, date_text ?? item.date_text, image,
+    sort_order !== undefined ? parseInt(sort_order) : item.sort_order,
+    is_active !== undefined ? parseInt(is_active) : item.is_active, req.params.id
+  );
+  res.json({ ok: true });
+});
+
+router.delete('/news/:id', auth, (req, res) => {
+  const result = db.prepare('DELETE FROM news WHERE id = ?').run(req.params.id);
+  if (result.changes === 0) return res.status(404).json({ error: 'Новость не найдена' });
   res.json({ ok: true });
 });
 

@@ -70,6 +70,16 @@ db.exec(`
     is_active  INTEGER DEFAULT 1,
     created_at TEXT DEFAULT (datetime('now'))
   );
+
+  CREATE TABLE IF NOT EXISTS news (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    category   TEXT DEFAULT '',
+    title      TEXT DEFAULT '',
+    date_text  TEXT DEFAULT '',
+    image      TEXT DEFAULT '',
+    sort_order INTEGER DEFAULT 0,
+    is_active  INTEGER DEFAULT 1
+  );
 `);
 
 // Migrations: add missing columns to bookings
@@ -205,6 +215,21 @@ if (mediaCount.c === 0) {
   const tx = db.transaction(() => { for (const m of media) ins.run(...m); });
   tx();
   console.log('Seeded 12 media');
+}
+
+// Seed news if empty (первый элемент = крупная карточка в блоке «Новости»)
+const newsCount = db.prepare('SELECT COUNT(*) as c FROM news').get();
+if (newsCount.c === 0) {
+  const insNews = db.prepare('INSERT INTO news (category, title, date_text, image, sort_order) VALUES (?, ?, ?, ?, ?)');
+  const news = [
+    ['Анонс', 'Регистрация на лето 2026 — открыта', '15 МАЯ 2026 · АНОНС', 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1400&q=85', 1],
+    ['Состав', 'Топ-10 спикеров сезона анонсированы', '14 МАЯ 2026 · ПРЕСС-РЕЛИЗ', 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=1000&q=85', 2],
+    ['Партнёры', 'MBank — официальный партнёр рассрочки', '12 МАЯ 2026 · ПАРТНЁРЫ', 'https://images.unsplash.com/photo-1454942901704-3c44c11b2ad1?w=1000&q=85', 3],
+    ['Безопасность', 'Личная страховка — у каждого юнита', '10 МАЯ 2026 · НОВОСТЬ', 'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?w=1000&q=85', 4],
+  ];
+  const tx = db.transaction(() => { for (const n of news) insNews.run(...n); });
+  tx();
+  console.log('Seeded 4 news');
 }
 
 module.exports = db;
