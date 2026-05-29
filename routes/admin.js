@@ -28,7 +28,7 @@ const qrStorage = multer.diskStorage({
 });
 const uploadQR = multer({
   storage: qrStorage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 15 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) cb(null, true);
     else cb(new Error('Только изображения'));
@@ -193,7 +193,7 @@ const champStorage = multer.diskStorage({
 });
 const uploadChamp = multer({
   storage: champStorage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 15 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) cb(null, true);
     else cb(new Error('Только изображения'));
@@ -250,7 +250,7 @@ const speakerStorage = multer.diskStorage({
 });
 const uploadSpeaker = multer({
   storage: speakerStorage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 15 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) cb(null, true);
     else cb(new Error('Только изображения'));
@@ -305,7 +305,7 @@ const starStorage = multer.diskStorage({
 });
 const uploadStar = multer({
   storage: starStorage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 15 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) cb(null, true);
     else cb(new Error('Только изображения'));
@@ -409,6 +409,18 @@ router.delete('/media/:id', auth, (req, res) => {
   const result = db.prepare('DELETE FROM media WHERE id = ?').run(req.params.id);
   if (result.changes === 0) return res.status(404).json({ error: 'Медиа не найдено' });
   res.json({ ok: true });
+});
+
+// Обработчик ошибок загрузки файлов (multer): возвращаем понятный JSON вместо «тихого» 500
+router.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    const msg = err.code === 'LIMIT_FILE_SIZE'
+      ? 'Файл слишком большой. Максимум 15 МБ — сожмите изображение или выберите фото меньшего размера.'
+      : 'Ошибка загрузки файла: ' + err.message;
+    return res.status(400).json({ error: msg });
+  }
+  if (err) return res.status(400).json({ error: err.message || 'Ошибка загрузки файла' });
+  next();
 });
 
 module.exports = router;

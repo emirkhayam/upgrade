@@ -258,8 +258,8 @@ tr:hover{background:rgba(255,106,31,.03)}
   <div class="login-box">
     <h1>АПГРЕЙД <span style="color:#ff6a1f">ADMIN</span></h1>
     <p>Панель управления лагерем</p>
-    <input type="text" id="loginUser" placeholder="Логин" value="admin">
-    <input type="password" id="loginPass" placeholder="Пароль">
+    <input type="text" id="loginUser" placeholder="Логин" value="admin" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <input type="password" id="loginPass" placeholder="Пароль" autocomplete="new-password">
     <button onclick="doLogin()">Войти</button>
     <div class="login-error" id="loginErr">Неверный логин или пароль</div>
   </div>
@@ -351,7 +351,7 @@ tr:hover{background:rgba(255,106,31,.03)}
       <div class="qr-preview" id="qrPreview">
         <span class="placeholder">QR не загружен</span>
       </div>
-      <input type="file" id="qrFile" accept="image/*" style="margin-bottom:12px">
+      <input type="file" id="qrFile" accept="image/*" style="margin-bottom:12px" onchange="previewSelectedFile(this,'qrPreview')">
       <button class="btn-sm btn-confirm" style="padding:10px 20px;font-size:13px" onclick="uploadQR()">Загрузить QR</button>
     </div>
   </div>
@@ -365,7 +365,7 @@ tr:hover{background:rgba(255,106,31,.03)}
         <div class="qr-preview" id="champPreview" style="width:220px;height:240px;border-radius:14px">
           <span class="placeholder">Фото не загружено</span>
         </div>
-        <input type="file" id="champFile" accept="image/*" style="margin-top:12px;margin-bottom:12px">
+        <input type="file" id="champFile" accept="image/*" style="margin-top:12px;margin-bottom:12px" onchange="previewSelectedFile(this,'champPreview')">
       </div>
       <div class="form-grid" style="max-width:400px;align-content:start">
         <div class="form-full"><label>Имя</label><input id="champName" placeholder="Руслан"></div>
@@ -389,7 +389,7 @@ tr:hover{background:rgba(255,106,31,.03)}
         <div class="qr-preview" id="spkPreview" style="width:180px;height:200px;border-radius:14px">
           <span class="placeholder">Фото</span>
         </div>
-        <input type="file" id="spkFile" accept="image/*" style="margin-top:12px">
+        <input type="file" id="spkFile" accept="image/*" style="margin-top:12px" onchange="previewSelectedFile(this,'spkPreview')">
       </div>
       <div class="form-grid" style="max-width:500px;align-content:start">
         <div><label>Имя</label><input id="spkName" placeholder="Иван Петров"></div>
@@ -416,7 +416,7 @@ tr:hover{background:rgba(255,106,31,.03)}
         <div class="qr-preview" id="starPreview" style="width:180px;height:200px;border-radius:14px">
           <span class="placeholder">Фото</span>
         </div>
-        <input type="file" id="starFile" accept="image/*" style="margin-top:12px">
+        <input type="file" id="starFile" accept="image/*" style="margin-top:12px" onchange="previewSelectedFile(this,'starPreview')">
       </div>
       <div class="form-grid" style="max-width:500px;align-content:start">
         <div><label>Имя</label><input id="starName" placeholder="Имя звезды"></div>
@@ -442,7 +442,7 @@ tr:hover{background:rgba(255,106,31,.03)}
         <div class="qr-preview" id="medPreview" style="width:200px;height:160px;border-radius:14px">
           <span class="placeholder">Превью</span>
         </div>
-        <input type="file" id="medFile" accept="image/*,video/*" style="margin-top:12px">
+        <input type="file" id="medFile" accept="image/*,video/*" style="margin-top:12px" onchange="previewSelectedFile(this,'medPreview')">
       </div>
       <div class="form-grid" style="max-width:500px;align-content:start">
         <div>
@@ -467,10 +467,24 @@ tr:hover{background:rgba(255,106,31,.03)}
 const API = '';
 let token = localStorage.getItem('admin_token');
 
+// Живое превью выбранного файла (спикеры/звёзды/медиа) — показываем картинку сразу при выборе
+function previewSelectedFile(input, previewId) {
+  const file = input.files && input.files[0];
+  const box = document.getElementById(previewId);
+  if (!box) return;
+  if (!file) { return; }
+  const src = URL.createObjectURL(file);
+  box.innerHTML = file.type.startsWith('video/')
+    ? `<video src="${src}" muted style="width:100%;height:100%;object-fit:cover"></video>`
+    : `<img src="${src}" style="width:100%;height:100%;object-fit:cover">`;
+}
+
 // ==================== AUTH ====================
 async function doLogin() {
-  const user = document.getElementById('loginUser').value;
-  const pass = document.getElementById('loginPass').value;
+  // .trim() убирает случайные пробелы/переносы при копировании пароля
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value.trim();
+  const errEl = document.getElementById('loginErr');
   try {
     const r = await fetch(API + '/api/admin/login', {
       method: 'POST',
@@ -483,9 +497,11 @@ async function doLogin() {
       localStorage.setItem('admin_token', token);
       showDashboard();
     } else {
-      document.getElementById('loginErr').style.display = 'block';
+      // Диагностика: показываем, что реально ушло (логин и длину пароля, без самого пароля)
+      errEl.textContent = `Неверный логин или пароль. Отправлено: логин="${user}", длина пароля=${pass.length}`;
+      errEl.style.display = 'block';
     }
-  } catch { document.getElementById('loginErr').style.display = 'block'; }
+  } catch { errEl.textContent = 'Ошибка соединения с сервером'; errEl.style.display = 'block'; }
 }
 
 function logout() {
@@ -914,15 +930,17 @@ async function saveSpeaker() {
 
   const url = editId ? API + '/api/admin/speakers/' + editId : API + '/api/admin/speakers';
   const method = editId ? 'PATCH' : 'POST';
-  const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token }, body: fd });
-  if (r.ok) {
-    alert(editId ? 'Спикер обновлён!' : 'Спикер добавлен!');
-    cancelSpkEdit();
-    loadSpeakers();
-  } else {
-    const d = await r.json();
-    alert(d.error || 'Ошибка');
-  }
+  try {
+    const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+    if (r.ok) {
+      alert(editId ? 'Спикер обновлён!' : 'Спикер добавлен!');
+      cancelSpkEdit();
+      loadSpeakers();
+    } else {
+      const d = await r.json().catch(() => ({}));
+      alert(d.error || ('Ошибка ' + r.status));
+    }
+  } catch (e) { alert('Ошибка соединения: ' + e.message); }
 }
 
 async function deleteSpeaker(id) {
@@ -1003,15 +1021,17 @@ async function saveStar() {
 
   const url = editId ? API + '/api/admin/stars/' + editId : API + '/api/admin/stars';
   const method = editId ? 'PATCH' : 'POST';
-  const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token }, body: fd });
-  if (r.ok) {
-    alert(editId ? 'Звезда обновлена!' : 'Звезда добавлена!');
-    cancelStarEdit();
-    loadStars();
-  } else {
-    const d = await r.json();
-    alert(d.error || 'Ошибка');
-  }
+  try {
+    const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+    if (r.ok) {
+      alert(editId ? 'Звезда обновлена!' : 'Звезда добавлена!');
+      cancelStarEdit();
+      loadStars();
+    } else {
+      const d = await r.json().catch(() => ({}));
+      alert(d.error || ('Ошибка ' + r.status));
+    }
+  } catch (e) { alert('Ошибка соединения: ' + e.message); }
 }
 
 async function deleteStar(id) {
@@ -1097,15 +1117,17 @@ async function saveMedia() {
 
   const url = editId ? API + '/api/admin/media/' + editId : API + '/api/admin/media';
   const method = editId ? 'PATCH' : 'POST';
-  const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token }, body: fd });
-  if (r.ok) {
-    alert(editId ? 'Медиа обновлено!' : 'Медиа добавлено!');
-    cancelMedEdit();
-    loadMedia();
-  } else {
-    const d = await r.json();
-    alert(d.error || 'Ошибка');
-  }
+  try {
+    const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+    if (r.ok) {
+      alert(editId ? 'Медиа обновлено!' : 'Медиа добавлено!');
+      cancelMedEdit();
+      loadMedia();
+    } else {
+      const d = await r.json().catch(() => ({}));
+      alert(d.error || ('Ошибка ' + r.status));
+    }
+  } catch (e) { alert('Ошибка соединения: ' + e.message); }
 }
 
 async function deleteMedia(id) {

@@ -457,6 +457,50 @@
 .lb-footer a{color:var(--orange);text-decoration:none;display:flex;align-items:center;gap:6px}
 .lb-footer a::after{content:'→'}
 
+/* ===== ПОТОКИ (главная) ===== */
+.streams-sec{padding:120px 40px;max-width:1400px;margin:0 auto}
+.streams-head{margin-bottom:48px}
+.streams-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
+.stream-card{
+  position:relative;display:flex;flex-direction:column;
+  background:linear-gradient(180deg,#15171f 0%,#0c0d12 100%);
+  border:1px solid var(--line);border-radius:18px;
+  padding:22px 16px 18px;transition:transform .25s,border-color .25s,box-shadow .25s;
+}
+.stream-card:hover{transform:translateY(-4px);border-color:var(--orange);box-shadow:0 12px 30px rgba(0,0,0,.45)}
+.stream-card.first{border-color:rgba(255,106,31,.5)}
+.stream-card.full{opacity:.6}
+.stream-card .st-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.stream-card .st-num{font-family:'Unbounded',sans-serif;font-weight:900;font-size:44px;line-height:.8;color:var(--orange);letter-spacing:-.04em}
+.stream-card .st-topright{display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.stream-card .st-badge{background:var(--orange);color:#000;font-family:'JetBrains Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;padding:3px 7px;border-radius:5px}
+.stream-card .st-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink-dim);letter-spacing:2px;text-transform:uppercase}
+.stream-card .st-dates{font-family:'Unbounded',sans-serif;font-weight:700;font-size:15px;line-height:1.15;text-transform:uppercase;color:var(--orange);margin-bottom:16px;min-height:36px}
+.stream-card .st-total{display:flex;flex-direction:column;align-items:flex-start;line-height:1;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.stream-card .st-total .lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--ink-dim);letter-spacing:1.5px;text-transform:uppercase}
+.stream-card .st-total .num{font-family:'Unbounded',sans-serif;font-weight:800;font-size:34px;color:var(--orange);margin:2px 0}
+.stream-card .st-gender{display:flex;flex-direction:column;gap:12px;margin-bottom:18px}
+.stream-card .st-gender .g{display:flex;align-items:center;gap:9px}
+.stream-card .st-gender .gi{width:22px;height:22px;flex-shrink:0}
+.stream-card .st-gender .gi svg{width:100%;height:100%;display:block}
+.stream-card .st-gender .g.boys .gi svg{fill:#3aa3ff}
+.stream-card .st-gender .g.girls .gi svg{fill:#ff5ea8}
+.stream-card .st-gender .gtxt{display:flex;flex-direction:column;line-height:1}
+.stream-card .st-gender .gn{font-family:'Unbounded',sans-serif;font-weight:800;font-size:22px;color:#fff}
+.stream-card .st-gender .gn.zero{color:#ff3d6a}
+.stream-card .st-gender .gx{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--ink-dim);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
+.stream-card .st-cta{margin-top:auto;display:block;text-align:center;background:transparent;color:var(--orange);border:1.5px solid var(--orange);font-family:'Unbounded',sans-serif;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:11px 8px;border-radius:9px;text-decoration:none;transition:all .2s}
+.stream-card .st-cta:hover{background:var(--orange);color:#000}
+.stream-card.full .st-cta{border-color:#444;color:#888;pointer-events:none}
+.stream-card .st-chev{display:flex;justify-content:center;gap:6px;margin-top:10px;color:var(--orange);opacity:.7}
+.stream-card .st-chev svg{width:11px;height:11px;display:block}
+@media(max-width:1100px){
+  .streams-sec{padding:80px 20px}
+  .streams-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;touch-action:pan-x;gap:10px;padding-bottom:8px}
+  .streams-grid::-webkit-scrollbar{display:none}
+  .stream-card{flex:0 0 168px;scroll-snap-align:start}
+}
+
 /* ===== SPEAKERS CINEMATIC ===== */
 .speakers{
   position:relative;padding:140px 40px;
@@ -990,113 +1034,17 @@
   </div>
 </section>
 
-<!-- ===== LEADERBOARD ===== -->
-<section class="lboard" id="leaderboard">
-  <div class="lboard-head">
-    <div>
-      <div class="eyebrow reveal">// LIVE LEADERBOARD</div>
-      <h2 class="section-title reveal">Топ-юниты<br><em>сезона.</em></h2>
-      <p class="section-lede reveal" style="margin:0">Рейтинг обновляется в режиме реального времени. После каждого потока — 10 героев на стене славы. Это превью прошлогоднего сезона.</p>
-    </div>
-    <div class="stats reveal">
-      <div class="s"><div class="v">560</div><div class="l">Юнитов</div></div>
-      <div class="s"><div class="v">70</div><div class="l">Героев лета</div></div>
-      <div class="s"><div class="v">7</div><div class="l">Потоков</div></div>
-      <div class="s"><div class="v">∞</div><div class="l">Очков</div></div>
-    </div>
+<!-- ===== ПОТОКИ ===== -->
+<section class="streams-sec" id="streams">
+  <div class="streams-head">
+    <div class="eyebrow reveal">// РАСПИСАНИЕ · ЛЕТО 2026</div>
+    <h2 class="section-title reveal">Потоки<br><em>2026.</em></h2>
+    <p class="section-lede reveal" style="margin:0">7 потоков по 10 дней. В каждом — 80 юнитов: 40 мальчиков и 40 девочек. Выбери даты и оформи место.</p>
   </div>
-
-  <div class="lboard-wrap reveal">
-    <div class="lb-header">
-      <span>RANK</span>
-      <span>UNIT</span>
-      <span class="h3">STREAM</span>
-      <span class="h4">XP TOTAL</span>
-      <span class="h5">BADGE</span>
-      <span></span>
-    </div>
-    <div class="lb-row r1">
-      <div class="lb-rank">01</div>
-      <div class="lb-user"><div class="lb-avatar">АС</div><div><div class="uname">Алия С.</div><div class="uloc">// БИШКЕК · 14 ЛЕТ</div></div></div>
-      <div class="lb-stream"><strong>Поток 03</strong>10–20 ИЮЛЯ</div>
-      <div class="lb-xp">12 480 <em>XP</em></div>
-      <div><span class="lb-badge b-champ">● CHAMPION</span></div>
-      <div class="lb-action">VIEW →</div>
-    </div>
-    <div class="lb-row r2">
-      <div class="lb-rank">02</div>
-      <div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#7be5ff,#0099cc)">ТК</div><div><div class="uname">Тимур К.</div><div class="uloc">// ОШ · 15 ЛЕТ</div></div></div>
-      <div class="lb-stream"><strong>Поток 03</strong>10–20 ИЮЛЯ</div>
-      <div class="lb-xp">11 920 <em>XP</em></div>
-      <div><span class="lb-badge b-leader">◆ ЛИДЕР</span></div>
-      <div class="lb-action">VIEW →</div>
-    </div>
-    <div class="lb-row r3">
-      <div class="lb-rank">03</div>
-      <div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#a78bfa,#5a3fb5)">ЭБ</div><div><div class="uname">Эльдияр Б.</div><div class="uloc">// КАРАКОЛ · 13 ЛЕТ</div></div></div>
-      <div class="lb-stream"><strong>Поток 02</strong>30.06–10.07</div>
-      <div class="lb-xp">11 540 <em>XP</em></div>
-      <div><span class="lb-badge b-talent">★ ТАЛАНТ</span></div>
-      <div class="lb-action">VIEW →</div>
-    </div>
-    <div class="lb-row">
-      <div class="lb-rank">04</div>
-      <div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#ffce5e,#d68b1a)">АЖ</div><div><div class="uname">Айгерим Ж.</div><div class="uloc">// БИШКЕК · 14 ЛЕТ</div></div></div>
-      <div class="lb-stream"><strong>Поток 04</strong>20–30 ИЮЛЯ</div>
-      <div class="lb-xp">11 210 <em>XP</em></div>
-      <div><span class="lb-badge b-fast">⚡ БЫСТРЫЙ</span></div>
-      <div class="lb-action">VIEW →</div>
-    </div>
-    <div class="lb-row">
-      <div class="lb-rank">05</div>
-      <div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#ff3d6a,#a01e3e)">НТ</div><div><div class="uname">Нурбол Т.</div><div class="uloc">// ДЖАЛАЛ-АБАД · 15 ЛЕТ</div></div></div>
-      <div class="lb-stream"><strong>Поток 05</strong>30.07–9.08</div>
-      <div class="lb-xp">10 870 <em>XP</em></div>
-      <div><span class="lb-badge b-soul">♥ ДУША</span></div>
-      <div class="lb-action">VIEW →</div>
-    </div>
-    <div class="lb-row">
-      <div class="lb-rank">06</div>
-      <div class="lb-user"><div class="lb-avatar">КМ</div><div><div class="uname">Камила М.</div><div class="uloc">// НАРЫН · 13 ЛЕТ</div></div></div>
-      <div class="lb-stream"><strong>Поток 01</strong>20–30 ИЮНЯ</div>
-      <div class="lb-xp">10 410 <em>XP</em></div>
-      <div><span class="lb-badge b-talent">★ ТАЛАНТ</span></div>
-      <div class="lb-action">VIEW →</div>
-    </div>
-    <div class="lb-row">
-      <div class="lb-rank">07</div>
-      <div class="lb-user"><div class="lb-avatar" style="background:linear-gradient(135deg,#7be5ff,#0099cc)">ДА</div><div><div class="uname">Данияр А.</div><div class="uloc">// ИССЫК-КУЛЬ · 14 ЛЕТ</div></div></div>
-      <div class="lb-stream"><strong>Поток 06</strong>9–19 АВГ.</div>
-      <div class="lb-xp">10 080 <em>XP</em></div>
-      <div><span class="lb-badge b-leader">◆ ЛИДЕР</span></div>
-      <div class="lb-action">VIEW →</div>
-    </div>
-
-    <div class="lb-footer">
-      <span>// СТАТУС: <strong style="color:var(--orange)">ОБНОВЛЯЕТСЯ КАЖДЫЙ ДЕНЬ ВО ВРЕМЯ ПОТОКОВ</strong></span>
-      <a href="media.html">Все юниты сезона</a>
-    </div>
+  <div class="streams-grid reveal" id="streamsGridMain">
+    <!-- Загружается из /api/streams-status -->
   </div>
 </section>
-
-<!-- ===== SPEAKERS ===== -->
-<section class="speakers" id="speakers">
-  <div class="spk-head">
-    <div class="eyebrow reveal">// ЭКСПЕРТЫ</div>
-    <h2 class="section-title reveal">Топовые звёзды<br><em>Кыргызстана.</em></h2>
-    <p class="section-lede reveal">Олимпийские чемпионы, программисты Google/Amazon/Meta, учёные ведущих университетов, актёры кино, IT-предприниматели. Каждый поток — новый состав. Наведи курсор.</p>
-  </div>
-
-  <div class="spk-grid reveal" id="starsGrid">
-    <!-- Загружается из API -->
-  </div>
-
-  <div class="spk-footer reveal">
-    <span>// ТОП-100 БАЗА · СОСТАВ ОБЪЯВЛЯЕТСЯ ПЕРЕД КАЖДЫМ ПОТОКОМ</span>
-    <strong>→ Подробнее на странице Система</strong>
-  </div>
-</section>
-
 <!-- ===== SPEAKERS (отдельный блок — данные из вкладки «Спикеры») ===== -->
 <section class="speakers" id="speakersBlock">
   <div class="spk-head">
@@ -1285,6 +1233,44 @@ fetch('/api/admin/public/speakers').then(r=>r.json()).then(list=>{
       : `<div class="spk-card">${inner}</div>`;
   }).join('');
 }).catch(()=>{});
+
+// Потоки на главной — из /api/streams-status. Кнопка ОФОРМИТЬ ведёт на регистрацию.
+(function(){
+  const MM=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  function fmt(a,b){
+    const p=s=>s.split('-').map(Number);
+    const [,m1,d1]=p(a),[,m2,d2]=p(b);
+    return m1===m2 ? `${d1}—${d2} ${MM[m2-1]}` : `${d1} ${MM[m1-1]} — ${d2} ${MM[m2-1]}`;
+  }
+  function loadStreamsMain(){
+    fetch('/api/streams-status',{cache:'no-store'}).then(r=>r.json()).then(({streams})=>{
+      const grid=document.getElementById('streamsGridMain');
+      if(!grid||!streams||!streams.length) return;
+      const PERSON='<svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4.2"/><path d="M3.6 21c0-4.6 3.8-8.4 8.4-8.4s8.4 3.8 8.4 8.4z"/></svg>';
+      const CHEV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15l7-7 7 7"/></svg>';
+      grid.innerHTML=streams.map((s,i)=>{
+        const full=s.free_total<=0;
+        return `
+        <div class="stream-card${i===0?' first':''}${full?' full':''}">
+          <div class="st-top">
+            <div class="st-num">${String(i+1).padStart(2,'0')}</div>
+            <div class="st-topright">${i===0?'<span class="st-badge">СТАРТ</span>':''}<span class="st-label">поток</span></div>
+          </div>
+          <div class="st-dates">${fmt(s.date_start,s.date_end)}</div>
+          <div class="st-total"><span class="lbl">всего</span><span class="num">${s.capacity_total}</span><span class="lbl">мест</span></div>
+          <div class="st-gender">
+            <div class="g boys"><span class="gi">${PERSON}</span><span class="gtxt"><span class="gn${s.boys.free?'':' zero'}">${s.boys.free}</span><span class="gx">свободно</span></span></div>
+            <div class="g girls"><span class="gi">${PERSON}</span><span class="gtxt"><span class="gn${s.girls.free?'':' zero'}">${s.girls.free}</span><span class="gx">свободно</span></span></div>
+          </div>
+          <a class="st-cta" href="system.html#register">${full?'МЕСТ НЕТ':'ОФОРМИТЬ'}</a>
+          <div class="st-chev">${CHEV}${CHEV}${CHEV}</div>
+        </div>`;
+      }).join('');
+    }).catch(()=>{});
+  }
+  loadStreamsMain();
+  setInterval(loadStreamsMain, 60000);
+})();
 
 // Reveal on scroll
 const io=new IntersectionObserver((entries)=>{

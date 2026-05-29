@@ -399,8 +399,11 @@
   display:grid;grid-template-columns:120px 1fr;gap:24px;
   padding:24px;background:var(--panel);border:1px solid var(--line);border-radius:18px;
   transition:all .25s;
+  text-decoration:none;color:inherit;
 }
 .spk-row:hover{border-color:var(--orange)}
+a.spk-row{cursor:pointer}
+a.spk-row .spk-avatar{cursor:pointer}
 .spk-avatar{
   width:120px;height:140px;border-radius:14px;
   background-size:cover;background-position:center;
@@ -555,7 +558,7 @@
   .days-grid{
     grid-template-columns:repeat(10,140px);gap:8px;
     overflow-x:auto;scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;touch-action:pan-y;
+    -webkit-overflow-scrolling:touch;touch-action:pan-x;
     padding-bottom:12px;
   }
   .days-grid::-webkit-scrollbar{display:none}
@@ -568,7 +571,7 @@
   .streams-grid{
     display:flex;gap:12px;
     overflow-x:auto;scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;touch-action:pan-y;
+    -webkit-overflow-scrolling:touch;touch-action:pan-x;
     padding-bottom:8px;
   }
   .streams-grid::-webkit-scrollbar{display:none}
@@ -636,7 +639,7 @@
   .spk-list{
     display:flex;gap:12px;
     overflow-x:auto;scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;touch-action:pan-y;
+    -webkit-overflow-scrolling:touch;touch-action:pan-x;
     padding-bottom:12px;
   }
   .spk-list::-webkit-scrollbar{display:none}
@@ -978,26 +981,6 @@
   </div>
 </section>
 
-<!-- ===== STREAMS ===== -->
-<section class="streams" id="streams">
-  <div class="streams-head">
-    <div class="eyebrow reveal">[02] / 7 ПОТОКОВ</div>
-    <h2 class="section-title reveal">Лето <em>2026.</em><br>Выбери дату.</h2>
-    <p class="section-lede reveal">Каждый поток — 10 дней по 80 юнитов. За лето 560 участников. Даты не пересекаются.</p>
-  </div>
-
-  <div class="streams-track reveal">
-    <div class="streams-line"></div>
-    <div class="streams-grid" id="streamsGrid"></div>
-  </div>
-
-  <div class="streams-foot reveal">
-    <span>// СЕЗОН: <strong>20.06 — 29.08.2026</strong></span>
-    <span>// 7 ПОТОКОВ × 80 ЮНИТОВ = <strong>560 МЕСТ</strong></span>
-    <span>// ВОЗРАСТ: <strong>12 — 15 ЛЕТ</strong></span>
-  </div>
-</section>
-
 <!-- ===== ACCOMMODATIONS ===== -->
 <section class="accom" id="accom">
   <div class="accom-head">
@@ -1276,101 +1259,6 @@
   </div><!-- /.collapse-body -->
 </section>
 
-<!-- ===== SPEAKERS ===== -->
-<section class="speakers" id="speakers">
-  <div class="spk-head">
-    <div class="eyebrow reveal">[07] / EXPERTS</div>
-    <h2 class="section-title reveal">База спикеров<br><em>top-100.</em></h2>
-    <p class="section-lede reveal">Каждый поток — новый состав гостей. Список объявляется перед стартом сезона. Это категории и направления, из которых формируются составы.</p>
-  </div>
-
-  <div class="spk-list">
-    <div class="spk-row reveal">
-      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&q=85')"></div>
-      <div class="spk-info">
-        <div class="cat">// SPORT · ОЛИМПИЙЦЫ</div>
-        <h4>Олимпийские чемпионы</h4>
-        <div class="role">Чемпионы мира · Тренеры сборной Кыргызстана</div>
-        <ul>
-          <li>Борьба, дзюдо, спортивная гимнастика</li>
-          <li>Личные сессии с юнитами</li>
-          <li>Лекции о пути к олимпийскому золоту</li>
-          <li>Мастер-классы по дисциплине и режиму</li>
-        </ul>
-      </div>
-    </div>
-    <div class="spk-row reveal">
-      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=85')"></div>
-      <div class="spk-info">
-        <div class="cat">// SCIENCE · УЧЁНЫЕ</div>
-        <h4>Учёные мирового уровня</h4>
-        <div class="role">Физики · Биологи · Исследователи MIT, ETH, Max Planck</div>
-        <ul>
-          <li>Эксперименты вживую</li>
-          <li>Лекции о современной физике, генетике, ИИ</li>
-          <li>Кыргызские учёные с мировым именем</li>
-          <li>Лабораторные сессии</li>
-        </ul>
-      </div>
-    </div>
-    <div class="spk-row reveal">
-      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1556157382-97eda2d62296?w=600&q=85')"></div>
-      <div class="spk-info">
-        <div class="cat">// IT · BIG TECH</div>
-        <h4>Программисты Google · Meta · Amazon</h4>
-        <div class="role">Senior Engineers · ML / AI · React / Cloud</div>
-        <ul>
-          <li>Кыргызстанцы, работающие в Big Tech</li>
-          <li>Лекции о пути из Бишкека в Кремниевую Долину</li>
-          <li>AI и ML workshops</li>
-          <li>Карьерные траектории и менторство</li>
-        </ul>
-      </div>
-    </div>
-    <div class="spk-row reveal">
-      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?w=600&q=85')"></div>
-      <div class="spk-info">
-        <div class="cat">// CREATIVE · АРТИСТЫ</div>
-        <h4>Актёры · Музыканты · Дизайнеры</h4>
-        <div class="role">Лауреаты фестивалей · Авторы знаковых проектов</div>
-        <ul>
-          <li>Актёры кино и театра Кыргызстана</li>
-          <li>Лауреаты-архитекторы</li>
-          <li>Видеомейкеры и музыканты</li>
-          <li>Мастер-классы по самовыражению</li>
-        </ul>
-      </div>
-    </div>
-    <div class="spk-row reveal">
-      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=85')"></div>
-      <div class="spk-info">
-        <div class="cat">// BUSINESS · ОСНОВАТЕЛИ</div>
-        <h4>IT-предприниматели</h4>
-        <div class="role">Основатели стартапов · Лидеры индустрии</div>
-        <ul>
-          <li>Кыргызские IT-стартапы с международной траекторией</li>
-          <li>Лекции о привлечении инвестиций</li>
-          <li>Networking-сессии</li>
-          <li>Менторство по идеям юнитов</li>
-        </ul>
-      </div>
-    </div>
-    <div class="spk-row reveal">
-      <div class="spk-avatar" style="background-image:url('https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=600&q=85')"></div>
-      <div class="spk-info">
-        <div class="cat">// SPECIAL · UNIQUE</div>
-        <h4>Специальные гости</h4>
-        <div class="role">Меняются каждый поток</div>
-        <ul>
-          <li>Космонавты, путешественники, авантюристы</li>
-          <li>Социальные предприниматели</li>
-          <li>Звёзды соцсетей и блогеры</li>
-          <li>Будут анонсы перед каждым стартом</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- ===== FAQ ===== -->
 <section class="faq" id="faq">
