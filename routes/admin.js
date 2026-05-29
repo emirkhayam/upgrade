@@ -244,6 +244,11 @@ router.get('/public/news', (req, res) => {
   res.json(rows);
 });
 
+router.get('/public/reels', (req, res) => {
+  const rows = db.prepare('SELECT * FROM reels WHERE is_active = 1 ORDER BY sort_order, id').all();
+  res.json(rows);
+});
+
 // ==================== SPEAKERS ====================
 
 const speakerStorage = multer.diskStorage({
@@ -466,6 +471,41 @@ router.patch('/news/:id', auth, uploadNews.single('image'), (req, res) => {
 router.delete('/news/:id', auth, (req, res) => {
   const result = db.prepare('DELETE FROM news WHERE id = ?').run(req.params.id);
   if (result.changes === 0) return res.status(404).json({ error: 'Новость не найдена' });
+  res.json({ ok: true });
+});
+
+// ==================== REELS (Instagram рилсы в блоке @apgrade_kg) ====================
+
+router.get('/reels', auth, (req, res) => {
+  res.json(db.prepare('SELECT * FROM reels ORDER BY sort_order, id').all());
+});
+
+router.post('/reels', auth, (req, res) => {
+  const { url, caption, sort_order, is_active } = req.body;
+  if (!url || !/instagram\.com\//i.test(url)) return res.status(400).json({ error: 'Вставьте ссылку на рилс/пост Instagram' });
+  const result = db.prepare(
+    'INSERT INTO reels (url, caption, sort_order, is_active) VALUES (?, ?, ?, ?)'
+  ).run(url.trim(), caption || '', parseInt(sort_order) || 0, is_active !== undefined ? parseInt(is_active) : 1);
+  res.status(201).json({ id: result.lastInsertRowid });
+});
+
+router.patch('/reels/:id', auth, (req, res) => {
+  const item = db.prepare('SELECT * FROM reels WHERE id = ?').get(req.params.id);
+  if (!item) return res.status(404).json({ error: 'Рилс не найден' });
+  const { url, caption, sort_order, is_active } = req.body;
+  db.prepare(
+    'UPDATE reels SET url=?, caption=?, sort_order=?, is_active=? WHERE id=?'
+  ).run(
+    url ? url.trim() : item.url, caption ?? item.caption,
+    sort_order !== undefined ? parseInt(sort_order) : item.sort_order,
+    is_active !== undefined ? parseInt(is_active) : item.is_active, req.params.id
+  );
+  res.json({ ok: true });
+});
+
+router.delete('/reels/:id', auth, (req, res) => {
+  const result = db.prepare('DELETE FROM reels WHERE id = ?').run(req.params.id);
+  if (result.changes === 0) return res.status(404).json({ error: 'Рилс не найден' });
   res.json({ ok: true });
 });
 

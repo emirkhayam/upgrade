@@ -336,6 +336,11 @@
   max-width:1320px;margin:0 auto;
   display:grid;grid-template-columns:repeat(5,1fr);gap:14px;
 }
+/* Реальные рилсы из Instagram (встроены через admin) */
+.reels.reels-embed{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.reel-embed{background:#fff;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.reel-embed iframe{width:100%;height:600px;display:block;border:0}
+@media(max-width:680px){ .reel-embed iframe{height:560px} }
 .reel{
   position:relative;aspect-ratio:9/16;
   border-radius:18px;overflow:hidden;
@@ -839,7 +844,7 @@
     </div>
   </div>
 
-  <div class="reels reveal">
+  <div class="reels reveal" id="reelsGrid">
     <div class="reel">
       <div class="r-img" style="background-image:url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=85')"></div>
       <span class="views">42.1K</span>
@@ -1036,6 +1041,19 @@ fetch('/api/admin/public/news').then(r=>r.json()).then(items=>{
         </div>
       </div>`).join('')+`</div>`;
   grid.innerHTML=mainHtml+sideHtml;
+}).catch(()=>{});
+
+// Load Instagram reels (блок @apgrade_kg) from admin — встраиваем через Instagram embed
+fetch('/api/admin/public/reels').then(r=>r.json()).then(items=>{
+  const grid=document.getElementById('reelsGrid');
+  if(!grid||!items.length) return; // нет рилсов в админке — оставляем статичные карточки
+  const code=u=>{const m=(u||'').match(/(?:reel|reels|p|tv)\/([A-Za-z0-9_-]+)/);return m?m[1]:'';};
+  const html=items.map(it=>{
+    const c=code(it.url);
+    if(!c) return '';
+    return `<div class="reel-embed"><iframe src="https://www.instagram.com/reel/${c}/embed/" loading="lazy" scrolling="no" allowtransparency="true" allow="encrypted-media; clipboard-write; picture-in-picture"></iframe></div>`;
+  }).join('');
+  if(html){ grid.classList.add('reels-embed'); grid.innerHTML=html; }
 }).catch(()=>{});
 
 // Gallery toggle (mobile)

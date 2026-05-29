@@ -285,6 +285,7 @@ tr:hover{background:rgba(255,106,31,.03)}
     <button class="tab" onclick="switchTab('stars')">Звёзды</button>
     <button class="tab" onclick="switchTab('media')">Медиа</button>
     <button class="tab" onclick="switchTab('news')">Новости</button>
+    <button class="tab" onclick="switchTab('reels')">Рилсы</button>
   </div>
 
   <!-- OVERVIEW -->
@@ -496,6 +497,24 @@ tr:hover{background:rgba(255,106,31,.03)}
       </div>
     </div>
   </div>
+
+  <!-- REELS -->
+  <div class="panel" id="panel-reels">
+    <h3 style="margin-bottom:16px">Рилсы Instagram (блок «@apgrade_kg» на странице Медиа)</h3>
+    <p style="color:#7d8694;font-size:13px;margin-bottom:16px;line-height:1.5">Открой нужный рилс в Instagram → «Поделиться» → «Копировать ссылку» → вставь сюда. Рилс встроится в блок на сайте автоматически.<br>Ссылка вида <code style="color:#ff6a1f">https://www.instagram.com/reel/XXXXXXX/</code></p>
+    <div class="stream-cards" id="reelsList"></div>
+
+    <h3 style="margin:24px 0 16px">Добавить рилс</h3>
+    <input type="hidden" id="reelEditId" value="">
+    <div class="form-grid" style="max-width:560px;align-content:start">
+      <div class="form-full"><label>Ссылка на рилс Instagram</label><input id="reelUrl" placeholder="https://www.instagram.com/reel/XXXXXXX/"></div>
+      <div class="form-full"><label>Подпись (необязательно)</label><input id="reelCaption" placeholder="Спорт-день · Поток 03"></div>
+      <div><label>Порядок</label><input id="reelOrder" type="number" value="0"></div>
+      <div></div>
+      <button onclick="saveReel()">Сохранить рилс</button>
+      <button onclick="cancelReelEdit()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:#7d8694;display:none" id="reelCancelBtn">Отмена</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -578,6 +597,7 @@ function switchTab(name) {
   if (name === 'stars') loadStars();
   if (name === 'media') loadMedia();
   if (name === 'news') loadNews();
+  if (name === 'reels') loadReels();
 }
 
 // ==================== OVERVIEW ====================
@@ -1258,6 +1278,89 @@ async function deleteNews(id) {
   if (!confirm('Удалить новость?')) return;
   await fetch(API + '/api/admin/news/' + id, { method: 'DELETE', headers: headers() });
   loadNews();
+}
+
+// ==================== REELS ====================
+function reelCode(u) {
+  const m = (u || '').match(/(?:reel|reels|p|tv)\/([A-Za-z0-9_-]+)/);
+  return m ? m[1] : '';
+}
+async function loadReels() {
+  try {
+    const r = await fetch(API + '/api/admin/reels', { headers: headers() });
+    if (r.status === 401) return logout();
+    const items = await r.json();
+    document.getElementById('reelsList').innerHTML = items.length === 0
+      ? '<p style="color:#7d8694;font-size:13px">Рилсы пока не добавлены</p>'
+      : items.map(it => {
+        const c = reelCode(it.url);
+        return `
+      <div class="entity-card">
+        ${c ? `<iframe src="https://www.instagram.com/reel/${c}/embed/" class="ec-photo" style="height:200px;border:0" scrolling="no"></iframe>` : `<div class="ec-placeholder">▶</div>`}
+        <div class="ec-body">
+          <div class="ec-info">
+            <div class="ec-name">${it.caption || ('Рилс ' + c)}</div>
+            <div class="ec-meta" style="word-break:break-all">${it.url}</div>
+          </div>
+          <div class="ec-footer">
+            <span class="badge ${it.is_active ? 'badge-confirmed' : 'badge-cancelled'}" style="font-size:10px">${it.is_active ? 'Вкл' : 'Выкл'}</span>
+            <div class="ec-actions">
+              <button class="btn-sm btn-confirm" onclick="editReel(${it.id})">Ред.</button>
+              <button class="btn-sm btn-cancel" onclick="deleteReel(${it.id})">Уд.</button>
+            </div>
+          </div>
+        </div>
+      </div>`;
+      }).join('');
+  } catch(e) { console.error(e); }
+}
+
+async function editReel(id) {
+  const r = await fetch(API + '/api/admin/reels', { headers: headers() });
+  const items = await r.json();
+  const it = items.find(x => x.id === id);
+  if (!it) return;
+  document.getElementById('reelEditId').value = it.id;
+  document.getElementById('reelUrl').value = it.url || '';
+  document.getElementById('reelCaption').value = it.caption || '';
+  document.getElementById('reelOrder').value = it.sort_order || 0;
+  document.getElementById('reelCancelBtn').style.display = 'block';
+}
+
+function cancelReelEdit() {
+  document.getElementById('reelEditId').value = '';
+  document.getElementById('reelUrl').value = '';
+  document.getElementById('reelCaption').value = '';
+  document.getElementById('reelOrder').value = '0';
+  document.getElementById('reelCancelBtn').style.display = 'none';
+}
+
+async function saveReel() {
+  const editId = document.getElementById('reelEditId').value;
+  const body = {
+    url: document.getElementById('reelUrl').value,
+    caption: document.getElementById('reelCaption').value,
+    sort_order: document.getElementById('reelOrder').value
+  };
+  const url = editId ? API + '/api/admin/reels/' + editId : API + '/api/admin/reels';
+  const method = editId ? 'PATCH' : 'POST';
+  try {
+    const r = await fetch(url, { method, headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    if (r.ok) {
+      alert(editId ? 'Рилс обновлён!' : 'Рилс добавлен!');
+      cancelReelEdit();
+      loadReels();
+    } else {
+      const d = await r.json().catch(() => ({}));
+      alert(d.error || ('Ошибка ' + r.status));
+    }
+  } catch (e) { alert('Ошибка соединения: ' + e.message); }
+}
+
+async function deleteReel(id) {
+  if (!confirm('Удалить рилс?')) return;
+  await fetch(API + '/api/admin/reels/' + id, { method: 'DELETE', headers: headers() });
+  loadReels();
 }
 
 // ==================== HELPERS ====================

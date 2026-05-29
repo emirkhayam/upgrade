@@ -81,6 +81,14 @@ db.exec(`
     sort_order INTEGER DEFAULT 0,
     is_active  INTEGER DEFAULT 1
   );
+
+  CREATE TABLE IF NOT EXISTS reels (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    url        TEXT NOT NULL,
+    caption    TEXT DEFAULT '',
+    sort_order INTEGER DEFAULT 0,
+    is_active  INTEGER DEFAULT 1
+  );
 `);
 
 // Migrations: add missing columns to bookings
