@@ -263,25 +263,26 @@ router.get('/speakers', auth, (req, res) => {
 });
 
 router.post('/speakers', auth, uploadSpeaker.single('photo'), (req, res) => {
-  const { name, role, category, bio, sort_order, is_active } = req.body;
+  const { name, role, category, bio, instagram, sort_order, is_active } = req.body;
   if (!name) return res.status(400).json({ error: 'Имя обязательно' });
   const photo = req.file ? '/uploads/speakers/' + req.file.filename : '';
   const result = db.prepare(
-    'INSERT INTO speakers (name, role, category, bio, photo, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  ).run(name, role || '', category || '', bio || '', photo, parseInt(sort_order) || 0, is_active !== undefined ? parseInt(is_active) : 1);
+    'INSERT INTO speakers (name, role, category, bio, instagram, photo, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(name, role || '', category || '', bio || '', instagram || '', photo, parseInt(sort_order) || 0, is_active !== undefined ? parseInt(is_active) : 1);
   res.status(201).json({ id: result.lastInsertRowid });
 });
 
 router.patch('/speakers/:id', auth, uploadSpeaker.single('photo'), (req, res) => {
   const speaker = db.prepare('SELECT * FROM speakers WHERE id = ?').get(req.params.id);
   if (!speaker) return res.status(404).json({ error: 'Спикер не найден' });
-  const { name, role, category, bio, sort_order, is_active } = req.body;
+  const { name, role, category, bio, instagram, sort_order, is_active } = req.body;
   const photo = req.file ? '/uploads/speakers/' + req.file.filename : speaker.photo;
   db.prepare(
-    'UPDATE speakers SET name=?, role=?, category=?, bio=?, photo=?, sort_order=?, is_active=? WHERE id=?'
+    'UPDATE speakers SET name=?, role=?, category=?, bio=?, instagram=?, photo=?, sort_order=?, is_active=? WHERE id=?'
   ).run(
     name ?? speaker.name, role ?? speaker.role, category ?? speaker.category,
-    bio ?? speaker.bio, photo, sort_order !== undefined ? parseInt(sort_order) : speaker.sort_order,
+    bio ?? speaker.bio, instagram ?? speaker.instagram, photo,
+    sort_order !== undefined ? parseInt(sort_order) : speaker.sort_order,
     is_active !== undefined ? parseInt(is_active) : speaker.is_active, req.params.id
   );
   res.json({ ok: true });

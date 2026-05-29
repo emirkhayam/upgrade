@@ -42,6 +42,7 @@ db.exec(`
     role       TEXT DEFAULT '',
     category   TEXT DEFAULT '',
     bio        TEXT DEFAULT '',
+    instagram  TEXT DEFAULT '',
     photo      TEXT DEFAULT '',
     sort_order INTEGER DEFAULT 0,
     is_active  INTEGER DEFAULT 1
@@ -103,6 +104,20 @@ for (const [col, def] of bookingMigrations) {
   } catch {
     db.exec(`ALTER TABLE bookings ADD COLUMN ${col} ${def}`);
     console.log(`Migration: added ${col} column to bookings`);
+  }
+}
+
+// Migrations: add missing columns to speakers
+const speakerMigrations = [
+  // Ссылка на Instagram-аккаунт спикера (клик по фото на сайте ведёт сюда)
+  ['instagram', "TEXT DEFAULT ''"],
+];
+for (const [col, def] of speakerMigrations) {
+  try {
+    db.prepare(`SELECT ${col} FROM speakers LIMIT 1`).get();
+  } catch {
+    db.exec(`ALTER TABLE speakers ADD COLUMN ${col} ${def}`);
+    console.log(`Migration: added ${col} column to speakers`);
   }
 }
 

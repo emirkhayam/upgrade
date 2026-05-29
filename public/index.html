@@ -346,15 +346,15 @@
 
 /* Mission color themes */
 .miss-card.m1{--accent:var(--m-sport)}
-.miss-card.m1 .miss-img{background-image:url('img/camp-team.png')}
+.miss-card.m1 .miss-img{background-image:url('img/mission-01-sport.png')}
 .miss-card.m2{--accent:var(--m-science)}
-.miss-card.m2 .miss-img{background-image:url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1400&q=85')}
+.miss-card.m2 .miss-img{background-image:url('img/mission-02-science.png')}
 .miss-card.m3{--accent:var(--m-it)}
-.miss-card.m3 .miss-img{background-image:url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&q=85')}
+.miss-card.m3 .miss-img{background-image:url('img/mission-03-it.png')}
 .miss-card.m4{--accent:var(--m-creative)}
-.miss-card.m4 .miss-img{background-image:url('https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1400&q=85')}
+.miss-card.m4 .miss-img{background-image:url('img/mission-04-creative.png')}
 .miss-card.m5{--accent:var(--m-final)}
-.miss-card.m5 .miss-img{background-image:url('img/trophy.png')}
+.miss-card.m5 .miss-img{background-image:url('img/mission-05-final.png')}
 
 .miss-card.m1{grid-area:m1}
 .miss-card.m2{grid-area:m2}
@@ -468,6 +468,7 @@
   display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
 }
 .spk-card{
+  display:block;text-decoration:none;color:inherit;
   position:relative;aspect-ratio:3/4;
   border-radius:20px;overflow:hidden;
   border:1px solid var(--line);
@@ -639,6 +640,11 @@
 .final-cta-meta .m{display:flex;flex-direction:column;align-items:center;gap:6px}
 .final-cta-meta .m .v{font-family:'Unbounded',sans-serif;font-weight:800;font-size:32px;color:var(--orange);letter-spacing:-.02em;line-height:1}
 .final-cta-meta .m .l{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:2px;text-transform:uppercase}
+/* Рассрочка — акцент зелёным + бейдж МБанк+ */
+.final-cta-meta .m.installment{padding:10px 18px;border:1px solid rgba(0,200,100,.45);border-radius:14px;background:rgba(0,200,100,.07)}
+.final-cta-meta .m.installment .v{color:#00d36b}
+.final-cta-meta .m.installment .l{color:#7fe0a8}
+.mbank-badge{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:3px 10px;border-radius:999px;background:#00b14f;color:#fff;font-family:'Unbounded',sans-serif;font-weight:800;font-size:11px;letter-spacing:.02em;box-shadow:0 0 14px rgba(0,177,79,.5)}
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:1100px){
@@ -854,8 +860,8 @@
 
     <h1 class="hero-title"><span class="glitch" data-text="АПГРЕЙД">АПГРЕЙД</span></h1>
 
-    <p class="hero-tagline">Лагерь <em>нового поколения</em></p>
-    <div class="hero-subtag">// 10 ДНЕЙ, КОТОРЫЕ МЕНЯЮТ ТЕБЯ · ИССЫК-КУЛЬ · 2026</div>
+    <p class="hero-tagline">Развлекательный проект <em>нового поколения</em></p>
+    <div class="hero-subtag">// 10 ДНЕЙ, КОТОРЫЕ МЕНЯЮТ ТЕБЯ · ИССЫК-КУЛЬ · 2026 · ДЕТЯМ 12–15 ЛЕТ</div>
 
     <div class="hero-actions">
       <a href="system.html#register" class="btn btn-primary">Войти в систему<span class="arr">→</span></a>
@@ -874,8 +880,8 @@
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-track">
-    <span>NEXT LEVEL · 2026</span><span>СПОРТ</span><span>НАУКА</span><span>IT</span><span>ТВОРЧЕСТВО</span><span>ФИНАЛ</span><span>ИССЫК-КУЛЬ</span><span>ЛАГЕРЬ МАЯК</span><span>СДЕЛАНО В КЫРГЫЗСТАНЕ</span>
-    <span>NEXT LEVEL · 2026</span><span>СПОРТ</span><span>НАУКА</span><span>IT</span><span>ТВОРЧЕСТВО</span><span>ФИНАЛ</span><span>ИССЫК-КУЛЬ</span><span>ЛАГЕРЬ МАЯК</span><span>СДЕЛАНО В КЫРГЫЗСТАНЕ</span>
+    <span>NEXT LEVEL · 2026</span><span>СПОРТ</span><span>НАУКА</span><span>IT</span><span>ТВОРЧЕСТВО</span><span>ФИНАЛ</span><span>ИССЫК-КУЛЬ</span><span>СДЕЛАНО В КЫРГЫЗСТАНЕ</span>
+    <span>NEXT LEVEL · 2026</span><span>СПОРТ</span><span>НАУКА</span><span>IT</span><span>ТВОРЧЕСТВО</span><span>ФИНАЛ</span><span>ИССЫК-КУЛЬ</span><span>СДЕЛАНО В КЫРГЫЗСТАНЕ</span>
   </div>
 </div>
 
@@ -1179,7 +1185,7 @@
 
     <div class="final-cta-meta reveal">
       <div class="m"><div class="v">19 998</div><div class="l">Сом · вся путёвка</div></div>
-      <div class="m"><div class="v">6</div><div class="l">Мес. рассрочка</div></div>
+      <div class="m installment"><div class="v">3 333 × 6</div><div class="l">Сом/мес · рассрочка</div><span class="mbank-badge">MBANK+</span></div>
       <div class="m"><div class="v">2H</div><div class="l">Ответ менеджера</div></div>
       <div class="m"><div class="v">100%</div><div class="l">Личная страховка</div></div>
     </div>
@@ -1192,7 +1198,7 @@
     <div class="foot-top">
       <div>
         <div class="foot-logo">АП<em>ГРЕЙД</em> 2026</div>
-        <p class="foot-desc">Детский cinematic-лагерь нового поколения. Иссык-Куль, лагерь «Маяк». Возраст 12–15 лет.</p>
+        <p class="foot-desc">Развлекательный проект АПГРЕЙД. Иссык-Куль, лагерь «Маяк». Возраст 12–15 лет.</p>
         <span class="foot-stamp">// CERT.OFFICIAL · SUMMER.2026</span>
       </div>
       <div class="foot-col">
@@ -1211,16 +1217,16 @@
       </div>
       <div class="foot-col">
         <h5>Контакты</h5>
-        <a href="tel:+996700000000">+996 700 000 000</a>
+        <a href="tel:+996552180570">+996 552 180 570</a>
         <a href="mailto:hello@upgrade.kg">hello@upgrade.kg</a>
-        <a href="#">WhatsApp</a>
+        <a href="https://wa.me/996552180570" target="_blank" rel="noopener">WhatsApp</a>
         <a href="#">Telegram</a>
-        <a href="#">Instagram</a>
+        <a href="https://www.instagram.com/apgrade_kg/" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
     <div class="foot-bot">
       <span>© 2026 АПГРЕЙД · ВСЕ ПРАВА ЗАЩИЩЕНЫ</span>
-      <span>// ИССЫК-КУЛЬ · ЛАГЕРЬ МАЯК · КЫРГЫЗСТАН</span>
+      <span>// ИССЫК-КУЛЬ / АПГРЕЙД / КЫРГЫЗСТАН</span>
       <span>SYSTEM v.26.07</span>
     </div>
   </div>
@@ -1263,8 +1269,9 @@ fetch('/api/admin/public/stars').then(r=>r.json()).then(stars=>{
 fetch('/api/admin/public/speakers').then(r=>r.json()).then(list=>{
   const grid=document.getElementById('speakersGrid');
   if(!grid||!list.length) return;
-  grid.innerHTML=list.map(s=>`
-    <div class="spk-card">
+  grid.innerHTML=list.map(s=>{
+    const ig=(s.instagram||'').trim();
+    const inner=`
       <div class="spk-img" style="background-image:url('${s.photo||''}')"></div>
       <i class="spk-corner tl"></i><i class="spk-corner br"></i>
       <span class="spk-cat">// ${(s.category||'').toUpperCase()}</span>
@@ -1272,9 +1279,11 @@ fetch('/api/admin/public/speakers').then(r=>r.json()).then(list=>{
         <div class="spk-name">${s.name}</div>
         <div class="spk-role">// ${(s.role||'').toUpperCase()}</div>
         <p class="spk-bio">${s.bio||''}</p>
-      </div>
-    </div>
-  `).join('');
+      </div>`;
+    return ig
+      ? `<a class="spk-card" href="${ig}" target="_blank" rel="noopener">${inner}</a>`
+      : `<div class="spk-card">${inner}</div>`;
+  }).join('');
 }).catch(()=>{});
 
 // Reveal on scroll

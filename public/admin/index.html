@@ -395,6 +395,7 @@ tr:hover{background:rgba(255,106,31,.03)}
         <div><label>Роль</label><input id="spkRole" placeholder="Тренер по плаванию"></div>
         <div><label>Категория</label><input id="spkCategory" placeholder="Спорт"></div>
         <div><label>Порядок</label><input id="spkOrder" type="number" value="0"></div>
+        <div class="form-full"><label>Instagram (ссылка на аккаунт)</label><input id="spkInstagram" placeholder="https://www.instagram.com/username/"></div>
         <div class="form-full"><label>Био</label><input id="spkBio" placeholder="Краткое описание..."></div>
         <button onclick="saveSpeaker()">Сохранить спикера</button>
         <button onclick="cancelSpkEdit()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:#7d8694;display:none" id="spkCancelBtn">Отмена</button>
@@ -600,7 +601,11 @@ let lastBookings = [];
 
 function exportCSV() {
   if (!lastBookings.length) return alert('Нет данных для экспорта');
-  const header = 'ID,Ребёнок,Возраст,Пол,Канал,Контакт,Телефон,Родитель,Город,Поток,Начало,Конец,Статус,Менеджер,Статус оплаты,Скидка %,К оплате,Оплачено,Остаток,Дата оплаты,Дата заявки';
+  const cols = ['ID','Ребёнок','Возраст','Пол','Канал','Контакт','Телефон','Родитель','Город','Поток','Начало','Конец','Статус','Менеджер','Статус оплаты','Скидка %','К оплате','Оплачено','Остаток','Дата оплаты','Дата заявки'];
+  // ; как разделитель — так Excel (в т.ч. русская локаль) сразу раскладывает по столбцам
+  const SEP = ';';
+  const esc = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+  const header = cols.map(esc).join(SEP);
   const rows = lastBookings.map(b => {
     const due = amountDue(b);
     const gender = b.gender === 'M' ? 'М' : b.gender === 'F' ? 'Ж' : '';
@@ -608,9 +613,9 @@ function exportCSV() {
      b.stream_name, b.date_start, b.date_end, statusText(b.status), b.manager || '',
      payStatusText(b.payment_status), b.discount || 0, due, b.paid_amount || 0, Math.max(0, due - (b.paid_amount||0)),
      b.payment_date || '', b.created_at]
-    .map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',');
+    .map(esc).join(SEP);
   });
-  const csv = '\uFEFF' + header + '\n' + rows.join('\n');
+  const csv = '\uFEFF' + [header, ...rows].join('\r\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -824,6 +829,7 @@ async function loadSpeakers() {
           <div class="ec-info">
             <div class="ec-name">${s.name}</div>
             <div class="ec-meta">${s.role || ''}${s.category ? ' · ' + s.category : ''}</div>
+            ${s.instagram ? `<div class="ec-meta" style="margin-top:2px"><a href="${s.instagram}" target="_blank" rel="noopener" style="color:#ff6a1f;text-decoration:none">📷 Instagram</a></div>` : ''}
             ${s.bio ? `<div class="ec-meta" style="margin-top:4px">${s.bio.substring(0, 120)}${s.bio.length > 120 ? '...' : ''}</div>` : ''}
           </div>
           <div class="ec-footer">
@@ -850,6 +856,7 @@ async function editSpeaker(id) {
   document.getElementById('spkRole').value = s.role || '';
   document.getElementById('spkCategory').value = s.category || '';
   document.getElementById('spkBio').value = s.bio || '';
+  document.getElementById('spkInstagram').value = s.instagram || '';
   document.getElementById('spkOrder').value = s.sort_order || 0;
   if (s.photo) {
     document.getElementById('spkPreview').innerHTML = `<img src="${s.photo}" style="width:100%;height:100%;object-fit:cover">`;
@@ -863,6 +870,7 @@ function cancelSpkEdit() {
   document.getElementById('spkRole').value = '';
   document.getElementById('spkCategory').value = '';
   document.getElementById('spkBio').value = '';
+  document.getElementById('spkInstagram').value = '';
   document.getElementById('spkOrder').value = '0';
   document.getElementById('spkFile').value = '';
   document.getElementById('spkPreview').innerHTML = '<span class="placeholder">Фото</span>';
@@ -876,6 +884,7 @@ async function saveSpeaker() {
   fd.append('role', document.getElementById('spkRole').value);
   fd.append('category', document.getElementById('spkCategory').value);
   fd.append('bio', document.getElementById('spkBio').value);
+  fd.append('instagram', document.getElementById('spkInstagram').value);
   fd.append('sort_order', document.getElementById('spkOrder').value);
   const file = document.getElementById('spkFile').files[0];
   if (file) fd.append('photo', file);

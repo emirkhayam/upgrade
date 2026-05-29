@@ -149,7 +149,8 @@
   padding-top:14px;border-top:1px dashed var(--line);
   display:flex;justify-content:space-between;margin-top:auto;
 }
-.stream-it .meta strong{color:var(--orange);font-weight:500}
+.stream-it .meta strong{color:var(--orange);font-weight:600;font-size:15px;display:inline-flex;align-items:center;gap:3px}
+.stream-it .meta strong .gi{font-size:20px;line-height:1;filter:saturate(1.35) brightness(1.12) drop-shadow(0 0 4px rgba(255,255,255,.18));vertical-align:-3px}
 .stream-it .avail{display:inline-flex;align-items:center;gap:5px}
 .stream-it .avail .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
 .stream-it .avail.open .dot{background:#00c864;box-shadow:0 0 6px rgba(0,200,100,.5)}
@@ -1001,7 +1002,7 @@
 <section class="accom" id="accom">
   <div class="accom-head">
     <div class="eyebrow reveal">[03] / КОРПУСА · ИНФРАСТРУКТУРА</div>
-    <h2 class="section-title reveal">Лагерь <em>«Маяк».</em></h2>
+    <h2 class="section-title reveal">Для проекта АПГРЕЙД выделено <em>2 корпуса</em> лагеря «Маяк».</h2>
     <p class="section-lede reveal">Побережье Иссык-Куля. Полная инфраструктура: проживание, питание, охрана, медпункт, спорт-площадки, пляж. Всё на одной территории.</p>
     <button class="collapse-toggle" onclick="toggleCollapse(this)">Подробнее <span class="collapse-arrow">&#9662;</span></button>
   </div>
@@ -1047,17 +1048,16 @@
       <h4>Комнаты</h4>
       <ul>
         <li>10 юнитов в комнате</li>
+        <li>1 вожатый</li>
         <li>Личная койка + шкаф</li>
         <li>Свежее бельё</li>
-        <li>Кондиционер</li>
-        <li>Душевые на этаже</li>
       </ul>
     </div>
     <div class="accom-spec reveal">
       <div class="ix">// FOOD.PROGRAM</div>
       <h4>Питание</h4>
       <ul>
-        <li>5-разовое</li>
+        <li>4-разовое</li>
         <li>Повар-диетолог</li>
         <li>Свежие продукты</li>
         <li>Учёт аллергий</li>
@@ -1068,10 +1068,10 @@
       <div class="ix">// SPORT.AREA</div>
       <h4>Спорт-зоны</h4>
       <ul>
+        <li>Самый высокий скалодром в Кыргызстане</li>
         <li>Футбольное поле</li>
         <li>Волейбольная площадка</li>
         <li>Баскетбол · стрит</li>
-        <li>Зал · силовые</li>
         <li>Зона для йоги</li>
       </ul>
     </div>
@@ -1080,10 +1080,8 @@
       <h4>Пляж</h4>
       <ul>
         <li>Личный пляж</li>
-        <li>Лежаки · зонтики</li>
-        <li>Спасатели на воде</li>
+        <li>Спасатели на воде и на суше</li>
         <li>Водные виды</li>
-        <li>Каяки</li>
       </ul>
     </div>
   </div>
@@ -1384,7 +1382,7 @@
     <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[01]</span>Какой возраст принимаете?</span><span class="faq-arr">+</span></button><div class="faq-a">Принимаем детей от 12 до 15 лет включительно. В одном потоке смешанные возрасты, но разделение по корпусам — мальчики и девочки отдельно. Возраст определяется на момент старта потока.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[02]</span>Где находится лагерь?</span><span class="faq-arr">+</span></button><div class="faq-a">Лагерь «Маяк» на побережье Иссык-Куля (42.6°N, 76.9°E). Полная инфраструктура на территории: проживание, питание, охрана, медпункт 24/7, спасатели. Транспорт от Бишкека до лагеря включён в стоимость.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[03]</span>Это безопасно?</span><span class="faq-arr">+</span></button><div class="faq-a">Многоуровневая безопасность: охрана 24/7, медпункт с врачом и медсестрой круглосуточно, спасатели на воде во время купания. На каждые 10 юнитов — 1 вожатый. Сопровождение в пути от Бишкека до лагеря и обратно. Личная страховка на каждого юнита.</div></div>
-    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[04]</span>Что входит в стоимость 19 998 сом?</span><span class="faq-arr">+</span></button><div class="faq-a">10 дней в лагере «Маяк», проживание в комнате на 10 юнитов, 5-разовое питание, все 5 миссий и встречи со спикерами, фирменная футболка АПГРЕЙД 2026, медаль и именной сертификат, личная страховка, транспорт Бишкек ⇄ Маяк, охрана и медпункт 24/7. Никаких доплат.</div></div>
+    <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[04]</span>Что входит в стоимость 19 998 сом?</span><span class="faq-arr">+</span></button><div class="faq-a">10 дней в лагере «Маяк», проживание в комнате на 10 юнитов, 4-разовое питание, все 5 миссий и встречи со спикерами, фирменная футболка АПГРЕЙД 2026, медаль и именной сертификат, личная страховка, транспорт Бишкек ⇄ Маяк, охрана и медпункт 24/7. Никаких доплат.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[05]</span>Есть ли страховка?</span><span class="faq-arr">+</span></button><div class="faq-a">Да. На каждого юнита оформляется индивидуальная медицинская страховка на весь период потока. Этого нет ни у одного другого детского лагеря в Кыргызстане. Это уникальное преимущество и гарантия для родителей.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[06]</span>Как работает рассрочка?</span><span class="faq-arr">+</span></button><div class="faq-a">Оплата только через MBank: 3 333 сом × 6 месяцев = 19 998 сом. Без процентов. Регистрация сейчас — лагерь летом 2026. Удобно для родителей: не нужно платить всю сумму сразу.</div></div>
     <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)"><span><span class="qn">[07]</span>Как определяются 3 чемпиона?</span><span class="faq-arr">+</span></button><div class="faq-a">Каждое испытание и миссия дают очки (XP). По итогу 10 дней — лидеры рейтинга становятся чемпионами. 1 место — 100% скидка, 2 — 75%, 3 — 50%. Финал даёт двойные очки. Сертификаты можно передать другому участнику.</div></div>
@@ -1510,7 +1508,7 @@
     <div class="foot-top">
       <div>
         <div class="foot-logo">АП<em>ГРЕЙД</em> 2026</div>
-        <p class="foot-desc">Детский cinematic-лагерь нового поколения. Иссык-Куль, лагерь «Маяк». Возраст 12–15 лет.</p>
+        <p class="foot-desc">Развлекательный проект АПГРЕЙД. Иссык-Куль, лагерь «Маяк». Возраст 12–15 лет.</p>
         <span class="foot-stamp">// CERT.OFFICIAL · SUMMER.2026</span>
       </div>
       <div class="foot-col">
@@ -1529,16 +1527,16 @@
       </div>
       <div class="foot-col">
         <h5>Контакты</h5>
-        <a href="tel:+996700000000">+996 700 000 000</a>
+        <a href="tel:+996552180570">+996 552 180 570</a>
         <a href="mailto:hello@upgrade.kg">hello@upgrade.kg</a>
-        <a href="#">WhatsApp</a>
+        <a href="https://wa.me/996552180570" target="_blank" rel="noopener">WhatsApp</a>
         <a href="#">Telegram</a>
-        <a href="#">Instagram</a>
+        <a href="https://www.instagram.com/apgrade_kg/" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
     <div class="foot-bot">
       <span>© 2026 АПГРЕЙД · ВСЕ ПРАВА ЗАЩИЩЕНЫ</span>
-      <span>// ИССЫК-КУЛЬ · ЛАГЕРЬ МАЯК · КЫРГЫЗСТАН</span>
+      <span>// ИССЫК-КУЛЬ / АПГРЕЙД / КЫРГЫЗСТАН</span>
       <span>SYSTEM v.26.07</span>
     </div>
   </div>
@@ -1717,7 +1715,7 @@ async function loadStreamsGrid(){
           <div class="d">${fmtStreamDate(s.date_start, s.date_end)}</div>
           <div class="meta">
             <span class="avail ${hasSpots?'open':'full'}"><span class="dot"></span>${hasSpots?'ЕСТЬ МЕСТА':'МЕСТ НЕТ'}</span>
-            <strong>👦${s.boys.free} 👧${s.girls.free}</strong>
+            <strong><span class="gi">👦</span>${s.boys.free} <span class="gi">👧</span>${s.girls.free}</strong>
           </div>
         </div>`;
     }).join('');
