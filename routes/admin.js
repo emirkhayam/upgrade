@@ -377,7 +377,7 @@ router.get('/media', auth, (req, res) => {
 });
 
 router.post('/media', auth, uploadMedia.single('file'), (req, res) => {
-  const { type, title, category, url, sort_order, is_active } = req.body;
+  const { type, title, category, url, format, sort_order, is_active } = req.body;
   let fileUrl = url || '';
   let thumbnail = '';
   if (req.file) {
@@ -385,15 +385,15 @@ router.post('/media', auth, uploadMedia.single('file'), (req, res) => {
     if (req.file.mimetype.startsWith('image/')) thumbnail = fileUrl;
   }
   const result = db.prepare(
-    'INSERT INTO media (type, title, category, url, thumbnail, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  ).run(type || 'photo', title || '', category || '', fileUrl, thumbnail, parseInt(sort_order) || 0, is_active !== undefined ? parseInt(is_active) : 1);
+    'INSERT INTO media (type, title, category, url, thumbnail, format, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(type || 'photo', title || '', category || '', fileUrl, thumbnail, format === 'portrait' ? 'portrait' : 'landscape', parseInt(sort_order) || 0, is_active !== undefined ? parseInt(is_active) : 1);
   res.status(201).json({ id: result.lastInsertRowid });
 });
 
 router.patch('/media/:id', auth, uploadMedia.single('file'), (req, res) => {
   const item = db.prepare('SELECT * FROM media WHERE id = ?').get(req.params.id);
   if (!item) return res.status(404).json({ error: 'Медиа не найдено' });
-  const { type, title, category, url, sort_order, is_active } = req.body;
+  const { type, title, category, url, format, sort_order, is_active } = req.body;
   let fileUrl = url ?? item.url;
   let thumbnail = item.thumbnail;
   if (req.file) {
@@ -401,10 +401,11 @@ router.patch('/media/:id', auth, uploadMedia.single('file'), (req, res) => {
     if (req.file.mimetype.startsWith('image/')) thumbnail = fileUrl;
   }
   db.prepare(
-    'UPDATE media SET type=?, title=?, category=?, url=?, thumbnail=?, sort_order=?, is_active=? WHERE id=?'
+    'UPDATE media SET type=?, title=?, category=?, url=?, thumbnail=?, format=?, sort_order=?, is_active=? WHERE id=?'
   ).run(
     type ?? item.type, title ?? item.title, category ?? item.category,
-    fileUrl, thumbnail, sort_order !== undefined ? parseInt(sort_order) : item.sort_order,
+    fileUrl, thumbnail, (format === 'portrait' || format === 'landscape') ? format : item.format,
+    sort_order !== undefined ? parseInt(sort_order) : item.sort_order,
     is_active !== undefined ? parseInt(is_active) : item.is_active, req.params.id
   );
   res.json({ ok: true });

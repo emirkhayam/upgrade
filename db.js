@@ -66,6 +66,7 @@ db.exec(`
     category   TEXT DEFAULT '',
     url        TEXT DEFAULT '',
     thumbnail  TEXT DEFAULT '',
+    format     TEXT DEFAULT 'landscape',
     sort_order INTEGER DEFAULT 0,
     is_active  INTEGER DEFAULT 1,
     created_at TEXT DEFAULT (datetime('now'))
@@ -128,6 +129,17 @@ for (const [col, def] of speakerMigrations) {
   } catch {
     db.exec(`ALTER TABLE speakers ADD COLUMN ${col} ${def}`);
     console.log(`Migration: added ${col} column to speakers`);
+  }
+}
+
+// Migrations: add missing columns to media (формат карточки галереи: portrait 9:16 / landscape 4:3)
+const mediaMigrations = [['format', "TEXT DEFAULT 'landscape'"]];
+for (const [col, def] of mediaMigrations) {
+  try {
+    db.prepare(`SELECT ${col} FROM media LIMIT 1`).get();
+  } catch {
+    db.exec(`ALTER TABLE media ADD COLUMN ${col} ${def}`);
+    console.log(`Migration: added ${col} column to media`);
   }
 }
 

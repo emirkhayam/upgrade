@@ -253,9 +253,12 @@
 }
 .gal-card:hover{transform:translateY(-4px);border-color:var(--orange)}
 .gal-card img{
-  width:100%;display:block;
+  width:100%;display:block;object-fit:cover;
   filter:saturate(.85);transition:filter .3s,transform .6s;
 }
+/* Форматы карточек: вертикальная 9:16 / горизонтальная 4:3 */
+.gal-card.portrait img{aspect-ratio:9/16}
+.gal-card.landscape img{aspect-ratio:4/3}
 .gal-card:hover img{filter:saturate(1);transform:scale(1.04)}
 .gal-card::after{
   content:'';position:absolute;inset:0;pointer-events:none;
@@ -996,7 +999,7 @@ fetch('/api/admin/public/media').then(r=>r.json()).then(items=>{
   const grid=document.getElementById('galleryGrid');
   if(!grid||!items.length) return;
   grid.innerHTML=items.map(m=>`
-    <div class="gal-card">
+    <div class="gal-card ${m.format==='portrait'?'portrait':'landscape'}">
       ${m.type==='video'?`<span class="video-tag">▶ VIDEO</span>`:''}
       <img src="${m.url||m.thumbnail||''}" alt="${m.title||''}">
       ${m.type==='video'?`<div class="play-icon">▶</div>`:''}

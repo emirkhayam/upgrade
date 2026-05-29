@@ -437,6 +437,7 @@ tr:hover{background:rgba(255,106,31,.03)}
     <div class="stream-cards" id="mediaList"></div>
 
     <h3 style="margin:24px 0 16px">Добавить медиа</h3>
+    <p style="color:#7d8694;font-size:13px;margin-bottom:16px;line-height:1.5">📐 <strong style="color:#e8ecf2">Формат картинки важен:</strong> выбери «Вертикальная (9:16)» для телефонных/сторис-фото или «Горизонтальная (4:3)» для обычных. Рекомендуем сделать <strong style="color:#ff6a1f">2 вертикальные (9:16)</strong> карточки как акцент, остальные — горизонтальные (4:3). Картинка обрежется под выбранный формат.</p>
     <input type="hidden" id="medEditId" value="">
     <div style="display:flex;gap:24px;flex-wrap:wrap">
       <div>
@@ -446,6 +447,13 @@ tr:hover{background:rgba(255,106,31,.03)}
         <input type="file" id="medFile" accept="image/*,video/*" style="margin-top:12px" onchange="previewSelectedFile(this,'medPreview')">
       </div>
       <div class="form-grid" style="max-width:500px;align-content:start">
+        <div>
+          <label>Формат карточки</label>
+          <select id="medFormat" style="width:100%;padding:10px;background:#05060a;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8ecf2;font-size:14px">
+            <option value="landscape">🖼 Горизонтальная (4:3)</option>
+            <option value="portrait">📱 Вертикальная (9:16)</option>
+          </select>
+        </div>
         <div>
           <label>Тип</label>
           <select id="medType" style="width:100%;padding:10px;background:#05060a;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8ecf2;font-size:14px">
@@ -1078,13 +1086,12 @@ async function loadMedia() {
       ? '<p style="color:#7d8694;font-size:13px">Медиа пока не добавлено</p>'
       : items.map(m => `
       <div class="entity-card">
-        ${m.type === 'photo' && m.url ? `<img src="${m.url}" class="ec-photo">` :
-          m.thumbnail ? `<img src="${m.thumbnail}" class="ec-photo">` :
+        ${(m.url || m.thumbnail) ? `<img src="${m.url || m.thumbnail}" class="ec-photo">` :
           `<div class="ec-placeholder">${m.type === 'video' ? '&#9654;' : '&#128247;'}</div>`}
         <div class="ec-body">
           <div class="ec-info">
             <div class="ec-name">${m.title || 'Без названия'}</div>
-            <div class="ec-meta">${m.type === 'video' ? 'Видео' : 'Фото'} ${m.category ? '· ' + m.category : ''}</div>
+            <div class="ec-meta">${m.format === 'portrait' ? '📱 9:16' : '🖼 4:3'} · ${m.type === 'video' ? 'Видео' : 'Фото'}${m.category ? ' · ' + m.category : ''}</div>
             ${m.url && m.type === 'video' ? `<div class="ec-meta" style="margin-top:2px;word-break:break-all">${m.url.substring(0, 60)}</div>` : ''}
           </div>
           <div class="ec-footer">
@@ -1106,6 +1113,7 @@ async function editMedia(id) {
   const m = items.find(x => x.id === id);
   if (!m) return;
   document.getElementById('medEditId').value = m.id;
+  document.getElementById('medFormat').value = m.format === 'portrait' ? 'portrait' : 'landscape';
   document.getElementById('medType').value = m.type;
   document.getElementById('medTitle').value = m.title || '';
   document.getElementById('medCategory').value = m.category || '';
@@ -1121,6 +1129,7 @@ async function editMedia(id) {
 
 function cancelMedEdit() {
   document.getElementById('medEditId').value = '';
+  document.getElementById('medFormat').value = 'landscape';
   document.getElementById('medType').value = 'photo';
   document.getElementById('medTitle').value = '';
   document.getElementById('medCategory').value = '';
@@ -1135,6 +1144,7 @@ async function saveMedia() {
   const editId = document.getElementById('medEditId').value;
   const fd = new FormData();
   fd.append('type', document.getElementById('medType').value);
+  fd.append('format', document.getElementById('medFormat').value);
   fd.append('title', document.getElementById('medTitle').value);
   fd.append('category', document.getElementById('medCategory').value);
   fd.append('sort_order', document.getElementById('medOrder').value);
