@@ -282,6 +282,7 @@ tr:hover{background:rgba(255,106,31,.03)}
     <button class="tab" onclick="switchTab('qr')">QR оплаты</button>
     <button class="tab" onclick="switchTab('champion')">Чемпион</button>
     <button class="tab" onclick="switchTab('accom')">Корпуса</button>
+    <button class="tab" onclick="switchTab('contacts')">Контакты</button>
     <button class="tab" onclick="switchTab('speakers')">Спикеры</button>
     <button class="tab" onclick="switchTab('stars')">Звёзды</button>
     <button class="tab" onclick="switchTab('media')">Медиа</button>
@@ -411,6 +412,22 @@ tr:hover{background:rgba(255,106,31,.03)}
       </div>
     </div>
     <button onclick="saveAccom()" style="margin-top:22px">Сохранить корпуса</button>
+  </div>
+
+  <!-- CONTACTS / СОЦСЕТИ -->
+  <div class="panel" id="panel-contacts">
+    <h3 style="margin-bottom:8px">Контакты и соцсети</h3>
+    <p style="font-size:13px;color:#7d8694;margin-bottom:20px">Номер WhatsApp и ссылки на соцсети. Используются в футере сайта и в кнопке WhatsApp в чат-помощнике. Пустые поля на сайте не показываются.</p>
+    <div class="form-grid" style="max-width:560px;align-content:start">
+      <div class="form-full"><label>WhatsApp — номер (только цифры, с кодом страны)</label><input id="ctWhatsapp" placeholder="996552180570"></div>
+      <div class="form-full"><label>Телефон (для кнопки «позвонить»)</label><input id="ctPhone" placeholder="+996 552 180 570"></div>
+      <div class="form-full"><label>Email</label><input id="ctEmail" placeholder="apg.kg2026@gmail.com"></div>
+      <div class="form-full"><label>Instagram — ссылка</label><input id="ctInstagram" placeholder="https://www.instagram.com/apgrade_kg/"></div>
+      <div class="form-full"><label>Telegram — ссылка</label><input id="ctTelegram" placeholder="https://t.me/apgrade_kg"></div>
+      <div class="form-full"><label>TikTok — ссылка</label><input id="ctTiktok" placeholder="https://www.tiktok.com/@apgrade_kg"></div>
+      <div class="form-full"><label>YouTube — ссылка</label><input id="ctYoutube" placeholder="https://youtube.com/@apgrade_kg"></div>
+      <button onclick="saveContacts()" style="margin-top:6px">Сохранить контакты</button>
+    </div>
   </div>
 
   <!-- SPEAKERS -->
@@ -628,6 +645,7 @@ function switchTab(name) {
   if (name === 'bookings') loadBookings();
   if (name === 'champion') loadChampion();
   if (name === 'accom') loadAccom();
+  if (name === 'contacts') loadContacts();
   if (name === 'speakers') loadSpeakers();
   if (name === 'stars') loadStars();
   if (name === 'media') loadMedia();
@@ -978,6 +996,41 @@ async function saveAccom() {
   if (!r.ok) { alert('Ошибка сохранения'); return; }
   await loadAccom();
   alert('Корпуса сохранены!');
+}
+
+// ==================== CONTACTS / СОЦСЕТИ ====================
+async function loadContacts() {
+  try {
+    const r = await fetch(API + '/api/admin/contacts');
+    const d = await r.json();
+    if (!d) return;
+    document.getElementById('ctWhatsapp').value  = d.whatsapp  || '';
+    document.getElementById('ctPhone').value     = d.phone     || '';
+    document.getElementById('ctEmail').value     = d.email     || '';
+    document.getElementById('ctInstagram').value = d.instagram || '';
+    document.getElementById('ctTelegram').value  = d.telegram  || '';
+    document.getElementById('ctTiktok').value    = d.tiktok    || '';
+    document.getElementById('ctYoutube').value   = d.youtube   || '';
+  } catch(e) { console.error(e); }
+}
+
+async function saveContacts() {
+  const payload = {
+    whatsapp:  document.getElementById('ctWhatsapp').value,
+    phone:     document.getElementById('ctPhone').value,
+    email:     document.getElementById('ctEmail').value,
+    instagram: document.getElementById('ctInstagram').value,
+    telegram:  document.getElementById('ctTelegram').value,
+    tiktok:    document.getElementById('ctTiktok').value,
+    youtube:   document.getElementById('ctYoutube').value
+  };
+  const r = await fetch(API + '/api/admin/contacts', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!r.ok) { alert('Ошибка сохранения'); return; }
+  alert('Контакты сохранены!');
 }
 
 // ==================== SPEAKERS ====================

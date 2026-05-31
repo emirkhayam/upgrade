@@ -88,6 +88,9 @@
     font-size:12px;cursor:pointer;
   }
   .apg-action:hover{border-color:#ff6a1f;color:#ffb27d}
+  a.apg-action{text-decoration:none}
+  .apg-wa-quick{background:#25d366;border-color:#25d366;color:#fff;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+  .apg-wa-quick:hover{background:#1fb855;border-color:#1fb855;color:#fff}
 
   .apg-form{display:flex;gap:8px;padding:12px;background:#0a0c14;border-top:1px solid rgba(255,255,255,.08)}
   .apg-form input{flex:1;padding:11px 13px;background:#05060a;border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#e8ecf2;font-size:14px}
@@ -131,6 +134,10 @@
       '</div>' +
       '<div class="apg-body" id="apg-chat-body"></div>' +
       '<div class="apg-actions" id="apg-chat-actions">' +
+        '<a class="apg-action apg-wa-quick" id="apg-wa-quick" href="https://wa.me/' + WA + '" target="_blank" rel="noopener">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.8.8.8-2.8-.2-.3A8 8 0 1 1 12 20zm4.4-5.9c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.1-.5 0a6.5 6.5 0 0 1-1.9-1.2 7.3 7.3 0 0 1-1.4-1.7c-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c2 .8 2 .5 2.4.5a2.5 2.5 0 0 0 1.7-1.2 2 2 0 0 0 .1-1.2c-.1-.1-.2-.2-.4-.3z"/></svg>' +
+          'Написать в WhatsApp' +
+        '</a>' +
         '<button class="apg-action" data-text="Какие есть потоки?">Потоки</button>' +
         '<button class="apg-action" data-text="Сколько стоит лагерь?">Цена</button>' +
         '<button class="apg-action" data-text="Хочу забронировать место">Бронь</button>' +
@@ -339,4 +346,13 @@
     note.textContent = 'Обычно отвечаю сразу';
     body.appendChild(note);
   }
+
+  // Номер WhatsApp из админки (если задан) — перекрывает значение из конфига
+  fetch('/api/admin/contacts').then(function (r) { return r.json(); }).then(function (c) {
+    if (c && c.whatsapp) {
+      WA = String(c.whatsapp).replace(/[^\d]/g, '');
+      var quick = document.getElementById('apg-wa-quick');
+      if (quick) quick.href = 'https://wa.me/' + WA;
+    }
+  }).catch(function () {});
 })();

@@ -265,6 +265,38 @@ router.post('/accommodations', auth, uploadAccom.fields([
   res.json(data);
 });
 
+// ==================== CONTACTS / СОЦСЕТИ ====================
+// Значения по умолчанию = то, что сейчас захардкожено на сайте (чтобы ничего не пропало).
+const DEFAULT_CONTACTS = {
+  whatsapp: '996552180570',
+  phone: '+996 552 180 570',
+  email: 'apg.kg2026@gmail.com',
+  instagram: 'https://www.instagram.com/apgrade_kg/',
+  telegram: '',
+  tiktok: '',
+  youtube: ''
+};
+
+router.get('/contacts', (req, res) => {
+  const row = db.prepare("SELECT value FROM settings WHERE key = 'contacts'").get();
+  res.json(row ? { ...DEFAULT_CONTACTS, ...JSON.parse(row.value) } : DEFAULT_CONTACTS);
+});
+
+router.post('/contacts', auth, (req, res) => {
+  const b = req.body || {};
+  const data = {
+    whatsapp:  (b.whatsapp  ?? '').toString().trim(),
+    phone:     (b.phone     ?? '').toString().trim(),
+    email:     (b.email     ?? '').toString().trim(),
+    instagram: (b.instagram ?? '').toString().trim(),
+    telegram:  (b.telegram  ?? '').toString().trim(),
+    tiktok:    (b.tiktok    ?? '').toString().trim(),
+    youtube:   (b.youtube   ?? '').toString().trim()
+  };
+  db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('contacts', ?)").run(JSON.stringify(data));
+  res.json(data);
+});
+
 // ==================== PUBLIC API (no auth) ====================
 
 router.get('/public/speakers', (req, res) => {
