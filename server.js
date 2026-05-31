@@ -14,6 +14,8 @@ app.use(express.json());
 // Чистые адреса: старый /system.html → /system (301), /index.html → /
 app.get(/\.html$/, (req, res, next) => {
   if (!['GET', 'HEAD'].includes(req.method)) return next();
+  // Файл подтверждения Google Search Console — отдаём как есть, без редиректа
+  if (/^\/google[0-9a-f]+\.html$/.test(req.path)) return next();
   let clean = req.path.replace(/\.html$/, '');
   if (clean.endsWith('/index')) clean = clean.slice(0, -'/index'.length) || '/';
   const query = req.originalUrl.slice(req.path.length); // сохранить ?...
