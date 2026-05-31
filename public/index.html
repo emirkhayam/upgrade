@@ -872,20 +872,20 @@
 <!-- NAV -->
 <nav class="main-nav" id="mainNav">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo"><span class="dot"></span>АП<em>ГРЕЙД</em></a>
+    <a href="/" class="nav-logo"><span class="dot"></span>АП<em>ГРЕЙД</em></a>
     <ul class="nav-links">
-      <li><a href="index.html" class="active">Главная</a></li>
-      <li><a href="system.html">Система</a></li>
+      <li><a href="/" class="active">Главная</a></li>
+      <li><a href="/system">Система</a></li>
     </ul>
-    <a href="system.html#register" class="nav-cta">Войти в систему</a>
+    <a href="/system#register" class="nav-cta">Войти в систему</a>
     <button class="mob-menu" onclick="document.getElementById('mobOverlay').classList.add('open')">MENU</button>
   </div>
 </nav>
 <div class="mob-overlay" id="mobOverlay">
   <button class="mob-close" onclick="this.parentElement.classList.remove('open')">CLOSE</button>
-  <a href="index.html" class="active">Главная</a>
-  <a href="system.html">Система</a>
-  <a href="system.html#register" class="mob-cta">Войти в систему</a>
+  <a href="/" class="active">Главная</a>
+  <a href="/system">Система</a>
+  <a href="/system#register" class="mob-cta">Войти в систему</a>
 </div>
 
 <!-- Global particles -->
@@ -913,7 +913,7 @@
     <div class="hero-subtag">// 10 ДНЕЙ, КОТОРЫЕ МЕНЯЮТ ТЕБЯ · ИССЫК-КУЛЬ · 2026 · ДЕТЯМ 12–15 ЛЕТ</div>
 
     <div class="hero-actions">
-      <a href="system.html#register" class="btn btn-primary">Войти в систему<span class="arr">→</span></a>
+      <a href="/system#register" class="btn btn-primary">Войти в систему<span class="arr">→</span></a>
       <a href="#about" class="btn btn-ghost">Узнать больше<span class="arr">↓</span></a>
     </div>
 
@@ -943,7 +943,7 @@
       <p class="reveal"><strong>АПГРЕЙД — это центр перезагрузки.</strong> 10 дней. 5 миссий. Игровая прокачка реальных навыков. Подросток приезжает гостем — уезжает версией себя на следующем уровне.</p>
       <p class="reveal">Олимпийские чемпионы, IT-предприниматели, учёные, актёры — вживую, в одном пространстве на берегу Иссык-Куля. Личная страховка на каждого юнита. Сделано в Кыргызстане.</p>
       <div style="margin-top:32px" class="reveal">
-        <a href="system.html" class="btn btn-ghost">Узнать программу<span class="arr">→</span></a>
+        <a href="/system" class="btn btn-ghost">Узнать программу<span class="arr">→</span></a>
       </div>
     </div>
     <div class="intro-collage reveal">
@@ -951,7 +951,7 @@
       <img class="img-2" src="img/medal.png" alt="Медаль АПГРЕЙД">
     </div>
     <div class="intro-mob-btn reveal" style="margin-top:28px;display:none">
-      <a href="system.html" class="btn btn-ghost">Узнать программу<span class="arr">→</span></a>
+      <a href="/system" class="btn btn-ghost">Узнать программу<span class="arr">→</span></a>
     </div>
   </div>
 </section>
@@ -1133,8 +1133,8 @@
     <h2 class="reveal">Готов стать<br>частью <em>системы?</em></h2>
     <p class="reveal">10 дней. 5 миссий. Бесконечно много возможностей. Возраст 12–15 лет. Лето 2026 · Иссык-Куль · Лагерь «Маяк».</p>
     <div class="final-cta-actions reveal">
-      <a href="system.html#register" class="btn btn-primary">Подать заявку<span class="arr">→</span></a>
-      <a href="system.html" class="btn btn-ghost">Программа<span class="arr">→</span></a>
+      <a href="/system#register" class="btn btn-primary">Подать заявку<span class="arr">→</span></a>
+      <a href="/system" class="btn btn-ghost">Программа<span class="arr">→</span></a>
     </div>
 
     <div class="final-cta-meta reveal">
@@ -1157,16 +1157,16 @@
       </div>
       <div class="foot-col">
         <h5>Сайт</h5>
-        <a href="index.html">Главная</a>
-        <a href="system.html">Система</a>
-        <a href="system.html#register">Записаться</a>
+        <a href="/">Главная</a>
+        <a href="/system">Система</a>
+        <a href="/system#register">Записаться</a>
       </div>
       <div class="foot-col">
         <h5>Программа</h5>
-        <a href="index.html#streams">Потоки</a>
-        <a href="system.html#missions">5 миссий</a>
-        <a href="system.html#prizes">Награды</a>
-        <a href="system.html#faq">FAQ</a>
+        <a href="/#streams">Потоки</a>
+        <a href="/system#missions">5 миссий</a>
+        <a href="/system#prizes">Награды</a>
+        <a href="/system#faq">FAQ</a>
       </div>
       <div class="foot-col">
         <h5>Контакты</h5>
@@ -1267,7 +1267,7 @@ fetch('/api/admin/public/speakers').then(r=>r.json()).then(list=>{
             <div class="g boys"><span class="gi">${PERSON}</span><span class="gtxt"><span class="gn${s.boys.free?'':' zero'}">${s.boys.free}</span><span class="gx">свободно</span></span></div>
             <div class="g girls"><span class="gi">${PERSON}</span><span class="gtxt"><span class="gn${s.girls.free?'':' zero'}">${s.girls.free}</span><span class="gx">свободно</span></span></div>
           </div>
-          <a class="st-cta" href="system.html#register">${full?'МЕСТ НЕТ':'ОФОРМИТЬ'}</a>
+          <a class="st-cta" href="/system#register">${full?'МЕСТ НЕТ':'ОФОРМИТЬ'}</a>
           <div class="st-chev">${CHEV}${CHEV}${CHEV}</div>
         </div>`;
       }).join('');

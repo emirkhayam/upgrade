@@ -11,8 +11,17 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Чистые адреса: старый /system.html → /system (301), /index.html → /
+app.get(/\.html$/, (req, res, next) => {
+  if (!['GET', 'HEAD'].includes(req.method)) return next();
+  let clean = req.path.replace(/\.html$/, '');
+  if (clean.endsWith('/index')) clean = clean.slice(0, -'/index'.length) || '/';
+  const query = req.originalUrl.slice(req.path.length); // сохранить ?...
+  res.redirect(301, clean + query);
+});
+
+// Static files (extensions: html → /system отдаёт system.html)
+app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 app.use('/uploads', express.static(uploadsDir));
 
 // API routes
