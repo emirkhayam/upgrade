@@ -21,6 +21,7 @@ app.use('/api/streams-status', require('./routes/streams-status'));
 app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/bot', require('./routes/bot'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/widget-chat', require('./routes/widget-chat'));
 
 // Health check
 app.get('/api/ping', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
