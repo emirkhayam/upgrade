@@ -113,7 +113,17 @@
   var root = document.createElement('div');
   root.id = 'apg-chat';
   root.innerHTML =
-    '<button id="apg-chat-btn" aria-label="Открыть чат"><span class="ic">💬</span><span class="x">✕</span></button>' +
+    '<button id="apg-chat-btn" aria-label="Открыть чат">' +
+      '<svg class="ic" width="30" height="30" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill="currentColor"/>' +
+        '<circle cx="7.5" cy="9.5" r="1.6" fill="#ff6a1f"/>' +
+        '<circle cx="12" cy="9.5" r="1.6" fill="#ff6a1f"/>' +
+        '<circle cx="16.5" cy="9.5" r="1.6" fill="#ff6a1f"/>' +
+      '</svg>' +
+      '<svg class="x" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+        '<path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>' +
+      '</svg>' +
+    '</button>' +
     '<div id="apg-chat-panel" role="dialog" aria-label="Чат-помощник">' +
       '<div class="apg-head">' +
         '<div class="apg-title"><span class="apg-dot"></span><span>' + escapeHtml(TITLE) + '<small>' + escapeHtml(SUBTITLE) + '</small></span></div>' +
