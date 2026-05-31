@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="apg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffaa55"/>
+      <stop offset="1" stop-color="#ff6a1f"/>
+    </linearGradient>
+  </defs>
+  <!-- тёмный фон в стиле сайта -->
+  <rect width="64" height="64" rx="14" fill="#0a0c14"/>
+  <rect x="1.25" y="1.25" width="61.5" height="61.5" rx="12.75" fill="none" stroke="#ff6a1f" stroke-opacity="0.28" stroke-width="1.5"/>
+  <!-- стрелка вверх (upgrade / прокачка) -->
+  <path d="M32 7 L43 19 H37 V25 H27 V19 H21 Z" fill="url(#apg)"/>
+  <!-- монограмма АП -->
+  <text x="32" y="52" text-anchor="middle"
+        font-family="'Segoe UI', Tahoma, Arial, sans-serif"
+        font-weight="800" font-size="27" letter-spacing="-1.5"
+        fill="url(#apg)">АП</text>
+</svg>
