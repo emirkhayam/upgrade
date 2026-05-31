@@ -13,7 +13,7 @@ const router = Router();
 
 // Ensure all upload directories exist on the persistent volume (created at startup so
 // they're present even on a fresh volume / new server).
-['speakers', 'stars', 'media', 'qr', 'champion', 'news'].forEach(dir => {
+['speakers', 'stars', 'media', 'qr', 'champion', 'news', 'accom'].forEach(dir => {
   fs.mkdirSync(path.join(uploadsDir, dir), { recursive: true });
 });
 
@@ -219,6 +219,49 @@ router.post('/champion', auth, uploadChamp.single('photo'), (req, res) => {
   };
 
   db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('champion', ?)").run(JSON.stringify(data));
+  res.json(data);
+});
+
+// ==================== ACCOMMODATIONS (корпуса / лагерь «Маяк») ====================
+const accomStorage = multer.diskStorage({
+  destination: path.join(uploadsDir, 'accom'),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    // Unique name per upload so a new photo isn't masked by the browser/CDN cache of the old file.
+    cb(null, file.fieldname + '-' + Date.now() + ext);
+  }
+});
+const uploadAccom = multer({
+  storage: accomStorage,
+  limits: { fileSize: 15 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(new Error('Только изображения'));
+  }
+});
+
+router.get('/accommodations', (req, res) => {
+  const row = db.prepare("SELECT value FROM settings WHERE key = 'accommodations'").get();
+  res.json(row ? JSON.parse(row.value) : {});
+});
+
+router.post('/accommodations', auth, uploadAccom.fields([
+  { name: 'camp', maxCount: 1 },
+  { name: 'boys', maxCount: 1 },
+  { name: 'girls', maxCount: 1 }
+]), (req, res) => {
+  const existing = db.prepare("SELECT value FROM settings WHERE key = 'accommodations'").get();
+  const current = existing ? JSON.parse(existing.value) : {};
+  const files = req.files || {};
+  const pick = (field, cur) => files[field] ? '/uploads/accom/' + files[field][0].filename : (cur || '');
+
+  const data = {
+    camp:  pick('camp',  current.camp),
+    boys:  pick('boys',  current.boys),
+    girls: pick('girls', current.girls)
+  };
+
+  db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('accommodations', ?)").run(JSON.stringify(data));
   res.json(data);
 });
 

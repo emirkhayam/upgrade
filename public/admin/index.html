@@ -281,6 +281,7 @@ tr:hover{background:rgba(255,106,31,.03)}
     <button class="tab" onclick="switchTab('streams')">Потоки</button>
     <button class="tab" onclick="switchTab('qr')">QR оплаты</button>
     <button class="tab" onclick="switchTab('champion')">Чемпион</button>
+    <button class="tab" onclick="switchTab('accom')">Корпуса</button>
     <button class="tab" onclick="switchTab('speakers')">Спикеры</button>
     <button class="tab" onclick="switchTab('stars')">Звёзды</button>
     <button class="tab" onclick="switchTab('media')">Медиа</button>
@@ -377,6 +378,39 @@ tr:hover{background:rgba(255,106,31,.03)}
         <button onclick="saveChampion()">Сохранить чемпиона</button>
       </div>
     </div>
+  </div>
+
+  <!-- ACCOMMODATIONS -->
+  <div class="panel" id="panel-accom">
+    <h3 style="margin-bottom:8px">Корпуса и лагерь «Маяк»</h3>
+    <p style="font-size:13px;color:#7d8694;margin-bottom:20px">Фото в блоке «Для проекта АПГРЕЙД выделено 2 корпуса лагеря Маяк» на странице Система. Загрузите нужные фото и нажмите «Сохранить». Можно менять по одному — остальные останутся прежними.</p>
+    <div style="display:flex;gap:28px;flex-wrap:wrap">
+      <div>
+        <div class="qr-preview" id="accomCampPreview" style="width:280px;height:180px;border-radius:14px">
+          <span class="placeholder">Фото не загружено</span>
+        </div>
+        <div style="font-size:13px;color:#e8ecf2;margin-top:10px;font-weight:600">Лагерь «Маяк»</div>
+        <div style="font-size:12px;color:#7d8694">большое фото сверху</div>
+        <input type="file" id="accomCampFile" accept="image/*" style="margin-top:8px" onchange="previewSelectedFile(this,'accomCampPreview')">
+      </div>
+      <div>
+        <div class="qr-preview" id="accomBoysPreview" style="width:210px;height:180px;border-radius:14px">
+          <span class="placeholder">Фото не загружено</span>
+        </div>
+        <div style="font-size:13px;color:#e8ecf2;margin-top:10px;font-weight:600">Корпус мальчиков</div>
+        <div style="font-size:12px;color:#7d8694">CORPUS.01</div>
+        <input type="file" id="accomBoysFile" accept="image/*" style="margin-top:8px" onchange="previewSelectedFile(this,'accomBoysPreview')">
+      </div>
+      <div>
+        <div class="qr-preview" id="accomGirlsPreview" style="width:210px;height:180px;border-radius:14px">
+          <span class="placeholder">Фото не загружено</span>
+        </div>
+        <div style="font-size:13px;color:#e8ecf2;margin-top:10px;font-weight:600">Корпус девочек</div>
+        <div style="font-size:12px;color:#7d8694">CORPUS.02</div>
+        <input type="file" id="accomGirlsFile" accept="image/*" style="margin-top:8px" onchange="previewSelectedFile(this,'accomGirlsPreview')">
+      </div>
+    </div>
+    <button onclick="saveAccom()" style="margin-top:22px">Сохранить корпуса</button>
   </div>
 
   <!-- SPEAKERS -->
@@ -593,6 +627,7 @@ function switchTab(name) {
   if (name === 'streams') loadStreams();
   if (name === 'bookings') loadBookings();
   if (name === 'champion') loadChampion();
+  if (name === 'accom') loadAccom();
   if (name === 'speakers') loadSpeakers();
   if (name === 'stars') loadStars();
   if (name === 'media') loadMedia();
@@ -907,6 +942,42 @@ async function saveChampion() {
     document.getElementById('champPreview').innerHTML = `<img src="${data.photo}" alt="Champion" style="width:100%;height:100%;object-fit:cover">`;
   }
   alert('Чемпион сохранён!');
+}
+
+// ==================== ACCOMMODATIONS (корпуса) ====================
+async function loadAccom() {
+  try {
+    const r = await fetch(API + '/api/admin/accommodations');
+    const data = await r.json();
+    if (!data) return;
+    const setPrev = (id, url) => {
+      if (url) document.getElementById(id).innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+    };
+    setPrev('accomCampPreview', data.camp);
+    setPrev('accomBoysPreview', data.boys);
+    setPrev('accomGirlsPreview', data.girls);
+  } catch(e) { console.error(e); }
+}
+
+async function saveAccom() {
+  const camp  = document.getElementById('accomCampFile').files[0];
+  const boys  = document.getElementById('accomBoysFile').files[0];
+  const girls = document.getElementById('accomGirlsFile').files[0];
+  if (!camp && !boys && !girls) { alert('Выберите хотя бы одно фото'); return; }
+
+  const fd = new FormData();
+  if (camp)  fd.append('camp', camp);
+  if (boys)  fd.append('boys', boys);
+  if (girls) fd.append('girls', girls);
+
+  const r = await fetch(API + '/api/admin/accommodations', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token },
+    body: fd
+  });
+  if (!r.ok) { alert('Ошибка сохранения'); return; }
+  await loadAccom();
+  alert('Корпуса сохранены!');
 }
 
 // ==================== SPEAKERS ====================

@@ -989,7 +989,7 @@ a.spk-row .spk-avatar{cursor:pointer}
   <div class="collapse-body">
   <div class="accom-main">
     <div class="accom-hero reveal">
-      <div class="ah-img"></div>
+      <div class="ah-img" id="accomCamp"></div>
       <i class="corner tl"></i><i class="corner br"></i>
       <div class="ah-info">
         <div>
@@ -1003,7 +1003,7 @@ a.spk-row .spk-avatar{cursor:pointer}
     </div>
     <div class="accom-side">
       <div class="accom-tile reveal">
-        <div class="at-img" style="background-image:url('https://images.unsplash.com/photo-1540541338287-41700207dee6?w=900&q=85')"></div>
+        <div class="at-img" id="accomBoys" style="background-image:url('https://images.unsplash.com/photo-1540541338287-41700207dee6?w=900&q=85')"></div>
         <div class="at-info">
           <div class="at-tag">// CORPUS.01</div>
           <div class="at-name">Корпус мальчиков</div>
@@ -1011,7 +1011,7 @@ a.spk-row .spk-avatar{cursor:pointer}
         </div>
       </div>
       <div class="accom-tile reveal">
-        <div class="at-img" style="background-image:url('https://images.unsplash.com/photo-1551776235-dde6d482980b?w=900&q=85')"></div>
+        <div class="at-img" id="accomGirls" style="background-image:url('https://images.unsplash.com/photo-1551776235-dde6d482980b?w=900&q=85')"></div>
         <div class="at-info">
           <div class="at-tag">// CORPUS.02</div>
           <div class="at-name">Корпус девочек</div>
@@ -1606,6 +1606,15 @@ async function loadStreamsGrid(){
 }
 loadStreamsGrid();
 setInterval(loadStreamsGrid, 60000);
+
+// Фото корпусов и лагеря «Маяк» — из админки
+fetch('/api/admin/accommodations').then(r=>r.json()).then(d=>{
+  if(!d) return;
+  const set = (id, url) => { if(url){ const el=document.getElementById(id); if(el) el.style.backgroundImage = `url('${url}')`; } };
+  set('accomCamp', d.camp);
+  set('accomBoys', d.boys);
+  set('accomGirls', d.girls);
+}).catch(()=>{});
 
 // Мобильный аккордеон — toggle секций
 function toggleCollapse(btn) {
