@@ -297,6 +297,57 @@ router.post('/contacts', auth, (req, res) => {
   res.json(data);
 });
 
+// ==================== ПРОГРАММА (блок «День за днём») ====================
+// Значения по умолчанию = то, что сейчас захардкожено на сайте (system.html),
+// чтобы при первом открытии админки программа уже была заполнена и ничего не пропало.
+const DEFAULT_PROGRAM = {
+  intro: '10 дней · 5 миссий по 2 дня · 1 финал. Каждый день — новые активности, прокачка навыка, командная работа, очки в общий рейтинг.',
+  days: [
+    { mission: 'M.01 · SPORT',    color: 'm1', num: '01', title: 'Заезд · Открытие', items: ['Заселение', 'Выдача формы', 'Знакомство', 'Вечер у костра'] },
+    { mission: 'M.01 · SPORT',    color: 'm1', num: '02', title: 'Спорт · Команды',  items: ['Эстафеты', 'Мастер-класс', 'Олимпийский чемпион', 'Турнир'] },
+    { mission: 'M.02 · SCIENCE',  color: 'm2', num: '03', title: 'Наука · Опыты',    items: ['Лекция учёного', 'Лаборатория', 'Эксперименты', 'Квест'] },
+    { mission: 'M.02 · SCIENCE',  color: 'm2', num: '04', title: 'Головоломки',      items: ['Дебаты', 'Стратегии', 'Игра-симулятор', 'Озеро · отдых'] },
+    { mission: 'M.03 · IT',       color: 'm3', num: '05', title: 'IT · Старт',       items: ['Лекция: Google/Meta', 'AI workshop', 'Киберспорт', 'Networking'] },
+    { mission: 'M.03 · IT',       color: 'm3', num: '06', title: 'Хакатон',          items: ['Команды по 5', '12 часов', 'Питч проектов', 'Жюри'] },
+    { mission: 'M.04 · CREATIVE', color: 'm4', num: '07', title: 'Творчество',       items: ['Видео-блогинг', 'Музыка', 'Дизайн', 'Актёрское'] },
+    { mission: 'M.04 · CREATIVE', color: 'm4', num: '08', title: 'Свой проект',      items: ['Команды', 'Производство', 'Показ', 'Голосование'] },
+    { mission: 'M.05 · FINAL',    color: 'm5', num: '09', title: 'Финал · Битва',    items: ['Финальные испытания', 'Все 4 миссии', 'Подсчёт очков', 'Прогон'] },
+    { mission: 'M.05 · FINAL',    color: 'm5', num: '10', title: 'Церемония',        items: ['Родительский день', 'Награждение', '3 чемпиона', '10 номинантов'] }
+  ]
+};
+
+const PROGRAM_COLORS = ['m1', 'm2', 'm3', 'm4', 'm5'];
+
+router.get('/program', (req, res) => {
+  const row = db.prepare("SELECT value FROM settings WHERE key = 'program'").get();
+  res.json(row ? JSON.parse(row.value) : DEFAULT_PROGRAM);
+});
+
+router.post('/program', auth, (req, res) => {
+  const b = req.body || {};
+  const str = (v) => (v ?? '').toString().trim();
+  const daysIn = Array.isArray(b.days) ? b.days : [];
+
+  const days = daysIn.map((d) => {
+    d = d || {};
+    const color = PROGRAM_COLORS.includes(d.color) ? d.color : 'm1';
+    const items = (Array.isArray(d.items) ? d.items : [])
+      .map(str)
+      .filter(Boolean);
+    return {
+      mission: str(d.mission),
+      color,
+      num: str(d.num),
+      title: str(d.title),
+      items
+    };
+  }).filter((d) => d.title || d.mission || d.items.length);
+
+  const data = { intro: str(b.intro), days };
+  db.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES ('program', ?)").run(JSON.stringify(data));
+  res.json(data);
+});
+
 // ==================== PUBLIC API (no auth) ====================
 
 router.get('/public/speakers', (req, res) => {

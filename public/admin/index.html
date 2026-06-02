@@ -279,6 +279,7 @@ tr:hover{background:rgba(255,106,31,.03)}
     <button class="tab active" onclick="switchTab('overview')">Обзор</button>
     <button class="tab" onclick="switchTab('bookings')">Заявки</button>
     <button class="tab" onclick="switchTab('streams')">Потоки</button>
+    <button class="tab" onclick="switchTab('program')">Программа</button>
     <button class="tab" onclick="switchTab('qr')">QR оплаты</button>
     <button class="tab" onclick="switchTab('champion')">Чемпион</button>
     <button class="tab" onclick="switchTab('accom')">Корпуса</button>
@@ -344,6 +345,23 @@ tr:hover{background:rgba(255,106,31,.03)}
       <div><label>Мест</label><input id="sCap" type="number" value="80"></div>
       <div></div>
       <button onclick="addStream()">Добавить поток</button>
+    </div>
+  </div>
+
+  <!-- PROGRAM (блок «День за днём» на сайте) -->
+  <div class="panel" id="panel-program">
+    <h3 style="margin-bottom:8px">Программа лагеря — «День за днём»</h3>
+    <p style="font-size:13px;color:#7d8694;margin-bottom:20px;line-height:1.5">Этот блок показывается на сайте в разделе «Как всё устроено». Одна программа для всех потоков. Активности в каждом дне — каждая с новой строки.</p>
+
+    <div class="form-grid" style="max-width:680px;align-content:start;margin-bottom:24px">
+      <div class="form-full"><label>Вступительный текст (под заголовком)</label><input id="prgIntro" placeholder="10 дней · 5 миссий по 2 дня · 1 финал…"></div>
+    </div>
+
+    <div id="prgDays"></div>
+
+    <div style="display:flex;gap:12px;margin-top:20px">
+      <button type="button" onclick="addDay()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:#e8ecf2">+ Добавить день</button>
+      <button type="button" onclick="saveProgram()">Сохранить программу</button>
     </div>
   </div>
 
@@ -642,6 +660,7 @@ function switchTab(name) {
   document.getElementById('panel-' + name).classList.add('active');
   if (name === 'overview') loadOverview();
   if (name === 'streams') loadStreams();
+  if (name === 'program') loadProgram();
   if (name === 'bookings') loadBookings();
   if (name === 'champion') loadChampion();
   if (name === 'accom') loadAccom();
@@ -1031,6 +1050,71 @@ async function saveContacts() {
   });
   if (!r.ok) { alert('Ошибка сохранения'); return; }
   alert('Контакты сохранены!');
+}
+
+// ==================== PROGRAM (День за днём) ====================
+const PRG_COLORS = [
+  { v: 'm1', label: 'Миссия 1 (спорт)' },
+  { v: 'm2', label: 'Миссия 2 (наука)' },
+  { v: 'm3', label: 'Миссия 3 (IT)' },
+  { v: 'm4', label: 'Миссия 4 (творчество)' },
+  { v: 'm5', label: 'Финал' }
+];
+
+function dayRowHtml(d) {
+  d = d || {};
+  const colorOpts = PRG_COLORS.map(c =>
+    `<option value="${c.v}"${(d.color || 'm1') === c.v ? ' selected' : ''}>${c.label}</option>`
+  ).join('');
+  const items = Array.isArray(d.items) ? d.items.join('\n') : '';
+  return `
+    <div class="prg-day" style="border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:16px;margin-bottom:14px">
+      <div class="form-grid" style="align-content:start">
+        <div><label>Номер дня</label><input class="prg-num" value="${esc(d.num)}" placeholder="01"></div>
+        <div><label>Миссия (подпись сверху)</label><input class="prg-mission" value="${esc(d.mission)}" placeholder="M.01 · SPORT"></div>
+        <div><label>Цвет миссии</label>
+          <select class="prg-color" style="width:100%;padding:10px;background:#05060a;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8ecf2;font-size:14px">${colorOpts}</select>
+        </div>
+        <div class="form-full"><label>Заголовок дня</label><input class="prg-title" value="${esc(d.title)}" placeholder="Заезд · Открытие"></div>
+        <div class="form-full"><label>Активности (каждая с новой строки)</label>
+          <textarea class="prg-items" rows="4" style="width:100%;padding:10px;background:#05060a;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#e8ecf2;font-size:14px;resize:vertical;font-family:inherit" placeholder="Заселение&#10;Выдача формы">${esc(items)}</textarea>
+        </div>
+        <button type="button" onclick="this.closest('.prg-day').remove()" style="background:transparent;border:1px solid rgba(255,80,80,.4);color:#ff7a7a">Удалить день</button>
+      </div>
+    </div>`;
+}
+
+function addDay(d) {
+  document.getElementById('prgDays').insertAdjacentHTML('beforeend', dayRowHtml(d));
+}
+
+async function loadProgram() {
+  try {
+    const r = await fetch(API + '/api/admin/program');
+    const d = await r.json();
+    document.getElementById('prgIntro').value = (d && d.intro) || '';
+    const wrap = document.getElementById('prgDays');
+    wrap.innerHTML = '';
+    ((d && d.days) || []).forEach(addDay);
+  } catch (e) { console.error(e); }
+}
+
+async function saveProgram() {
+  const days = [...document.querySelectorAll('#prgDays .prg-day')].map(row => ({
+    num:     row.querySelector('.prg-num').value,
+    mission: row.querySelector('.prg-mission').value,
+    color:   row.querySelector('.prg-color').value,
+    title:   row.querySelector('.prg-title').value,
+    items:   row.querySelector('.prg-items').value.split('\n').map(s => s.trim()).filter(Boolean)
+  }));
+  const payload = { intro: document.getElementById('prgIntro').value, days };
+  const r = await fetch(API + '/api/admin/program', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!r.ok) { alert('Ошибка сохранения'); return; }
+  alert('Программа сохранена!');
 }
 
 // ==================== SPEAKERS ====================
@@ -1563,7 +1647,6 @@ function openBooking(id) {
     <div class="b-m-grid">
       <div class="b-m-field"><span class="label">Возраст</span><span class="val">${b.child_age} лет</span></div>
       <div class="b-m-field"><span class="label">Пол</span><span class="val">${b.gender === 'M' ? 'Мальчик' : b.gender === 'F' ? 'Девочка' : '—'}</span></div>
-      <div class="b-m-field"><span class="label">Размер футболки</span><span class="val">${esc(b.tshirt_size) || '—'}</span></div>
       <div class="b-m-field"><span class="label">Поток</span><span class="val">${esc(b.stream_name)}</span></div>
       <div class="b-m-field"><span class="label">Даты</span><span class="val">${formatDate(b.date_start)} — ${formatDate(b.date_end)}</span></div>
     </div>

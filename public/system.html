@@ -1336,9 +1336,6 @@ a.spk-row .spk-avatar{cursor:pointer}
               <option>Чуй (кроме Бишкека)</option><option>Иссык-Куль</option>
             </select>
           </div>
-          <div class="field"><label>Размер футболки</label>
-            <select id="tshirtSize" required><option value="">XS / S / M / L / XL</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option></select>
-          </div>
         </div>
         <div class="step-nav">
           <span></span>
@@ -1548,7 +1545,6 @@ async function submitReg(e){
     parent_city: document.getElementById('parentCity').value,
     parent_email: document.getElementById('parentEmail').value,
     alt_phone: document.getElementById('altPhone').value,
-    tshirt_size: document.getElementById('tshirtSize').value,
     health: document.getElementById('health').value,
     allergies: document.getElementById('allergies').value,
     about_child: document.getElementById('aboutChild').value,
@@ -1658,6 +1654,60 @@ fetch('/api/admin/contacts').then(r=>r.json()).then(c=>{
   setSocial('ct-ig', c.instagram);
   setSocial('ct-tt', c.tiktok);
   setSocial('ct-yt', c.youtube);
+}).catch(()=>{});
+
+// Программа «День за днём» — из админки. При ошибке/пустом ответе остаётся статичный HTML.
+fetch('/api/admin/program').then(r=>r.json()).then(p=>{
+  if(!p || !Array.isArray(p.days) || !p.days.length) return;
+
+  const lede = document.querySelector('#days .section-lede');
+  if(lede && p.intro) lede.textContent = p.intro;
+
+  const grid = document.querySelector('#days .days-grid');
+  if(grid){
+    grid.innerHTML = '';
+    p.days.forEach(d=>{
+      const col = document.createElement('div');
+      col.className = 'day-col ' + (['m1','m2','m3','m4','m5'].includes(d.color) ? d.color : 'm1');
+
+      const mission = document.createElement('div');
+      mission.className = 'd-mission';
+      mission.textContent = '// ' + (d.mission || '');
+      col.appendChild(mission);
+
+      const num = document.createElement('div');
+      num.className = 'd-num';
+      num.textContent = d.num || '';
+      col.appendChild(num);
+
+      const label = document.createElement('div');
+      label.className = 'd-label';
+      label.textContent = d.title || '';
+      col.appendChild(label);
+
+      const list = document.createElement('div');
+      list.className = 'd-list';
+      (Array.isArray(d.items) ? d.items : []).forEach(it=>{
+        const s = document.createElement('span');
+        s.textContent = it;
+        list.appendChild(s);
+      });
+      col.appendChild(list);
+
+      grid.appendChild(col);
+    });
+  }
+
+  const axis = document.querySelector('#days .day-axis');
+  if(axis){
+    axis.innerHTML = '';
+    p.days.forEach(d=>{
+      const s = document.createElement('span');
+      const mission = (d.mission || '').split('·').pop().trim();
+      s.textContent = mission;
+      axis.appendChild(s);
+    });
+  }
 }).catch(()=>{});
 
 // Мобильный аккордеон — toggle секций
