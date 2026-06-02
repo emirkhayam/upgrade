@@ -91,6 +91,16 @@ tr:hover{background:rgba(255,106,31,.03)}
 .form-grid input:focus{outline:none;border-color:#ff6a1f}
 .form-full{grid-column:1/-1}
 .form-grid button{grid-column:1/-1;padding:14px;background:#ff6a1f;color:#000;border:none;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;margin-top:8px}
+/* Программа — заметная кнопка сохранения + анимация */
+.prg-actions{position:sticky;bottom:0;display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:24px;padding:18px 0;background:linear-gradient(to top,#0a0c14 75%,rgba(10,12,20,0))}
+#prgSaveBtn{padding:16px 44px;font-size:16px;font-weight:800;background:#ff6a1f;color:#000;border:none;border-radius:12px;cursor:pointer;box-shadow:0 8px 24px rgba(255,106,31,.35);transition:transform .15s,background .2s,box-shadow .2s}
+#prgSaveBtn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,106,31,.55)}
+#prgSaveBtn:disabled{cursor:default}
+#prgSaveBtn.saving{background:#3a3f4a;color:#cfd6e0;box-shadow:none}
+#prgSaveBtn.saved{background:#2ecc71;color:#04210f;box-shadow:0 8px 24px rgba(46,204,113,.45);animation:prgPop .45s ease}
+@keyframes prgPop{0%{transform:scale(.9)}55%{transform:scale(1.07)}100%{transform:scale(1)}}
+.prg-spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:prgSpin .7s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes prgSpin{to{transform:rotate(360deg)}}
 
 /* QR upload */
 .qr-section{max-width:400px}
@@ -359,9 +369,9 @@ tr:hover{background:rgba(255,106,31,.03)}
 
     <div id="prgDays"></div>
 
-    <div style="display:flex;gap:12px;margin-top:20px">
-      <button type="button" onclick="addDay()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:#e8ecf2">+ Добавить день</button>
-      <button type="button" onclick="saveProgram()">Сохранить программу</button>
+    <div class="prg-actions">
+      <button type="button" onclick="addDay()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:#e8ecf2;padding:16px 20px;border-radius:12px;font-weight:700;cursor:pointer">+ Добавить день</button>
+      <button type="button" id="prgSaveBtn" onclick="saveProgram()">💾 Сохранить программу</button>
     </div>
   </div>
 
@@ -1108,13 +1118,39 @@ async function saveProgram() {
     items:   row.querySelector('.prg-items').value.split('\n').map(s => s.trim()).filter(Boolean)
   }));
   const payload = { intro: document.getElementById('prgIntro').value, days };
-  const r = await fetch(API + '/api/admin/program', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-  if (!r.ok) { alert('Ошибка сохранения'); return; }
-  alert('Программа сохранена!');
+
+  const btn = document.getElementById('prgSaveBtn');
+  clearTimeout(btn._resetTimer);
+  btn.disabled = true;
+  btn.classList.remove('saved');
+  btn.classList.add('saving');
+  btn.innerHTML = '<span class="prg-spin"></span>Сохраняю…';
+
+  try {
+    const r = await fetch(API + '/api/admin/program', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!r.ok) throw new Error('bad status');
+
+    btn.classList.remove('saving');
+    btn.classList.add('saved');
+    btn.innerHTML = '✓ Сохранено!';
+  } catch (e) {
+    btn.classList.remove('saving');
+    btn.innerHTML = '⚠ Ошибка — попробуйте ещё раз';
+    btn.style.background = '#e74c3c';
+    btn.style.color = '#fff';
+  }
+
+  btn._resetTimer = setTimeout(() => {
+    btn.classList.remove('saved');
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.innerHTML = '💾 Сохранить программу';
+    btn.disabled = false;
+  }, 2200);
 }
 
 // ==================== SPEAKERS ====================
