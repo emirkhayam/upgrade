@@ -82,20 +82,31 @@
   content:'';position:absolute;inset:0;z-index:1;
   background:radial-gradient(ellipse 70% 60% at 30% 50%,transparent 0%,rgba(5,6,10,.35) 70%,rgba(5,6,10,.8) 100%);
 }
-.hero-particles{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.hero-particles{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
 .hero-particles .p{
   position:absolute;width:4px;height:4px;border-radius:50%;background:#ff8a2b;
   box-shadow:0 0 8px 2px rgba(255,106,31,.8),0 0 20px 4px rgba(255,106,31,.4);
-  animation:floatUp linear infinite;opacity:0;
+  animation:floatUp linear infinite;opacity:0;will-change:transform,opacity;
 }
-.hero-particles .p:nth-child(3n){width:3px;height:3px}
+.hero-particles .p:nth-child(3n){width:3px;height:3px;background:#ffb163}
 .hero-particles .p:nth-child(5n){width:5px;height:5px;box-shadow:0 0 10px 3px rgba(255,106,31,.9),0 0 28px 6px rgba(255,106,31,.5)}
+.hero-particles .p:nth-child(7n){background:#ffd9a0;box-shadow:0 0 8px 2px rgba(255,180,90,.85),0 0 18px 5px rgba(255,140,40,.4)}
 @keyframes floatUp{
-  0%{transform:translateY(20px) scale(.6);opacity:0}
-  10%{opacity:1}
-  50%{opacity:.9}
-  90%{opacity:.7}
-  100%{transform:translateY(-100vh) scale(1);opacity:0}
+  0%{transform:translate(0,20px) scale(.5);opacity:0}
+  8%{opacity:1}
+  50%{opacity:.9;transform:translate(calc(var(--dx,0px) * .5),-45vh) scale(1)}
+  90%{opacity:.55}
+  100%{transform:translate(var(--dx,0px),-92vh) scale(1.1);opacity:0}
+}
+/* Тёплое мерцающее свечение снизу — отблеск пламени */
+.hero-flames{
+  position:absolute;left:0;right:0;bottom:0;height:42%;z-index:-1;pointer-events:none;
+  background:linear-gradient(0deg,rgba(255,106,31,.28) 0%,rgba(255,80,20,.10) 38%,transparent 100%);
+  mix-blend-mode:screen;animation:flameFlicker 3.6s ease-in-out infinite;
+}
+@keyframes flameFlicker{0%,100%{opacity:.55}20%{opacity:.85}40%{opacity:.4}60%{opacity:.75}80%{opacity:.5}}
+@media (prefers-reduced-motion: reduce){
+  .hero-flames{animation:none;opacity:.5}
 }
 .hero-scan{
   position:absolute;left:0;right:0;height:140px;z-index:-1;pointer-events:none;
@@ -939,6 +950,8 @@
     </video>
   </div>
   <div class="hero-scan"></div>
+  <div class="hero-flames"></div>
+  <div class="hero-particles" id="heroParticles"></div>
 
   <div class="hero-left">
     <div class="hero-pretitle">
@@ -965,6 +978,27 @@
     </div>
   </div>
 </section>
+<script>
+// Hero — частицы пламени (поднимающиеся угли). Генерируются на JS.
+(function(){
+  var wrap = document.getElementById('heroParticles');
+  if (!wrap) return;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var count = reduce ? 0 : 48;
+  var frag = document.createDocumentFragment();
+  for (var i = 0; i < count; i++) {
+    var p = document.createElement('span');
+    p.className = 'p';
+    p.style.left = (Math.random() * 100) + '%';
+    p.style.bottom = (-20 - Math.random() * 50) + 'px';
+    p.style.animationDuration = (6 + Math.random() * 9) + 's';   // 6–15с
+    p.style.animationDelay = (-Math.random() * 12) + 's';        // разный старт, без «пустого» начала
+    p.style.setProperty('--dx', (Math.random() * 140 - 70).toFixed(0) + 'px');
+    frag.appendChild(p);
+  }
+  wrap.appendChild(frag);
+})();
+</script>
 
 <!-- TICKER -->
 <div class="ticker">
