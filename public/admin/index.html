@@ -314,7 +314,7 @@ tr:hover{background:rgba(255,106,31,.03)}
     <div class="toolbar">
       <input type="text" id="searchInput" placeholder="Поиск по имени или телефону..." oninput="debounceSearch()">
       <button class="btn-export" onclick="exportCSV()">⬇ Экспорт CSV</button>
-      <button class="btn-export" onclick="exportSheets()">📊 Открыть в Google Таблицах</button>
+      <button class="btn-export" onclick="exportSheets()">📊 Excel по потокам (вкладки)</button>
     </div>
     <div class="filters">
       <select id="filterStream" onchange="loadBookings()">
@@ -596,6 +596,8 @@ tr:hover{background:rgba(255,106,31,.03)}
   </div>
 </div>
 
+<!-- SheetJS — для экспорта .xlsx с отдельной вкладкой на каждый поток -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 const API = '';
 let token = localStorage.getItem('admin_token');
@@ -755,9 +757,9 @@ function debounceSearch() {
 let lastBookings = [];
 
 // Общий сбор данных лидов: заголовки + строки (массив массивов «сырых» значений)
-function bookingTable() {
+function bookingTable(list = lastBookings) {
   const cols = ['ID','Ребёнок','Возраст','Пол','Канал','Контакт','Телефон','Родитель','Город','Поток','Начало','Конец','Статус','Менеджер','Статус оплаты','Скидка %','К оплате','Оплачено','Остаток','Дата оплаты','Дата заявки'];
-  const rows = lastBookings.map(b => {
+  const rows = list.map(b => {
     const due = amountDue(b);
     const gender = b.gender === 'M' ? 'М' : b.gender === 'F' ? 'Ж' : '';
     return [b.id, b.child_name, b.child_age, gender, sourceText(b.source), b.contact_handle || '', b.parent_phone, b.parent_name || '', b.parent_city || '',
@@ -783,21 +785,50 @@ function exportCSV() {
   a.click();
 }
 
-// Копирует данные в буфер (TSV) и открывает новую Google Таблицу — там жмём Ctrl+V
+// Имя листа Excel: ≤31 символа, без запрещённых символов : \ / ? * [ ]
+function sheetName(raw, used) {
+  let n = String(raw || 'Поток').replace(/[:\\/?*\[\]]/g, ' ').trim().slice(0, 31) || 'Поток';
+  let base = n, i = 2;
+  while (used.has(n)) { const suf = ' (' + i++ + ')'; n = base.slice(0, 31 - suf.length) + suf; }
+  used.add(n);
+  return n;
+}
+
+// Скачивает .xlsx, где на КАЖДЫЙ поток — отдельная вкладка (+ лист «Все заявки»).
+// Берёт все заявки и все потоки (независимо от текущих фильтров).
 async function exportSheets() {
-  if (!lastBookings.length) return alert('Нет данных для экспорта');
-  const { cols, rows } = bookingTable();
-  // TSV: Google Таблицы при вставке (Ctrl+V) сами раскладывают по столбцам по табам.
-  // Внутри значений убираем табы/переводы строк, чтобы не ломать раскладку.
-  const cell = v => String(v ?? '').replace(/[\t\r\n]+/g, ' ');
-  const tsv = [cols, ...rows].map(r => r.map(cell).join('\t')).join('\n');
+  if (typeof XLSX === 'undefined') return alert('Библиотека экспорта не загрузилась. Проверьте интернет и обновите страницу.');
   try {
-    await navigator.clipboard.writeText(tsv);
+    const [rb, rs] = await Promise.all([
+      fetch(API + '/api/admin/bookings', { headers: headers() }),
+      fetch(API + '/api/admin/streams', { headers: headers() })
+    ]);
+    if (rb.status === 401 || rs.status === 401) return logout();
+    const allBookings = await rb.json();
+    const streams = await rs.json();
+    if (!allBookings.length) return alert('Нет данных для экспорта');
+
+    const wb = XLSX.utils.book_new();
+    const used = new Set();
+
+    // Первый лист — все заявки целиком
+    const all = bookingTable(allBookings);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([all.cols, ...all.rows]), sheetName('Все заявки', used));
+
+    // По листу на каждый поток (в порядке дат)
+    for (const s of streams) {
+      const list = allBookings.filter(b => b.stream_id === s.id);
+      const { cols, rows } = bookingTable(list);
+      const ws = XLSX.utils.aoa_to_sheet([cols, ...rows]);
+      XLSX.utils.book_append_sheet(wb, ws, sheetName(s.name, used));
+    }
+
+    XLSX.writeFile(wb, 'apgrade_zayavki_' + new Date().toISOString().slice(0,10) + '.xlsx');
+    alert('Готово! Скачан файл с отдельной вкладкой на каждый поток.\n\nЧтобы открыть в Google Таблицах: загрузите файл на Google Диск и откройте — все вкладки сохранятся.');
   } catch (e) {
-    return alert('Не удалось скопировать данные в буфер. Разрешите доступ к буферу обмена и попробуйте ещё раз.');
+    console.error(e);
+    alert('Ошибка при формировании файла. Попробуйте ещё раз.');
   }
-  window.open('https://sheets.new', '_blank');
-  alert('Готово! Данные скопированы (' + rows.length + ' строк).\n\nВ открывшейся Google Таблице нажмите Ctrl+V — данные разложатся по столбцам.');
 }
 
 // ==================== BOOKINGS ====================
