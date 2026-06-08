@@ -1734,6 +1734,9 @@ function openBooking(id) {
       <a href="https://wa.me/${wa}" target="_blank" class="btn-sm" style="background:#25d366;color:#fff;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;padding:12px 16px;border-radius:8px;font-weight:600;font-size:13px">WhatsApp</a>
       <button class="btn-sm btn-confirm" style="padding:12px 16px;flex:1" onclick="saveBooking(${b.id})">Сохранить</button>
     </div>
+    <div style="margin-top:10px;text-align:center">
+      <button onclick="deleteBooking(${b.id})" style="background:transparent;border:1px solid rgba(255,61,106,.4);color:#ff3d6a;padding:9px 16px;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer">🗑 Удалить заявку</button>
+    </div>
   `;
   m.classList.add('open');
 }
@@ -1767,6 +1770,21 @@ async function saveBooking(id) {
   } else {
     const d = await r.json().catch(() => ({}));
     alert(d.error || 'Ошибка сохранения');
+  }
+}
+
+async function deleteBooking(id) {
+  const b = lastBookings.find(x => x.id === id);
+  const name = b ? b.child_name : ('#' + id);
+  if (!confirm(`Удалить заявку «${name}» (#${id}) безвозвратно?\nЭто действие нельзя отменить.`)) return;
+  const r = await fetch(API + '/api/admin/bookings/' + id, { method: 'DELETE', headers: headers() });
+  if (r.ok) {
+    closeBooking();
+    loadBookings();
+    if (document.getElementById('panel-overview').classList.contains('active')) loadOverview();
+  } else {
+    const d = await r.json().catch(() => ({}));
+    alert(d.error || 'Ошибка удаления');
   }
 }
 

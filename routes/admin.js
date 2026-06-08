@@ -117,6 +117,22 @@ router.patch('/bookings/:id', auth, (req, res) => {
   res.json({ ok: true, booking: outcome.booking });
 });
 
+// DELETE /api/admin/bookings/:id — полностью удалить заявку (для тестовых записей).
+// Заодно подчищаем приватный файл свидетельства и строку с кодом, чтобы не плодить сирот.
+router.delete('/bookings/:id', auth, (req, res) => {
+  const booking = db.prepare('SELECT id, birth_cert_path FROM bookings WHERE id = ?').get(req.params.id);
+  if (!booking) return res.status(404).json({ error: 'Заявка не найдена' });
+
+  if (booking.birth_cert_path) {
+    const abs = path.join(privateDir, booking.birth_cert_path);
+    if (abs.startsWith(privateDir)) fs.unlink(abs, () => {});
+  }
+  db.prepare('DELETE FROM otp_codes WHERE booking_id = ?').run(req.params.id);
+  db.prepare('DELETE FROM bookings WHERE id = ?').run(req.params.id);
+
+  res.json({ ok: true });
+});
+
 // GET /api/admin/birth-cert/:id — stream the child's birth-certificate screenshot.
 // Auth-only: these are personal documents and are NOT exposed via /uploads.
 router.get('/birth-cert/:id', auth, (req, res) => {
