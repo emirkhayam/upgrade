@@ -7,7 +7,7 @@ const fs = require('fs');
 const db = require('../db');
 const auth = require('../middleware/auth');
 const { updateBooking } = require('../lib/bookingService');
-const { uploadsDir } = require('../lib/paths');
+const { uploadsDir, privateDir } = require('../lib/paths');
 
 const router = Router();
 
@@ -115,6 +115,22 @@ router.patch('/bookings/:id', auth, (req, res) => {
   const outcome = updateBooking(req.params.id, req.body);
   if (outcome.error) return res.status(outcome.status).json({ error: outcome.error });
   res.json({ ok: true, booking: outcome.booking });
+});
+
+// GET /api/admin/birth-cert/:id — stream the child's birth-certificate screenshot.
+// Auth-only: these are personal documents and are NOT exposed via /uploads.
+router.get('/birth-cert/:id', auth, (req, res) => {
+  const booking = db.prepare('SELECT birth_cert_path FROM bookings WHERE id = ?').get(req.params.id);
+  if (!booking || !booking.birth_cert_path) {
+    return res.status(404).json({ error: 'Документ не загружен' });
+  }
+  // Stored as a relative ref ('birth-certs/<file>'); resolve under privateDir and guard
+  // against path traversal before sending.
+  const abs = path.join(privateDir, booking.birth_cert_path);
+  if (!abs.startsWith(privateDir) || !fs.existsSync(abs)) {
+    return res.status(404).json({ error: 'Файл не найден' });
+  }
+  res.sendFile(abs);
 });
 
 // ==================== STREAMS ====================

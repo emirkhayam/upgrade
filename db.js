@@ -89,6 +89,19 @@ db.exec(`
     sort_order INTEGER DEFAULT 0,
     is_active  INTEGER DEFAULT 1
   );
+
+  -- One-time codes for verifying a parent's phone (WhatsApp) before the payment step.
+  -- One row per booking; the code is stored hashed, expires after a TTL and is rate-limited.
+  CREATE TABLE IF NOT EXISTS otp_codes (
+    booking_id INTEGER PRIMARY KEY,
+    phone      TEXT    NOT NULL,
+    code_hash  TEXT    NOT NULL,
+    attempts   INTEGER DEFAULT 0,
+    sent_count INTEGER DEFAULT 0,
+    expires_at INTEGER NOT NULL,
+    last_sent  INTEGER NOT NULL,
+    created_at TEXT DEFAULT (datetime('now'))
+  );
 `);
 
 // Migrations: add missing columns to bookings
@@ -116,6 +129,13 @@ const bookingMigrations = [
   ['manager', "TEXT DEFAULT ''"],
   ['next_action', "TEXT DEFAULT ''"],
   ['next_contact_date', "TEXT DEFAULT ''"],
+  // Consent + document fields (договор, согласия, верификация телефона)
+  ['consent_data', 'INTEGER DEFAULT 0'],          // согласие на обработку перс. данных (обязательное)
+  ['consent_data_at', "TEXT DEFAULT ''"],         // когда поставил галочку (аудит-след)
+  ['consent_insurance', 'INTEGER DEFAULT 0'],     // согласие оформить страховку при заезде
+  ['birth_cert_path', "TEXT DEFAULT ''"],         // приватный путь к скриншоту свидетельства (ТУНДУК)
+  ['phone_verified', 'INTEGER DEFAULT 0'],        // номер подтверждён кодом из WhatsApp
+  ['phone_verified_at', "TEXT DEFAULT ''"],
 ];
 for (const [col, def] of bookingMigrations) {
   try {
