@@ -173,6 +173,20 @@
 .hero-m .v em{color:var(--orange);font-style:normal}
 .hero-m .l{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-dim);letter-spacing:2px;text-transform:uppercase}
 
+/* Логотипы партнёров в шапке (вместо цифр) */
+.hero-partners{align-items:center;gap:14px}
+.hero-partners-label{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;color:var(--orange);letter-spacing:3px;text-transform:uppercase;display:inline-flex;align-items:center;gap:11px;margin-right:10px}
+.hero-partners-label::before{content:'';width:32px;height:2px;background:var(--orange);opacity:.6}
+@media(max-width:680px){.hero-partners-label{font-size:13px;gap:9px}.hero-partners-label::before{width:24px}}
+.hero-partner{display:inline-flex;align-items:center;justify-content:center;opacity:.92;transition:transform .25s,opacity .25s}
+.hero-partner:hover{transform:translateY(-2px);opacity:1}
+.hero-partner img{max-height:60px;max-width:210px;width:auto;height:auto;object-fit:contain;display:block}
+@media(max-width:680px){
+  .hero-partners{gap:18px;padding-top:20px}
+  .hero-partners-label{width:100%;margin-bottom:2px}
+  .hero-partner img{max-height:46px;max-width:150px}
+}
+
 /* FLOATING REGISTRATION PANEL */
 .access-panel{
   position:relative;z-index:3;
@@ -970,11 +984,10 @@
       <a href="#about" class="btn btn-ghost">Узнать больше<span class="arr">↓</span></a>
     </div>
 
-    <div class="hero-meta">
-      <div class="hero-m"><div class="v"><em>07</em></div><div class="l">Потоков</div></div>
-      <div class="hero-m"><div class="v">560</div><div class="l">Юнитов</div></div>
-      <div class="hero-m"><div class="v">10</div><div class="l">Дней</div></div>
-      <div class="hero-m"><div class="v">05</div><div class="l">Миссий</div></div>
+    <div class="hero-meta hero-partners">
+      <span class="hero-partners-label">Партнёры</span>
+      <a href="/partners" class="hero-partner" title="SAKBOL — страховой партнёр"><img src="img/partner-sakbol.png" alt="SAKBOL" loading="lazy"></a>
+      <a href="/partners" class="hero-partner" title="Uluu Kyrgyz Izi — партнёр проекта"><img src="img/partner-uki.png" alt="Uluu Kyrgyz Izi" loading="lazy"></a>
     </div>
   </div>
 </section>
@@ -1212,7 +1225,7 @@
     </div>
 
     <div class="final-cta-meta reveal">
-      <div class="m installment"><div class="v">19 998</div><div class="l">Сом · вся путёвка</div></div>
+      <div class="m installment"><div class="v">19 998</div><div class="l">Сом · вся путёвка</div><span class="mbank-badge">MBANK+</span></div>
       <div class="m installment"><div class="v">3 333 × 6</div><div class="l">Сом/мес · рассрочка</div><span class="mbank-badge">MBANK+</span></div>
       <div class="m"><div class="v">2Ч</div><div class="l">Ответ менеджера</div></div>
       <div class="m"><div class="v">100%</div><div class="l">Личная страховка</div></div>

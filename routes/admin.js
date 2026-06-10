@@ -6,7 +6,8 @@ const path = require('path');
 const fs = require('fs');
 const db = require('../db');
 const auth = require('../middleware/auth');
-const { updateBooking } = require('../lib/bookingService');
+const { updateBooking, createManualBooking } = require('../lib/bookingService');
+const sheets = require('../lib/sheetsSync');
 const { uploadsDir, privateDir } = require('../lib/paths');
 
 const router = Router();
@@ -111,6 +112,13 @@ router.get('/stats', auth, (req, res) => {
   res.json({ streams, totals, revenue: revenue.total });
 });
 
+// POST /api/admin/bookings — manually add a camper to a stream from the admin panel.
+router.post('/bookings', auth, (req, res) => {
+  const outcome = createManualBooking(req.body || {});
+  if (outcome.error) return res.status(outcome.status).json({ error: outcome.error });
+  res.status(201).json({ ok: true, booking_id: outcome.booking_id });
+});
+
 router.patch('/bookings/:id', auth, (req, res) => {
   const outcome = updateBooking(req.params.id, req.body);
   if (outcome.error) return res.status(outcome.status).json({ error: outcome.error });
@@ -129,8 +137,26 @@ router.delete('/bookings/:id', auth, (req, res) => {
   }
   db.prepare('DELETE FROM otp_codes WHERE booking_id = ?').run(req.params.id);
   db.prepare('DELETE FROM bookings WHERE id = ?').run(req.params.id);
+  sheets.deleteBooking(req.params.id);
 
   res.json({ ok: true });
+});
+
+// ==================== GOOGLE SHEETS LIVE SYNC ====================
+
+// Is the live Google-Sheets webhook configured? (frontend toggles its buttons on this)
+router.get('/sheets/status', auth, (req, res) => {
+  res.json({ configured: sheets.isConfigured(), url: (process.env.GSHEET_VIEW_URL || '').trim() });
+});
+
+// Push the whole bookings table into the sheet at once (manual "Resync" button).
+router.post('/sheets/resync', auth, async (req, res) => {
+  if (!sheets.isConfigured()) {
+    return res.status(400).json({ error: 'Google Таблица не подключена. Задайте GSHEET_WEBHOOK_URL.' });
+  }
+  const result = await sheets.syncAll();
+  if (!result.ok) return res.status(502).json({ error: 'Не удалось связаться с Google Таблицей' });
+  res.json(result);
 });
 
 // GET /api/admin/birth-cert/:id — stream the child's birth-certificate screenshot.

@@ -115,6 +115,22 @@ tr:hover{background:rgba(255,106,31,.03)}
 .btn-export{padding:8px 16px;background:rgba(255,106,31,.12);color:#ff6a1f;border:1px solid rgba(255,106,31,.3);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
 .btn-export:hover{background:rgba(255,106,31,.25)}
 
+/* Bookings grouped by stream */
+.stream-group{margin-bottom:28px;border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;background:#0d1018}
+.stream-group-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 18px;background:#10131c;border-bottom:1px solid rgba(255,255,255,.07)}
+.stream-group-title{font-size:16px;font-weight:700;color:#e8ecf2}
+.stream-group-title small{font-size:11px;color:#7d8694;font-weight:500;margin-left:8px}
+.stream-group-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:12px;color:#7d8694}
+.stream-group-meta b{color:#e8ecf2}
+.stream-group-meta .m{color:#5096ff}
+.stream-group-meta .f{color:#ff6ab0}
+.btn-add-spot{padding:9px 16px;background:rgba(46,204,113,.14);color:#2ecc71;border:1px solid rgba(46,204,113,.35);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap}
+.btn-add-spot:hover{background:rgba(46,204,113,.28)}
+.stream-group-body{padding:6px 14px 14px}
+.stream-group-empty{padding:20px;text-align:center;color:#494f5b;font-size:13px}
+.btn-row-del{background:transparent;border:1px solid rgba(255,61,106,.4);color:#ff3d6a;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;line-height:1;transition:.2s}
+.btn-row-del:hover{background:rgba(255,61,106,.18)}
+
 /* Overview cards */
 .overview-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:28px}
 .ov-card{background:#10131c;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px;text-align:center}
@@ -313,8 +329,10 @@ tr:hover{background:rgba(255,106,31,.03)}
     <div class="stats" id="statsRow"></div>
     <div class="toolbar">
       <input type="text" id="searchInput" placeholder="Поиск по имени или телефону..." oninput="debounceSearch()">
-      <button class="btn-export" onclick="exportCSV()">⬇ Экспорт CSV</button>
-      <button class="btn-export" onclick="exportSheets()">📊 Excel по потокам (вкладки)</button>
+      <button class="btn-export" id="btnSheetSync" onclick="resyncSheets()" style="display:none">🔄 Синхр. с Google</button>
+      <a class="btn-export" id="btnSheetOpen" href="#" target="_blank" style="display:none;text-decoration:none">↗ Открыть Google Таблицу</a>
+      <button class="btn-export" onclick="exportCSV()">⬇ CSV</button>
+      <button class="btn-export" onclick="exportSheets()">📊 Excel по потокам</button>
     </div>
     <div class="filters">
       <select id="filterStream" onchange="loadBookings()">
@@ -331,11 +349,7 @@ tr:hover{background:rgba(255,106,31,.03)}
         <option value="rejected">Отказ</option>
       </select>
     </div>
-    <table class="bookings-table">
-      <thead><tr><th>#</th><th>Ребёнок</th><th>Телефон</th><th>Поток</th><th>Статус</th><th>Оплата</th><th>Менеджер</th><th>Дата</th></tr></thead>
-      <tbody id="bookingsBody"></tbody>
-    </table>
-    <div class="booking-cards" id="bookingCards"></div>
+    <div id="bookingsContainer"></div>
   </div>
 
   <!-- STREAMS -->
@@ -658,6 +672,7 @@ async function showDashboard() {
   await loadStreamsFilter();
   await loadOverview();
   await loadQR();
+  checkSheetsStatus();
 }
 
 function updateTime() {
@@ -755,6 +770,7 @@ function debounceSearch() {
 }
 
 let lastBookings = [];
+let streamList = [];
 
 // Общий сбор данных лидов: заголовки + строки (массив массивов «сырых» значений)
 function bookingTable(list = lastBookings) {
@@ -859,12 +875,61 @@ async function loadBookings() {
       <div class="stat"><div class="v" style="color:#ff3d6a">${rejected}</div><div class="l">Отказ</div></div>
     `;
 
-    document.getElementById('bookingsBody').innerHTML = bookings.map(b => `
+    renderBookingGroups(bookings);
+
+  } catch(e) { console.error(e); }
+}
+
+// Рисует заявки, сгруппированные по потокам: «Поток 1», «Поток 2» и т.д.
+// Пустые потоки показываем только когда нет активного фильтра (чтобы можно было
+// добавить место в любой поток); при фильтре по статусу/поиску — только непустые.
+function renderBookingGroups(bookings) {
+  const container = document.getElementById('bookingsContainer');
+  const streamFilter = document.getElementById('filterStream').value;
+  const filterActive = !!(document.getElementById('filterStatus').value || document.getElementById('searchInput').value.trim());
+
+  const byStream = {};
+  bookings.forEach(b => { (byStream[b.stream_id] = byStream[b.stream_id] || []).push(b); });
+
+  let streams = streamList.slice();
+  if (streamFilter) streams = streams.filter(s => String(s.id) === String(streamFilter));
+
+  const html = streams.map(s => {
+    const list = byStream[s.id] || [];
+    if (filterActive && !list.length) return '';
+    const m = list.filter(b => b.gender === 'M').length;
+    const f = list.filter(b => b.gender === 'F').length;
+    const occ = list.filter(b => b.status !== 'rejected').length;
+    return `
+      <div class="stream-group">
+        <div class="stream-group-head">
+          <div>
+            <div class="stream-group-title">${esc(s.name)} <small>${formatDate(s.date_start)} — ${formatDate(s.date_end)}</small></div>
+            <div class="stream-group-meta">
+              <span><b>${list.length}</b> заявок</span>
+              <span class="m">М ${m}</span><span class="f">Ж ${f}</span>
+              <span>занято <b>${occ}</b>/${s.capacity}</span>
+            </div>
+          </div>
+          <button class="btn-add-spot" onclick="openManualAdd(${s.id})">+ Добавить место</button>
+        </div>
+        <div class="stream-group-body">
+          ${list.length ? streamTable(list) + streamCards(list) : '<div class="stream-group-empty">Пока нет заявок — нажмите «+ Добавить место»</div>'}
+        </div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = html || '<div class="stream-group-empty">Ничего не найдено</div>';
+}
+
+function streamTable(list) {
+  return `<table class="bookings-table">
+    <thead><tr><th>#</th><th>Ребёнок</th><th>Телефон</th><th>Статус</th><th>Оплата</th><th>Менеджер</th><th>Дата</th><th></th></tr></thead>
+    <tbody>${list.map(b => `
       <tr style="cursor:pointer" onclick="openBooking(${b.id})">
         <td>${b.id}</td>
-        <td><strong>${esc(b.child_name)}</strong><br>${sourceBadge(b)}</td>
-        <td>${phoneLinks(b.parent_phone)}</td>
-        <td>${esc(b.stream_name)}<br><small style="color:#7d8694">${formatDate(b.date_start)} — ${formatDate(b.date_end)}</small></td>
+        <td><strong>${esc(b.child_name)}</strong> <small style="color:#7d8694">${b.child_age}${b.gender==='M'?'·М':b.gender==='F'?'·Ж':''}</small><br>${sourceBadge(b)}</td>
+        <td>${b.parent_phone ? phoneLinks(b.parent_phone) : '<span style="color:#494f5b">—</span>'}</td>
         <td><span class="badge badge-${b.status}">${statusText(b.status)}</span></td>
         <td>
           <span class="badge badge-pay-${b.payment_status}">${payStatusText(b.payment_status)}</span><br>
@@ -872,35 +937,35 @@ async function loadBookings() {
         </td>
         <td>${esc(b.manager) || '<span style="color:#494f5b">—</span>'}</td>
         <td><small style="color:#7d8694">${formatDateTime(b.created_at)}</small></td>
+        <td><button class="btn-row-del" title="Удалить заявку" onclick="event.stopPropagation();deleteBooking(${b.id})">🗑</button></td>
       </tr>
-    `).join('');
+    `).join('')}</tbody>
+  </table>`;
+}
 
-    // Mobile cards
-    document.getElementById('bookingCards').innerHTML = bookings.map(b => {
-      const wa = cleanPhone(b.parent_phone).replace('+','');
-      return `
+function streamCards(list) {
+  return `<div class="booking-cards">${list.map(b => {
+    const wa = b.parent_phone ? cleanPhone(b.parent_phone).replace('+','') : '';
+    return `
       <div class="b-card" onclick="openBooking(${b.id})" style="cursor:pointer">
         <div class="b-card-top">
           <span class="b-card-name">${esc(b.child_name)}</span>
           <span class="badge badge-${b.status}" style="font-size:10px">${statusText(b.status)}</span>
         </div>
         <div class="b-card-row"><span class="label">Канал</span><span>${sourceBadge(b)}</span></div>
-        <div class="b-card-row"><span class="label">Возраст</span><span>${b.child_age} лет</span></div>
+        <div class="b-card-row"><span class="label">Возраст / пол</span><span>${b.child_age} лет · ${b.gender==='M'?'М':b.gender==='F'?'Ж':'—'}</span></div>
         <div class="b-card-row">
           <span class="label">Телефон</span>
           <span class="b-card-phone">
-            <a href="tel:${cleanPhone(b.parent_phone)}" style="color:#e8ecf2">${esc(b.parent_phone)}</a>
-            <a href="https://wa.me/${wa}" target="_blank" style="color:#25d366;font-size:18px">💬</a>
+            ${b.parent_phone ? `<a href="tel:${cleanPhone(b.parent_phone)}" style="color:#e8ecf2">${esc(b.parent_phone)}</a>
+            <a href="https://wa.me/${wa}" target="_blank" style="color:#25d366;font-size:18px">💬</a>` : '—'}
           </span>
         </div>
-        <div class="b-card-row"><span class="label">Поток</span><span>${esc(b.stream_name)}</span></div>
         <div class="b-card-row"><span class="label">Оплата</span><span><span class="badge badge-pay-${b.payment_status}" style="font-size:10px">${payStatusText(b.payment_status)}</span> ${money(b.paid_amount)} / ${money(amountDue(b))}</span></div>
         <div class="b-card-row"><span class="label">Менеджер</span><span>${esc(b.manager) || '—'}</span></div>
-        <div class="b-card-row"><span class="label">Заявка</span><span style="color:#7d8694">${formatDateTime(b.created_at)}</span></div>
+        <div class="b-card-actions"><button class="btn-sm btn-cancel" onclick="event.stopPropagation();deleteBooking(${b.id})">🗑 Удалить заявку</button></div>
       </div>`;
-    }).join('');
-
-  } catch(e) { console.error(e); }
+  }).join('')}</div>`;
 }
 
 // ==================== STREAMS ====================
@@ -908,6 +973,7 @@ async function loadStreamsFilter() {
   const r = await fetch(API + '/api/admin/streams', { headers: headers() });
   if (r.status === 401) return logout();
   const streams = await r.json();
+  streamList = streams;
   const sel = document.getElementById('filterStream');
   sel.innerHTML = '<option value="">Все потоки</option>' +
     streams.map(s => `<option value="${s.id}">${s.name} (${formatDate(s.date_start)})</option>`).join('');
@@ -1821,6 +1887,93 @@ async function deleteBooking(id) {
 
 function closeBooking() {
   document.getElementById('bModal').classList.remove('open');
+}
+
+// ==================== РУЧНОЕ ДОБАВЛЕНИЕ МЕСТА В ПОТОК ====================
+function openManualAdd(streamId) {
+  const s = streamList.find(x => x.id === streamId);
+  if (!s) return;
+  const m = document.getElementById('bModal');
+  m.querySelector('.b-modal').innerHTML = `
+    <button class="b-modal-close" onclick="closeBooking()">✕</button>
+    <h3>Добавить место</h3>
+    <div class="b-m-id">${esc(s.name)} · ${formatDate(s.date_start)} — ${formatDate(s.date_end)}</div>
+    <div class="b-m-edit" style="border-top:none;padding-top:0">
+      <div><label>Имя ребёнка *</label><input id="ma_child_name" placeholder="Имя Фамилия"></div>
+      <div><label>Возраст *</label><input id="ma_child_age" type="number" min="1" max="100" placeholder="12"></div>
+      <div><label>Пол *</label><select id="ma_gender"><option value="M">Мальчик</option><option value="F">Девочка</option></select></div>
+      <div><label>Статус</label><select id="ma_status">
+        <option value="reserved">Бронь</option>
+        <option value="new">Новая</option>
+        <option value="client_paid">Клиент оплатил</option>
+        <option value="paid">Оплачено</option>
+      </select></div>
+      <div><label>Телефон родителя</label><input id="ma_parent_phone" placeholder="+996 ..."></div>
+      <div><label>Имя родителя</label><input id="ma_parent_name" placeholder="Имя"></div>
+      <div><label>Город</label><input id="ma_parent_city" placeholder="Бишкек"></div>
+      <div><label>Email</label><input id="ma_parent_email" placeholder="email@..."></div>
+    </div>
+    <div class="b-m-actions">
+      <button class="btn-sm" style="flex:0 0 auto;background:transparent;border:1px solid rgba(255,255,255,.15);color:#7d8694;padding:12px 16px;border-radius:8px;cursor:pointer" onclick="closeBooking()">Отмена</button>
+      <button class="btn-sm btn-confirm" style="flex:1;padding:12px 16px;border-radius:8px" onclick="submitManualAdd(${s.id})">Добавить в поток</button>
+    </div>
+  `;
+  m.classList.add('open');
+}
+
+async function submitManualAdd(streamId) {
+  const body = {
+    stream_id: streamId,
+    child_name: document.getElementById('ma_child_name').value.trim(),
+    child_age: document.getElementById('ma_child_age').value,
+    gender: document.getElementById('ma_gender').value,
+    status: document.getElementById('ma_status').value,
+    parent_phone: document.getElementById('ma_parent_phone').value.trim(),
+    parent_name: document.getElementById('ma_parent_name').value.trim(),
+    parent_city: document.getElementById('ma_parent_city').value.trim(),
+    parent_email: document.getElementById('ma_parent_email').value.trim()
+  };
+  if (!body.child_name || !body.child_age) return alert('Укажите имя ребёнка и возраст');
+  const r = await fetch(API + '/api/admin/bookings', {
+    method: 'POST', headers: headers(), body: JSON.stringify(body)
+  });
+  if (r.ok) {
+    closeBooking();
+    loadBookings();
+    if (document.getElementById('panel-overview').classList.contains('active')) loadOverview();
+  } else {
+    const d = await r.json().catch(() => ({}));
+    alert(d.error || 'Не удалось добавить');
+  }
+}
+
+// ==================== GOOGLE ТАБЛИЦА (живая синхронизация) ====================
+async function checkSheetsStatus() {
+  try {
+    const r = await fetch(API + '/api/admin/sheets/status', { headers: headers() });
+    if (!r.ok) return;
+    const { configured, url } = await r.json();
+    const syncBtn = document.getElementById('btnSheetSync');
+    const openBtn = document.getElementById('btnSheetOpen');
+    if (syncBtn) syncBtn.style.display = configured ? '' : 'none';
+    if (openBtn) {
+      if (configured && url) { openBtn.href = url; openBtn.style.display = ''; }
+      else openBtn.style.display = 'none';
+    }
+  } catch {}
+}
+
+async function resyncSheets() {
+  const btn = document.getElementById('btnSheetSync');
+  const prev = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Синхронизация...'; }
+  try {
+    const r = await fetch(API + '/api/admin/sheets/resync', { method: 'POST', headers: headers() });
+    const d = await r.json().catch(() => ({}));
+    if (r.ok) alert(`Готово! В Google Таблицу выгружено заявок: ${d.count}.`);
+    else alert(d.error || 'Ошибка синхронизации');
+  } catch { alert('Ошибка синхронизации'); }
+  if (btn) { btn.disabled = false; btn.textContent = prev; }
 }
 </script>
 
