@@ -990,13 +990,28 @@ async function loadStreams() {
       <td>${s.capacity}</td>
       <td>${s.booked || 0}</td>
       <td>${s.price.toLocaleString()} сом</td>
-      <td><span class="badge ${s.is_active ? 'badge-confirmed' : 'badge-cancelled'}">${s.is_active ? 'Активен' : 'Скрыт'}</span></td>
       <td>
-        <button class="btn-sm ${s.is_active ? 'btn-cancel' : 'btn-confirm'}"
-          onclick="toggleStream(${s.id}, ${s.is_active ? 0 : 1})">${s.is_active ? 'Скрыть' : 'Включить'}</button>
+        <span class="badge ${s.is_active ? 'badge-confirmed' : 'badge-cancelled'}">${s.is_active ? 'Активен' : 'Скрыт'}</span>
+        ${s.is_full ? '<br><span class="badge badge-cancelled" style="margin-top:4px;display:inline-block">Мест нет</span>' : ''}
+      </td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn-sm ${s.is_active ? 'btn-cancel' : 'btn-confirm'}"
+            onclick="toggleStream(${s.id}, ${s.is_active ? 0 : 1})">${s.is_active ? 'Скрыть' : 'Включить'}</button>
+          <button class="btn-sm ${s.is_full ? 'btn-confirm' : 'btn-cancel'}"
+            onclick="toggleFull(${s.id}, ${s.is_full ? 0 : 1})">${s.is_full ? 'Открыть запись' : 'Закрыть (мест нет)'}</button>
+        </div>
       </td>
     </tr>
   `).join('');
+}
+
+async function toggleFull(id, full) {
+  await fetch(API + '/api/admin/streams/' + id, {
+    method: 'PATCH', headers: headers(),
+    body: JSON.stringify({ is_full: full })
+  });
+  loadStreams();
 }
 
 async function addStream() {

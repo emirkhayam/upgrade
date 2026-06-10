@@ -146,6 +146,19 @@ for (const [col, def] of bookingMigrations) {
   }
 }
 
+// Migrations: add missing columns to streams
+// is_full = поток вручную помечен «Мест нет» в админке (показывается полным на сайте,
+// запись закрыта), независимо от реального числа заявок.
+const streamMigrations = [['is_full', 'INTEGER DEFAULT 0']];
+for (const [col, def] of streamMigrations) {
+  try {
+    db.prepare(`SELECT ${col} FROM streams LIMIT 1`).get();
+  } catch {
+    db.exec(`ALTER TABLE streams ADD COLUMN ${col} ${def}`);
+    console.log(`Migration: added ${col} column to streams`);
+  }
+}
+
 // Migrations: add missing columns to speakers
 const speakerMigrations = [
   // Ссылка на Instagram-аккаунт спикера (клик по фото на сайте ведёт сюда)

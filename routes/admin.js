@@ -199,13 +199,13 @@ router.post('/streams', auth, (req, res) => {
 });
 
 router.patch('/streams/:id', auth, (req, res) => {
-  const { name, date_start, date_end, capacity, price, is_active } = req.body;
+  const { name, date_start, date_end, capacity, price, is_active, is_full } = req.body;
   const stream = db.prepare('SELECT * FROM streams WHERE id = ?').get(req.params.id);
   if (!stream) return res.status(404).json({ error: 'Поток не найден' });
 
   db.prepare(`
     UPDATE streams SET
-      name = ?, date_start = ?, date_end = ?, capacity = ?, price = ?, is_active = ?
+      name = ?, date_start = ?, date_end = ?, capacity = ?, price = ?, is_active = ?, is_full = ?
     WHERE id = ?
   `).run(
     name ?? stream.name,
@@ -214,6 +214,7 @@ router.patch('/streams/:id', auth, (req, res) => {
     capacity ?? stream.capacity,
     price ?? stream.price,
     is_active ?? stream.is_active,
+    is_full ?? stream.is_full,
     req.params.id
   );
   res.json({ ok: true });

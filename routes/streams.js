@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
       COALESCE((SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.gender = 'M' AND b.status != 'rejected'), 0) AS males,
       COALESCE((SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND b.gender = 'F' AND b.status != 'rejected'), 0) AS females
     FROM streams s
-    WHERE s.is_active = 1
+    WHERE s.is_active = 1 AND COALESCE(s.is_full, 0) = 0
     ORDER BY s.date_start
   `).all();
 

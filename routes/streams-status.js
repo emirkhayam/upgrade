@@ -20,7 +20,7 @@ const OCCUPIED = "(b.status = 'reserved' OR b.payment_status IN ('partial','paid
 // GET /api/streams-status — aggregated occupancy per stream (public, no auth, ТЗ §4-5).
 router.get('/', (req, res) => {
   const rows = db.prepare(`
-    SELECT s.id, s.name, s.date_start, s.date_end, s.capacity,
+    SELECT s.id, s.name, s.date_start, s.date_end, s.capacity, COALESCE(s.is_full, 0) AS is_full,
       (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND ${OCCUPIED} AND b.gender = 'F') AS girls_taken,
       (SELECT COUNT(*) FROM bookings b WHERE b.stream_id = s.id AND ${OCCUPIED} AND b.gender = 'M') AS boys_taken
     FROM streams s
@@ -29,8 +29,10 @@ router.get('/', (req, res) => {
   `).all();
 
   const streams = rows.map(s => {
-    const girlsTaken = Math.min(s.girls_taken, GENDER_CAP);
-    const boysTaken = Math.min(s.boys_taken, GENDER_CAP);
+    // Поток вручную помечен «Мест нет» в админке → показываем полностью занятым.
+    const forcedFull = s.is_full === 1;
+    const girlsTaken = forcedFull ? GENDER_CAP : Math.min(s.girls_taken, GENDER_CAP);
+    const boysTaken = forcedFull ? GENDER_CAP : Math.min(s.boys_taken, GENDER_CAP);
     const takenTotal = girlsTaken + boysTaken;
     const freeTotal = Math.max(0, s.capacity - takenTotal);
     return {
